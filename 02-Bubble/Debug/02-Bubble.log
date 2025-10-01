@@ -1,0 +1,9 @@
+<<<<<<< HEAD
+﻿
+=======
+﻿  Player.cpp
+SOIL.lib(image_DXT.obj) : warning LNK4099: no se encontró PDB 'SOIL.pdb' con 'SOIL.lib(image_DXT.obj)' o en 'C:\Users\pablo\Documents\GITHUB REPOS\SolidSnake2D\Debug\SOIL.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
+SOIL.lib(image_helper.obj) : warning LNK4099: no se encontró PDB 'SOIL.pdb' con 'SOIL.lib(image_helper.obj)' o en 'C:\Users\pablo\Documents\GITHUB REPOS\SolidSnake2D\Debug\SOIL.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
+SOIL.lib(stb_image_aug.obj) : warning LNK4099: no se encontró PDB 'SOIL.pdb' con 'SOIL.lib(stb_image_aug.obj)' o en 'C:\Users\pablo\Documents\GITHUB REPOS\SolidSnake2D\Debug\SOIL.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
+  02-Bubble.vcxproj -> C:\Users\pablo\Documents\GITHUB REPOS\SolidSnake2D\Debug\02-Bubble.exe
+>>>>>>> parent of 078f535 (Animació dreta i esquerra bé)

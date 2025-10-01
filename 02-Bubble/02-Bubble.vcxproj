@@ -74,12 +74,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\libs\Simple OpenGL Image Library\src;..\..\..\libs\glew-1.13.0\include;..\..\..\libs\glm;..\..\..\libs\glfw-3.3.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\libs\Simple OpenGL Image Library\src;..\Simple-OpenGL-Image-Library-master\Simple-OpenGL-Image-Library-master\src;..\..\..\libs\glew-1.13.0\include;..\..\..\libs\glm;..\..\..\libs\glfw-3.3.8\include;..\glew-2.2.0-win32\glew-2.2.0\include;..\glfw-3.4.bin.WIN32\include;..\glm-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\..\libs\Simple OpenGL Image Library\projects\VC9\Debug;..\..\..\libs\glew-1.13.0\lib\Release\Win32;..\..\..\libs\glfw-3.3.8\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\libs\Simple OpenGL Image Library\projects\VC9\Debug;..\..\..\libs\glew-1.13.0\lib\Release\Win32;..\..\..\libs\glfw-3.3.8\lib-vc2015;..\glew-2.2.0-win32\glew-2.2.0\lib\Release\Win32;..\glfw-3.4.bin.WIN32\lib-vc2022;..\Simple-OpenGL-Image-Library-master\Simple-OpenGL-Image-Library-master\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SOIL.lib;glew32.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

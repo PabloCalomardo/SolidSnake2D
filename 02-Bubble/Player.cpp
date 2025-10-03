@@ -21,40 +21,40 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
 	bJumping = false;
 	spritesheet.loadFromFile("images/Solid_snake.png", TEXTURE_PIXEL_FORMAT_RGBA);	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
-	sprite = Sprite::createSprite(glm::ivec2(18*2,34*2), glm::vec2(PIXEL_X *18, PIXEL_Y *34), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(16*2,32*2), glm::vec2(PIXEL_X *16, PIXEL_Y *32), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(8);
 	
 		sprite->setAnimationSpeed(STAND_NORMAL, 8);
-		sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X, PIXEL_Y*25)); //DEFINITIU, 1 pixel a la dreta i 25 cap a baix
+		sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X*2, PIXEL_Y*26)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
 
 		sprite->setAnimationSpeed(STAND_UP, 8);
-		sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X *20, PIXEL_Y * 25)); //DEFINITIU, (1+18+1) pixel a la dreta i 25 cap a baix
+		sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X *21, PIXEL_Y * 26)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
 		
-		sprite->setAnimationSpeed(STAND_LEFT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge) cap a baix
-		sprite->addKeyframe(STAND_LEFT, glm::vec2(PIXEL_X, PIXEL_Y * 60));
+		sprite->setAnimationSpeed(STAND_LEFT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+		sprite->addKeyframe(STAND_LEFT, glm::vec2(PIXEL_X * 2, PIXEL_Y * 61));
 
-		sprite->setAnimationSpeed(STAND_RIGHT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge) cap a baix i (1 + 18) pixels a la dreta
-		sprite->addKeyframe(STAND_RIGHT, glm::vec2(PIXEL_X *20, PIXEL_Y * 60));
+		sprite->setAnimationSpeed(STAND_RIGHT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->addKeyframe(STAND_RIGHT, glm::vec2(PIXEL_X *21, PIXEL_Y * 61));
 		
 		sprite->setAnimationSpeed(MOVE_LEFT, 8); // Inicialment STAND LEFT, despres les animacions de caminar
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X, PIXEL_Y * 60)); //Stand left
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (36+10), PIXEL_Y * 60));
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (36+10+38), PIXEL_Y * 60));
+		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X*2, PIXEL_Y * 61)); //Stand left
+		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (36+11), PIXEL_Y * 61));
+		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (36+11+38), PIXEL_Y * 61));
 		
 		sprite->setAnimationSpeed(MOVE_RIGHT, 8);
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * 20, PIXEL_Y * 60)); //Stand right
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8), PIXEL_Y * 60));
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19+19), PIXEL_Y * 60));
+		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * 21, PIXEL_Y * 61)); //Stand right
+		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8+1), PIXEL_Y * 61));
+		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19+19+1), PIXEL_Y * 61));
 
 		sprite->setAnimationSpeed(MOVE_UP, 8);
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * 20, PIXEL_Y * 25)); //Stand up
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (3 + 54 + 8), PIXEL_Y * 25));
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19), PIXEL_Y * 25));
+		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * 21, PIXEL_Y * 26)); //Stand up
+		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (3 + 54 + 8+1), PIXEL_Y * 26));
+		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19+1), PIXEL_Y * 26));
 
 		sprite->setAnimationSpeed(MOVE_DOWN, 8);
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X, PIXEL_Y * 25)); //Stand normal
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10), PIXEL_Y * 25));
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 38), PIXEL_Y * 25));
+		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X*2, PIXEL_Y * 26)); //Stand normal
+		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10+1), PIXEL_Y * 26));
+		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 38+1), PIXEL_Y * 26));
 		
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;

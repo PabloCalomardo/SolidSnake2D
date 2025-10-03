@@ -29,6 +29,21 @@ bool Texture::loadFromFile(const string &filename, PixelFormat format)
 	}
 	if(image == NULL)
 		return false;
+
+	// Si és RGBA, fem transparent el color rosa (255,0,255)
+	if (format == TEXTURE_PIXEL_FORMAT_RGBA)
+	{
+		int numPixels = widthTex * heightTex;
+		for (int i = 0; i < numPixels; ++i)
+		{
+			int idx = i * 4;
+			if (image[idx] == 168 && image[idx + 1] == 0 && image[idx + 2] == 168)
+			{
+				image[idx + 3] = 0; // Transparent
+			}
+		}
+	}
+
 	glGenTextures(1, &texId);
 	glBindTexture(GL_TEXTURE_2D, texId);
 	switch(format)

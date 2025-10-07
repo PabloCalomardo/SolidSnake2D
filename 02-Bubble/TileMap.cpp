@@ -153,33 +153,33 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 
 bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
-	/*int x, y0, y1;
+	int x, y0, y1;
 	
 	x = pos.x / tileSize;
 	y0 = pos.y / tileSize;
 	y1 = (pos.y + size.y - 1) / tileSize;
 	for(int y=y0; y<=y1; y++)
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if (!(Col.find(map[y * mapSize.x + x]) != Col.end())) {
 			return true;
+		}
 	}
-	*/
 	return false;
 }
 
 bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
-	/*int x, y0, y1;
+	int x, y0, y1;
 	
 	x = (pos.x + size.x - 1) / tileSize;
 	y0 = pos.y / tileSize;
 	y1 = (pos.y + size.y - 1) / tileSize;
 	for(int y=y0; y<=y1; y++)
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if (!(Col.find(map[y * mapSize.x + x]) != Col.end())) {
 			return true;
+		}
 	}
-	*/
 	return false;
 }
 
@@ -192,13 +192,17 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	y = (pos.y + size.y - 1) / tileSize;
 	for(int x=x0; x<=x1; x++)
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if (!(Col.find(map[y * mapSize.x + x]) != Col.end())) {
+			return true;
+		}
+
+		/*if (map[y * mapSize.x + x] != 0)
 		{
 			if(tileSize * y + size.y <= 4)
 			{
 				return true;
 			}
-		}
+		}*/
 	}
 	
 	return false;
@@ -213,13 +217,16 @@ bool TileMap::collisionMoveUP(const glm::ivec2& pos, const glm::ivec2& size) con
 	y = (pos.y + size.y - 1) / tileSize;
 	for (int x = x0; x <= x1; x++)
 	{
-		if (map[y * mapSize.x + x] != 0)
+		if (!(Col.find(map[y * mapSize.x + x]) != Col.end())) {
+			return true;
+		}
+		/*if (map[y * mapSize.x + x] != 0)
 		{
 			if (tileSize * y + size.y <= 4)
 			{
 				return true;
 			}
-		}
+		}*/
 	}
 
 	return false;

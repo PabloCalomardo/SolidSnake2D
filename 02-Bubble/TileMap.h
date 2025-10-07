@@ -3,6 +3,7 @@
 
 
 #include <glm/glm.hpp>
+#include <set>
 #include "Texture.h"
 #include "ShaderProgram.h"
 
@@ -49,9 +50,9 @@ private:
 	Texture tilesheet;
 	glm::vec2 tileTexSize;
 	int *map;
+	set<int> Col = {1,2,6,7,10};
 
 };
-
 
 #endif // _TILE_MAP_INCLUDE
 

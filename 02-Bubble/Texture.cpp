@@ -14,7 +14,7 @@ Texture::Texture()
 }
 
 
-bool Texture::loadFromFile(const string &filename, PixelFormat format)
+bool Texture::loadFromFile(const string &filename, PixelFormat format, bool ferit)
 {
 	unsigned char *image = NULL;
 	
@@ -30,16 +30,30 @@ bool Texture::loadFromFile(const string &filename, PixelFormat format)
 	if(image == NULL)
 		return false;
 
-	// Si és RGBA, fem transparent el color rosa (255,0,255)
+	// Si és RGBA i no esta ferit, fem transparent el color rosa
+	// Si és RGBA i esta ferit, fem transparent el blau electric (0, 168, 255)
 	if (format == TEXTURE_PIXEL_FORMAT_RGBA)
 	{
-		int numPixels = widthTex * heightTex;
-		for (int i = 0; i < numPixels; ++i)
-		{
-			int idx = i * 4;
-			if (image[idx] == 168 && image[idx + 1] == 0 && image[idx + 2] == 168)
+		if (ferit) {
+			int numPixels = widthTex * heightTex;
+			for (int i = 0; i < numPixels; ++i)
 			{
-				image[idx + 3] = 0; // Transparent
+				int idx = i * 4;
+				if (image[idx] == 0 && image[idx + 1] == 170 && image[idx + 2] == 170)
+				{
+					image[idx + 3] = 0; // Transparent
+				}
+			}
+		}
+		else {
+			int numPixels = widthTex * heightTex;
+			for (int i = 0; i < numPixels; ++i)
+			{
+				int idx = i * 4;
+				if (image[idx] == 168 && image[idx + 1] == 0 && image[idx + 2] == 168)
+				{
+					image[idx + 3] = 0; // Transparent
+				}
 			}
 		}
 	}

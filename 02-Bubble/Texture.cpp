@@ -30,30 +30,20 @@ bool Texture::loadFromFile(const string &filename, PixelFormat format, bool feri
 	if(image == NULL)
 		return false;
 
-	// Si és RGBA i no esta ferit, fem transparent el color rosa
-	// Si és RGBA i esta ferit, fem transparent el blau electric (0, 168, 255)
+	// BUCLE PER TRANSPARENTAR EL FONS DE TEXTURA DEL PLAYER
 	if (format == TEXTURE_PIXEL_FORMAT_RGBA)
 	{
-		if (ferit) {
-			int numPixels = widthTex * heightTex;
-			for (int i = 0; i < numPixels; ++i)
+		int numPixels = widthTex * heightTex;
+		for (int i = 0; i < numPixels; ++i)
+		{
+			int idx = i * 4;
+			if (image[idx] == 0 && image[idx + 1] == 170 && image[idx + 2] == 170)
 			{
-				int idx = i * 4;
-				if (image[idx] == 0 && image[idx + 1] == 170 && image[idx + 2] == 170)
-				{
-					image[idx + 3] = 0; // Transparent
-				}
+				image[idx + 3] = 0; // Transparent
 			}
-		}
-		else {
-			int numPixels = widthTex * heightTex;
-			for (int i = 0; i < numPixels; ++i)
+			if (image[idx] == 168 && image[idx + 1] == 0 && image[idx + 2] == 168)
 			{
-				int idx = i * 4;
-				if (image[idx] == 168 && image[idx + 1] == 0 && image[idx + 2] == 168)
-				{
-					image[idx + 3] = 0; // Transparent
-				}
+				image[idx + 3] = 0; // Transparent
 			}
 		}
 	}

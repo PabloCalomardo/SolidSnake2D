@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="9" height="9" tilewidth="8" tileheight="8" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" source="../../../Downloads/aaaa.tsx"/>
+ <layer id="1" name="Capa de patrones 1" width="9" height="9">
+  <data encoding="csv">
+8274,8178,8487,8779,9042,8106,7762,7763,7764,
+7407,8324,8317,7920,7454,7857,7858,7859,7860,
+9672,9575,9094,8997,9098,7953,7954,7955,7956,
+7073,7268,8168,9093,7786,8049,8050,8051,8052,
+6210,7455,1328,1330,1520,1521,1522,1422,7861,
+4693,5845,5732,5173,1517,1518,1519,7769,7770,
+4789,1326,949,7032,5058,4964,4982,1229,1230,
+4696,4695,4684,7129,4886,4985,13517,13519,13520,
+5061,4791,4780,7222,7030,7031,0,0,0
+</data>
+ </layer>
+</map>

@@ -1,0 +1,35 @@
+TILEMAP
+40 30 							-- Size of tile map in tiles
+16 16 							-- Tile size & block size
+images/jungle2.png 	-- Tilesheet
+9 9							-- Number of tiles in tilesheet
+ssssssssjsssss`122:11::21ajsssssj^kkqkkk
+j}~s}~sjs}~s}~`:1:22:11:2a}~s}~ssgttztut
+ssssjsssssssjs`2:1::2112:assjssssglttttl
+|||||||||||||||1::2:2:1:1||||||||gttttmt
+;<;<=21:2:11:2::21:21:11:22:211:1gmtmttt
+FLE3:11:121:11:22:1:2::21:211:21:yyyyyyy
+1:2:1:11::11::2::12:22:11:21:1:22asjssss
+1::21::221:21:211:2:11:2::12:21:1a}~s}~j
+1:22:121:::212:21:11:22:1:1:2::21assssss
+::1121::2112:1:122:21:1121:2::2:2ssssjss
+1:2:21:221212122:::222:1:21221:22a}~s}~s
+:12::21:11789no2:1:112:12::2221:1ajsssss
+22:112::1?@ABhhWWWX::12:2:2:::121|||||||
+1:2:12:12HIJK\\\\\\:2:1121::2:11::112<;=
+1:22:12:2QRSTbcdYZ[221:212:21:2:211:4LME
+2:21:1::2:212::2:1::2:21:11:12:212:2>DLE
+2:1::1212:1:222221122:1222211:1::21:>EML
+1:21:2122211:2:1:2121:2:1:112:211:14DEML
+22:1:1:112211212789no1:2:2:::2::22:>EMFD
+1:2:11212122:22?@ABhhWWWX:211::2:2:4DLOE
+1::2:1:11212111HIJK\\\\\\12212111:2>EDML
+:21:12:2122::::QRSTbcdYZ[1112222124DELDE
+1:2212::1::21::212112:::1:1:2:211:>DENED
+2:1121::::221:2121:1:11::1222:1;=<DELFME
+;=<<;;=:::2:121:112::21:2:12=;<EDLMEDOEL
+DCEFLDEP11:1::21:212:221==;<EDELNEDMLEED
+EFMDEFLDG:2::11:122:2=;<DELDMFEDLMLEFDLM
+LOELMDELD<=;;=<==;<DELDMEDLDEODEDLDENFED
+FEMELDFELEDELELFMELFLDELEFDEDLEDLMLFDEFL
+EFLDFEMEDLFLDELFEFLEDFLMEFLDEFLEDFLEDLMF

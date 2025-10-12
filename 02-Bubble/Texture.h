@@ -22,7 +22,7 @@ class Texture
 public:
 	Texture();
 
-	bool loadFromFile(const string &filename, PixelFormat format, bool ferit);
+	bool loadFromFile(const string &filename, PixelFormat format);
 	void loadFromGlyphBuffer(unsigned char *buffer, int width, int height);
 
 	void createEmptyTexture(int width, int height);

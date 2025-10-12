@@ -14,7 +14,7 @@ Texture::Texture()
 }
 
 
-bool Texture::loadFromFile(const string &filename, PixelFormat format, bool ferit)
+bool Texture::loadFromFile(const string &filename, PixelFormat format)
 {
 	unsigned char *image = NULL;
 	

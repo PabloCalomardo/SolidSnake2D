@@ -8,14 +8,14 @@
 
 
 #define JUMP_ANGLE_STEP 4
-#define PIXEL_X 1/368.0f
-#define PIXEL_Y 1/189.0f
+#define PIXEL_X 1/255.0f
+#define PIXEL_Y 1/211.0f
 #define FALL_STEP 4
 
 
 enum EnemyAnims
 { 
-	STAND_NORMAL, STAND_UP, STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN, SIT1, SIT2
+	STAND_NORMAL, STAND_UP, STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN, SITTED
 };
 
 /* DADES:
@@ -29,10 +29,12 @@ enum EnemyAnims
 
 void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic)
 {
+	enemic_detectat = false;
 	EnemyType = TipusEnemic;
 	mort = false;
-	spritesheet.loadFromFile("images/Enemies.png", TEXTURE_PIXEL_FORMAT_RGBA);	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
+	spritesheet.loadFromFile("images/Enemies.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211 
 	sprite = Sprite::createSprite(glm::ivec2(16 * 2, 32 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 32), &spritesheet, &shaderProgram);
+
 	switch (EnemyType) {
 		case 0: sprite->setNumberAnimations(10);; break; //DOG
 		default: sprite->setNumberAnimations(8); break; //SOLDIER
@@ -45,11 +47,9 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 	if (EnemyType == 0)
 	{
 
-		sprite->setAnimationSpeed(SIT1, 8);
-		sprite->addKeyframe(SIT1, glm::vec2(PIXEL_X * 2, PIXEL_Y * 9)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
-
-		sprite->setAnimationSpeed(SIT2, 8);
-		sprite->addKeyframe(SIT2, glm::vec2(PIXEL_X * 21, PIXEL_Y * 9)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
+		sprite->setAnimationSpeed(SITTED, 1);
+		sprite->addKeyframe(SITTED, glm::vec2(PIXEL_X * 2, PIXEL_Y * 10)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
+		sprite->addKeyframe(SITTED, glm::vec2(PIXEL_X * 21, PIXEL_Y * 10)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
 
 
 		//==============================
@@ -164,7 +164,8 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 38 + 1), PIXEL_Y * 26));
 	}
 
-
+	if(EnemyType == 0) sprite->changeAnimation(SITTED);
+	else sprite->changeAnimation(STAND_NORMAL);
 
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
@@ -174,30 +175,24 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 void Enemy::update(int deltaTime)
 {
 	sprite->update(deltaTime);
-	/*
-	if (mort) {
-		if (sprite->animation() != Animacions[f][0][12])
-			sprite->changeAnimation(Animacions[f][0][12]);
+
+	if (EnemyType == 0) //GOS
+	{
+		if (enemic_detectat) {
+
+		}
+		else { //Tranquilitat
+			if (sprite->animation() != SITTED) sprite->changeAnimation(SITTED);
+		}
 	}
-	
-	if (sprite->animation() == Animacions[f][a][4])
-		sprite->changeAnimation(Animacions[f][a][2]);
-	else if (sprite->animation() == Animacions[f][a][5])
-		sprite->changeAnimation(Animacions[f][a][3]);
-	else if (sprite->animation() == Animacions[f][a][6])
-		sprite->changeAnimation(Animacions[f][a][1]);
-	else if (sprite->animation() == Animacions[f][a][7])
-		sprite->changeAnimation(Animacions[f][a][0]);
-	// Acabar Animacions de punch
-	else if (!porta_arma && sprite->animation() == Animacions[f][a][11])
-		sprite->changeAnimation(Animacions[f][a][0]);
-	else if (!porta_arma && sprite->animation() == Animacions[f][a][10])
-		sprite->changeAnimation(Animacions[f][a][1]);
-	else if (!porta_arma && sprite->animation() == Animacions[f][a][8])
-		sprite->changeAnimation(Animacions[f][a][2]);
-	else if (!porta_arma && sprite->animation() == Animacions[f][a][9])
-		sprite->changeAnimation(Animacions[f][a][3]);
-	*/
+	else { //SOLDIER
+		if (enemic_detectat) {
+
+		}
+		else {
+
+		}
+	}
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
 }
 

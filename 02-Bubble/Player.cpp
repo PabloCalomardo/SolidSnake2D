@@ -34,7 +34,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	porta_arma = false;
 	ferit = false;
 	mort = false;
-	spritesheet.loadFromFile("images/Solid_snake.png", TEXTURE_PIXEL_FORMAT_RGBA, ferit);	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
+	spritesheet.loadFromFile("images/Solid_snake.png", TEXTURE_PIXEL_FORMAT_RGBA);	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
 	sprite = Sprite::createSprite(glm::ivec2(16*2,32*2), glm::vec2(PIXEL_X *16, PIXEL_Y *32), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(42);
 	

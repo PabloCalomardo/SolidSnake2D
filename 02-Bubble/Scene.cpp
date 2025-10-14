@@ -34,15 +34,36 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
-	map = TileMap::createTileMap("levels/level02.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	CurrentMap = 1;
+	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
 	enemy = new Enemy();
 	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0);
 	enemy->setPosition(glm::vec2(INIT_ENEMY_X_TILES * map->getTileSize(), INIT_ENEMY_Y_TILES * map->getTileSize()));
 	enemy->setTileMap(map);
 
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram,*this);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	player->setTileMap(map);
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+	currentTime = 0.0f;
+}
+
+void Scene::ChangeMap() 
+{
+	glm::vec2 posaux(0, player->posPlayer[1]);
+	if (CurrentMap == 1) {
+		CurrentMap = 2;
+		map = TileMap::createTileMap("levels/level02.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+		glm::vec2 posaux(0, player->posPlayer[1]);
+		player->setPosition(glm::vec2(posaux[0] * map->getTileSize(), posaux[1]));
+	}
+	else if (CurrentMap == 2) {
+		CurrentMap = 1;
+		map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+		glm::vec2 posaux(38, player->posPlayer[1]);
+		player->setPosition(glm::vec2(posaux[0] * map->getTileSize(), posaux[1]));
+	}
 	player->setTileMap(map);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;

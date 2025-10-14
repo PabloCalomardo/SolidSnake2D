@@ -11,7 +11,7 @@
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
-
+class Player;
 
 class Scene
 {
@@ -23,6 +23,7 @@ public:
 	void init();
 	void update(int deltaTime);
 	void render();
+	void ChangeMap();
 
 private:
 	void initShaders();
@@ -34,6 +35,7 @@ private:
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
+	int CurrentMap;
 
 };
 

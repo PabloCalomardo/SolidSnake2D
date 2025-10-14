@@ -29,8 +29,9 @@ vector<vector<vector<PlayerAnims>>> Animacions = {
 };	
 
 
-void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
+void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Scene &sc)
 {
+	scene = &sc;
 	porta_arma = false;
 	ferit = false;
 	mort = false;
@@ -275,7 +276,10 @@ void Player::update(int deltaTime)
 		if(sprite->animation() != Animacions[f][a][4])
 			sprite->changeAnimation(Animacions[f][a][4]);
 		posPlayer.x -= 2;
-		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
+		if (posPlayer.x <= 0) {
+			scene->ChangeMap();
+		}
+		else if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
 		{
 			posPlayer.x += 2;
 			sprite->changeAnimation(Animacions[f][a][2]);
@@ -286,7 +290,10 @@ void Player::update(int deltaTime)
 		if(sprite->animation() != Animacions[f][a][5])
 			sprite->changeAnimation(Animacions[f][a][5]);
 		posPlayer.x += 2;
-		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
+		if (posPlayer.x >= ((map->mapSize[0])*16)-32) {
+			scene->ChangeMap();
+		}
+		else if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 		{
 			posPlayer.x -= 2;
 			sprite->changeAnimation(Animacions[f][a][3]);
@@ -299,6 +306,9 @@ void Player::update(int deltaTime)
 		
 		posPlayer.y -= 2;
 		
+		/*if (posPlayer.y <= 0) {
+			scene->ChangeMap();
+		}*/
 		if (map->collisionMoveUP(posPlayer, glm::ivec2(32, 32)))
 		{
 			posPlayer.y += 2;
@@ -312,6 +322,9 @@ void Player::update(int deltaTime)
 
 		posPlayer.y += 2;
 
+		/*if (posPlayer.y >= ((map->mapSize[1]) * 16) - 32) {
+			scene->ChangeMap();
+		}*/
 		if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32)))
 		{
 			posPlayer.y -= 2;

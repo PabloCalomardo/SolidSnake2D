@@ -15,11 +15,11 @@
 
 enum EnemyAnims
 { 
-	STAND_NORMAL, STAND_UP, STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN, SITTED
+	STAND_NORMAL, STAND_UP, STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN, MOVE_DOWN2, MOVE_UP2
 };
 
 /* DADES:
-* DOG COMENÇA AL PIXEL 2,9
+* Scorpion COMENÇA AL PIXEL 93,102
 * SOLDIER COMENÇA AL PIXEL 2,56
 * SOLDIER2 COMENÇA AL PIXEL 2,142
 
@@ -31,65 +31,37 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 {
 	enemic_detectat = false;
 	EnemyType = TipusEnemic;
+	int moviment_escorpi = 0;
 	mort = false;
-	spritesheet.loadFromFile("images/Enemies.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211 
-	sprite = Sprite::createSprite(glm::ivec2(16 * 2, 32 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 32), &spritesheet, &shaderProgram);
+	spritesheet.loadFromFile("images/Enemies.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211
+	sprite_escorpi = Sprite::createSprite(glm::ivec2(16 * 2, 16 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 16), &spritesheet, &shaderProgram);
 
 	switch (EnemyType) {
-		case 0: sprite->setNumberAnimations(10);; break; //DOG
+		case 0: sprite_escorpi->setNumberAnimations(8);; break; //DOG
 		default: sprite->setNumberAnimations(8); break; //SOLDIER
 	}
 	
 
 	//==============================
-	//			GOS
+	//			escorpi
 	//==============================
 	if (EnemyType == 0)
 	{
-
-		sprite->setAnimationSpeed(SITTED, 1);
-		sprite->addKeyframe(SITTED, glm::vec2(PIXEL_X * 2, PIXEL_Y * 10)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
-		sprite->addKeyframe(SITTED, glm::vec2(PIXEL_X * 21, PIXEL_Y * 10)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
-
-
 		//==============================
 		//			STANDS 
 		//==============================
-		sprite->setAnimationSpeed(STAND_NORMAL, 8);
-		sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X * (36 + 11), PIXEL_Y * 9)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
+		sprite_escorpi->setAnimationSpeed(MOVE_DOWN, 8);
+		sprite_escorpi->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 11), PIXEL_Y * 9)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
 
-		sprite->setAnimationSpeed(STAND_UP, 8);
-		sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X * 66, PIXEL_Y * 26)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
+		sprite_escorpi->setAnimationSpeed(MOVE_DOWN2, 8);
+		sprite_escorpi->addKeyframe(MOVE_DOWN2, glm::vec2(PIXEL_X * 66, PIXEL_Y * 26)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
 
-		sprite->setAnimationSpeed(STAND_LEFT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
-		sprite->addKeyframe(STAND_LEFT, glm::vec2(PIXEL_X * 85, PIXEL_Y * 61));
+		sprite_escorpi->setAnimationSpeed(MOVE_UP, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+		sprite_escorpi->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * 85, PIXEL_Y * 61));
 
-		sprite->setAnimationSpeed(STAND_RIGHT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
-		sprite->addKeyframe(STAND_RIGHT, glm::vec2(PIXEL_X * 104, PIXEL_Y * 61));
+		sprite_escorpi->setAnimationSpeed(MOVE_UP2, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite_escorpi->addKeyframe(MOVE_UP2, glm::vec2(PIXEL_X * 104, PIXEL_Y * 61));
 
-		//==============================
-		//			MOVES
-		//==============================
-
-		sprite->setAnimationSpeed(MOVE_LEFT, 8); // Inicialment STAND LEFT, despres les animacions de caminar
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * 2, PIXEL_Y * 61)); //Stand left
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (36 + 11), PIXEL_Y * 61));
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (36 + 11 + 38), PIXEL_Y * 61));
-
-		sprite->setAnimationSpeed(MOVE_RIGHT, 8);
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * 21, PIXEL_Y * 61)); //Stand right
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8 + 1), PIXEL_Y * 61));
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19 + 1), PIXEL_Y * 61));
-
-		sprite->setAnimationSpeed(MOVE_UP, 8);
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * 21, PIXEL_Y * 26)); //Stand up
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (3 + 54 + 8 + 1), PIXEL_Y * 26));
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19 + 1), PIXEL_Y * 26));
-
-		sprite->setAnimationSpeed(MOVE_DOWN, 8);
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * 2, PIXEL_Y * 26)); //Stand normal
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 1), PIXEL_Y * 26));
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 38 + 1), PIXEL_Y * 26));
 	}
 	else if (EnemyType == 1) //SOLDIER
 	{
@@ -164,7 +136,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 38 + 1), PIXEL_Y * 26));
 	}
 
-	if(EnemyType == 0) sprite->changeAnimation(SITTED);
+	if(EnemyType == 0) sprite_escorpi->changeAnimation(STAND_NORMAL);
 	else sprite->changeAnimation(STAND_NORMAL);
 
 	tileMapDispl = tileMapPos;
@@ -175,6 +147,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 void Enemy::update(int deltaTime)
 {
 	sprite->update(deltaTime);
+	sprite_escorpi->update(deltaTime);
 
 	if (EnemyType == 0) //GOS
 	{
@@ -182,7 +155,9 @@ void Enemy::update(int deltaTime)
 
 		}
 		else { //Tranquilitat
-			if (sprite->animation() != SITTED) sprite->changeAnimation(SITTED);
+			if (sprite_escorpi->animation() == MOVE_DOWN) {
+				sprite_escorpi->changeAnimation(SITTED);
+			}
 		}
 	}
 	else { //SOLDIER

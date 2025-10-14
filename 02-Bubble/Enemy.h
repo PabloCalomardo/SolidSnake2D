@@ -26,6 +26,7 @@ private:
 	glm::ivec2 tileMapDispl, posEnemy;
 	int jumpAngle, startY;
 	Texture spritesheet;
+	Sprite* sprite_escorpi;
 	Sprite* sprite;
 	TileMap* map;
 

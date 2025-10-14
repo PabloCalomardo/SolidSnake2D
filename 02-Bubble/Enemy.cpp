@@ -31,22 +31,21 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 {
 	enemic_detectat = false;
 	EnemyType = TipusEnemic;
-	int moviment_escorpi = 0;
+	moviment_escorpi = 0;
 	mort = false;
 	spritesheet.loadFromFile("images/Enemies.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211
-	sprite_escorpi = Sprite::createSprite(glm::ivec2(16 * 2, 16 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 16), &spritesheet, &shaderProgram);
 
-	switch (EnemyType) {
-		case 0: sprite_escorpi->setNumberAnimations(8);; break; //DOG
-		default: sprite->setNumberAnimations(8); break; //SOLDIER
-	}
+	sprite_escorpi = Sprite::createSprite(glm::ivec2(16 * 2, 16 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 16), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(16 * 2, 32 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 32), &spritesheet, &shaderProgram);
+
+	
+	sprite_escorpi->setNumberAnimations(4); //DOG
+	sprite->setNumberAnimations(8); //SOLDIERs
 	
 
 	//==============================
 	//			escorpi
 	//==============================
-	if (EnemyType == 0)
-	{
 		//==============================
 		//			STANDS 
 		//==============================
@@ -62,8 +61,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		sprite_escorpi->setAnimationSpeed(MOVE_UP2, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
 		sprite_escorpi->addKeyframe(MOVE_UP2, glm::vec2(PIXEL_X * 104, PIXEL_Y * 61));
 
-	}
-	else if (EnemyType == 1) //SOLDIER
+	if (EnemyType == 1) //SOLDIER
 	{
 		//==============================
 		//			STANDS 
@@ -136,10 +134,12 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 38 + 1), PIXEL_Y * 26));
 	}
 
-	if(EnemyType == 0) sprite_escorpi->changeAnimation(STAND_NORMAL);
-	else sprite->changeAnimation(STAND_NORMAL);
+	sprite_escorpi->changeAnimation(MOVE_DOWN);
+	sprite->changeAnimation(STAND_NORMAL);
 
 	tileMapDispl = tileMapPos;
+
+	sprite_escorpi->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
 
 }
@@ -154,10 +154,31 @@ void Enemy::update(int deltaTime)
 		if (enemic_detectat) {
 
 		}
-		else { //Tranquilitat
-			if (sprite_escorpi->animation() == MOVE_DOWN) {
-				sprite_escorpi->changeAnimation(SITTED);
+		else { //Tranquilitat (moviment en cercle)
+			if (sprite_escorpi->animation() != MOVE_UP && moviment_escorpi == 0) {
+				posEnemy.y -= 1;
+				posEnemy.x -= 1;
+				moviment_escorpi++;
 			}
+			else if (sprite_escorpi->animation() != MOVE_UP && moviment_escorpi == 1) {
+				posEnemy.y -= 1;
+				posEnemy.x += 1;
+				moviment_escorpi++;
+				sprite_escorpi->changeAnimation(MOVE_UP);
+			}
+			else if (sprite_escorpi->animation() != MOVE_DOWN && moviment_escorpi == 2) {
+				posEnemy.y += 1;
+				posEnemy.x += 1;
+				moviment_escorpi++;
+			}
+			else if (sprite_escorpi->animation() != MOVE_DOWN && moviment_escorpi == 3) {
+				posEnemy.y += 1;
+				posEnemy.x -= 1;
+				moviment_escorpi++;
+				sprite_escorpi->changeAnimation(MOVE_DOWN);
+			}
+
+			if (moviment_escorpi == 4) moviment_escorpi = 0;
 		}
 	}
 	else { //SOLDIER
@@ -174,6 +195,7 @@ void Enemy::update(int deltaTime)
 void Enemy::render()
 {
 	sprite->render();
+	sprite_escorpi->render();
 }
 
 void Enemy::setTileMap(TileMap* tileMap)
@@ -184,6 +206,7 @@ void Enemy::setTileMap(TileMap* tileMap)
 void Enemy::setPosition(const glm::vec2& pos)
 {
 	posEnemy = pos;
+	sprite_escorpi->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
 }
 

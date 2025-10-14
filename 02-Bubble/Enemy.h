@@ -21,6 +21,7 @@ public:
 private:
 	int EnemyType; // 0: DOG, 1: SOLDIER, 2: SOLDIER2
 	int vida;
+	int moviment_escorpi;
 	bool enemic_detectat;
 	bool mort;
 	glm::ivec2 tileMapDispl, posEnemy;

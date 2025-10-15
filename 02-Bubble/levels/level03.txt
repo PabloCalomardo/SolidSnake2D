@@ -1,0 +1,35 @@
+TILEMAP
+40 30 							-- Size of tile map in tiles
+16 16 							-- Tile size & block size
+images/jungle2.png 	-- Tilesheet
+9 9							-- Number of tiles in tilesheet
+MP1:2:11:21:21:1:1::1::221:1:2:121:12:4D
+ELG1:2:11:2:12:2:21:21:2::1:2:1121:2:14L
+MEG1:2:1::2:1:11:1:2:212:12:22:121:2::>M
+LDP:1:22:1:2:11:122:22:12::1:2:::2:124LE
+MELG:1:112:12:11:21:12:22:12:11:12:1:4DL
+LCEP2::2:12:211:12:1::21:221:21:11::1>EF
+FEDLG1:21:122:1221::2:::1:1211:11:2:4LME
+LMEDE;:212:1::1:2:121::21:1121:2:1:1>EFD
+EDMCFEP121::121::212211:2:1:2211:2:;EMOL
+DMNELEM<211:21:21:11:21:1::11:22=<;EMCLE
+EFLDCLML;1:2::1:22:11:22111:2:;>EMCLFEDM
+MNFEDELMEP;<=2:11:21:1::211=;>ELMNLEODEL
+LEODENCELDMEDG2:1122::121:4LEMDCMEELDNML
+EDLMEEDLMFNEDEP12::21:121>DEMDEFEDLMDELE
+kkkkkkqkkkkkkkr2:1:122:1:^kkkkqkkkkkkkkk
+tmttttzttltttl{:1:121:2:1gulttzttmtuttmt
+tttttttttttttm{11:2::21:2gtttttttttttttt
+utttmtttumtttl{21:1:22:11gmtttuttttttmtt
+yyyyyyyyyyyyyyy::1::21:2:yyyyyyyyyyyyyyy
+sssjsssssssjss`1:2:12::21asjssssssssssjs
+s}~s}~ssj}~s}~`:1:21:11:2a}~s}~jss}~s}~s
+ssjssssssssssj`121::12:21assssssssssjsss
+kkqkkkkkkkkqkkr2:1:2:1:1:^kkkkkkkkkqkkkk
+tuztttultttztu{1:12:12:21guttmtttutzttut
+tttttttttttttl{:2:11:1:1:gtttttttttttttt
+tttmtttuttmttt{1:1:2:1::1gmmtttlmttttmtt
+yyyyyyyyyyyyyyy:21:221:2:yyyyyyyyyyyyyyy
+ssssjssssjssss`122:11::21assssssssjsssss
+s}~s}~jss}~s}~`:1:22:11:2a}~s}~sss}~s}~s
+sjsssssssssjss`122:11::21assjssssssssjss

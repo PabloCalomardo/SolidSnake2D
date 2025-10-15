@@ -23,7 +23,7 @@ public:
 	void init();
 	void update(int deltaTime);
 	void render();
-	void ChangeMap();
+	void ChangeMap(int dir);
 
 private:
 	void initShaders();

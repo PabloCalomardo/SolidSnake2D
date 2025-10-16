@@ -15,6 +15,20 @@ TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoo
 	return map;
 }
 
+bool TileMap::isTransparentAtTile(int tx, int ty) const
+{
+    // Treat out-of-bounds as opaque
+    if (tx < 0 || ty < 0 || tx >= mapSize.x || ty >= mapSize.y)
+        return false;
+
+    // Use direct indexing for vision checks
+    int idx = ty * mapSize.x + tx;
+    int tile = map[idx];
+
+    // Only tiles whose id is listed in Col are transparent for vision
+    return Col.find(tile) != Col.end();
+}
+
 
 TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program)
 {

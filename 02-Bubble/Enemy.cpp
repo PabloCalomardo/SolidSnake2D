@@ -29,7 +29,7 @@ enum EnemyAnims
 
 void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic)
 {
-	enemic_detectat = false;
+    hasEnemyDetected = false;
 	EnemyType = TipusEnemic;
 	moviment_escorpi = 0;
 	mort = false;
@@ -148,17 +148,20 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 
 }
 
-void Enemy::update(int deltaTime)
+void Enemy::update(int deltaTime, glm::ivec2 posp)
 {
 	sprite->update(deltaTime);
-
+    if (!hasEnemyDetected) {
+        // Ejemplo: radio de detección configurable (8 tiles por defecto)
+        hasEnemyDetected = enemic_detectat(posp, 8);
+    }
 	//contador per al moviment en cercle de l'escorpi
 	delta_ant += deltaTime;
 
-	if (EnemyType == 0) //GOS
+    if (EnemyType == 0) //GOS
 	{
-		if (enemic_detectat) {
-
+        if (hasEnemyDetected) {
+			cout << "Enemy has detected the player!" << endl;
 		}
 		else { //Tranquilitat (moviment en cercle)
 			if (sprite->animation() == MOVE_DOWN && moviment_escorpi == 0 && delta_ant > 500) {
@@ -202,8 +205,8 @@ void Enemy::update(int deltaTime)
 			if (moviment_escorpi == 4) moviment_escorpi = 0;
 		}
 	}
-	else { //SOLDIER
-		if (enemic_detectat) {
+    else { //SOLDIER
+        if (hasEnemyDetected) {
 
 		}
 		else {
@@ -228,6 +231,79 @@ void Enemy::setPosition(const glm::vec2& pos)
 {
 	posEnemy = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
+}
+
+// Helper to get facing direction unit vector from current animation
+static glm::ivec2 EnemyFacingFromAnim(int anim)
+{
+    switch (anim) {
+    case STAND_LEFT:
+    case MOVE_LEFT: return glm::ivec2(-1, 0);
+    case STAND_RIGHT:
+    case MOVE_RIGHT: return glm::ivec2(1, 0);
+    case STAND_UP:
+    case MOVE_UP:
+    case MOVE_UP2: return glm::ivec2(0, -1);
+    case STAND_NORMAL:
+    case MOVE_DOWN:
+    case MOVE_DOWN2:
+    default: return glm::ivec2(0, 1);
+    }
+}
+
+bool Enemy::enemic_detectat(const glm::ivec2& targetPos, int radius_detection) const
+{
+    if (!map) return false;
+
+    // Tile size in pixels
+    const int ts = map->getTileSize();
+
+    // Enemy center position in pixels
+    glm::ivec2 enemyPosPx = posEnemy;
+    glm::ivec2 enemyCenter = enemyPosPx + glm::ivec2(ts / 2, ts / 2);
+    glm::ivec2 targetCenter = targetPos + glm::ivec2(ts / 2, ts / 2);
+
+    // Distance check: radius 4 tiles
+    int dx = targetCenter.x - enemyCenter.x;
+    int dy = targetCenter.y - enemyCenter.y;
+    int rPx = std::max(0, radius_detection) * ts;
+    if (dx * dx + dy * dy > rPx * rPx)
+        return false;
+
+    // Facing semicircle check using dot product with facing vector
+    glm::ivec2 f = EnemyFacingFromAnim(sprite->animation());
+    glm::vec2 fv(f.x, f.y);
+    glm::vec2 toTarget(dx, dy);
+    float len = glm::length(toTarget);
+    if (len == 0.f) {
+        return true; // same position
+    }
+    glm::vec2 dir = toTarget / len;
+    float facingDot = fv.x * dir.x + fv.y * dir.y; // cos(theta)
+    if (facingDot < 0.0f) // more than 90 degrees away => behind
+        return false;
+
+    // Line-of-sight ray cast through tiles. Only tiles in Col (non-collidable) are transparent.
+    // Cast from enemyCenter to targetCenter sampling along the line.
+    int steps = std::max(std::abs(dx), std::abs(dy));
+    steps = std::max(1, steps / (ts / 2)); // sample roughly every half tile
+    for (int i = 1; i <= steps; ++i) {
+        float t = float(i) / float(steps);
+        int sx = int(std::round(enemyCenter.x + t * dx));
+        int sy = int(std::round(enemyCenter.y + t * dy));
+
+        int tx = sx / ts;
+        int ty = sy / ts;
+        if (!map->isTransparentAtTile(tx, ty)) {
+            // If this opaque tile is the one containing the target center, allow detection
+            int targetTx = targetCenter.x / ts;
+            int targetTy = targetCenter.y / ts;
+            if (tx == targetTx && ty == targetTy)
+                break;
+            return false;
+        }
+    }
+    return true;
 }
 
 

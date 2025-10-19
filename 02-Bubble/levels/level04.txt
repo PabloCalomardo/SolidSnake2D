@@ -3,10 +3,10 @@ TILEMAP
 16 16 							-- Tile size & block size
 images/jungle3.png 	-- Tilesheet
 9 9							-- Number of tiles in tilesheet
-sssssssjssssssssssjss^__`ssssjssssssssjs
-sj}~sss}~sss}~jss}~ssghiass}~sss}~jss}~s
-ssssjsssssssjssssjssspqqrssjsssssssssjss
-|||||||||||||||||||||yzz{|||||||||||||||
+sssssssjssssssssssjsss^__`ssssjsssssssjs
+sj}~sss}~sss}~jss}~ssjghiass}~ss}~js}~ss
+ssssjsssssssjssssjsssspqqrssjssssssssjss
+||||||||||||||||||||||yzz{||||||||||||||
 <;<=;;=1:2:12:11:2:1:22:11:11:21:22:1:=;
 LFMEDECG212:1::21:2::11:2:12:11:21:2:6ED
 EDFELDMP:21:211:21:11:12::2::121:11:22>L

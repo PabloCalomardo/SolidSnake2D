@@ -26,7 +26,7 @@ bool TileMap::isTransparentAtTile(int tx, int ty) const
     int tile = map[idx];
 
     // Only tiles whose id is listed in Col are transparent for vision
-    return Col.find(tile) != Col.end();
+    return Col1.find(tile) != Col1.end();
 }
 
 
@@ -112,25 +112,25 @@ bool TileMap::loadLevel(const string &levelFile)
 	return true;
 }
 
-void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
+void TileMap::prepareArrays(const glm::vec2& minCoords, ShaderProgram& program)
 {
 	int tile;
 	glm::vec2 posTile, texCoordTile[2], halfTexel;
 	vector<float> vertices;
-	
+
 	nTiles = 0;
 	halfTexel = glm::vec2(0.5f / tilesheet.width(), 0.5f / tilesheet.height());
-	for(int j=0; j<mapSize.y; j++)
+	for (int j = 0; j < mapSize.y; j++)
 	{
-		for(int i=0; i<mapSize.x; i++)
+		for (int i = 0; i < mapSize.x; i++)
 		{
 			tile = map[j * mapSize.x + i];
-			if(tile != 0)
+			if (tile != 0)
 			{
 				// Non-empty tile
 				nTiles++;
 				posTile = glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize);
-				texCoordTile[0] = glm::vec2(float((tile-1)%tilesheetSize.x) / tilesheetSize.x, float((tile-1)/tilesheetSize.x) / tilesheetSize.y);
+				texCoordTile[0] = glm::vec2(float((tile - 1) % tilesheetSize.x) / tilesheetSize.x, float((tile - 1) / tilesheetSize.x) / tilesheetSize.y);
 				texCoordTile[1] = texCoordTile[0] + tileTexSize;
 				//texCoordTile[0] += halfTexel;
 				//texCoordTile[1] -= halfTexel;
@@ -157,56 +157,64 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, 24 * nTiles * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-	posLocation = program.bindVertexAttribute("position", 2, 4*sizeof(float), 0);
-	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4*sizeof(float), (void *)(2*sizeof(float)));
+	posLocation = program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
+	texCoordLocation = program.bindVertexAttribute("texCoord", 2, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 }
 
 // Collision tests for axis aligned bounding boxes.
 // Method collisionMoveDown also corrects Y coordinate if the box is
 // already intersecting a tile below.
 
-bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const
+bool TileMap::collisionMoveLeft(const glm::ivec2& pos, const glm::ivec2& size, int currentMap) const
 {
 	int x, y0, y1;
-	
+
 	x = pos.x / tileSize;
 	y0 = pos.y / tileSize;
 	y1 = (pos.y + size.y - 1) / tileSize;
-	for(int y=y0; y<=y1; y++)
+	for (int y = y0; y <= y1; y++)
 	{
-		if (!(Col.find(map[(y + 2) * mapSize.x + x]) != Col.end())) {
+		if (currentMap < 5 && !(Col1.find(map[(y + 2) * mapSize.x + x]) != Col1.end())) {
+			return true;
+		}
+		else if (currentMap >= 5 && !(Col2.find(map[(y + 2) * mapSize.x + x]) != Col2.end())) {
 			return true;
 		}
 	}
 	return false;
 }
 
-bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const
+bool TileMap::collisionMoveRight(const glm::ivec2& pos, const glm::ivec2& size, int currentMap) const
 {
 	int x, y0, y1;
-	
+
 	x = (pos.x + size.x - 1) / tileSize;
 	y0 = pos.y / tileSize;
 	y1 = (pos.y + size.y - 1) / tileSize;
-	for(int y=y0; y<=y1; y++)
+	for (int y = y0; y <= y1; y++)
 	{
-		if (!(Col.find(map[(y+2) * mapSize.x + x]) != Col.end())) {
+		if (currentMap < 5 && !(Col1.find(map[(y + 2) * mapSize.x + x]) != Col1.end())) {
+			return true;
+		}
+		else if (currentMap >= 5 && !(Col2.find(map[(y + 2) * mapSize.x + x]) != Col2.end())) {
 			return true;
 		}
 	}
 	return false;
 }
 
-bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) const
+bool TileMap::collisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size, int currentMap) const
 {
 	int x0, x1, y;
-	
 	x0 = pos.x / tileSize;
 	x1 = (pos.x + size.x - 1) / tileSize;
 	y = (pos.y + size.y - 1) / tileSize;
-	for(int x=x0; x<=x1; x++)
+	for (int x = x0; x <= x1; x++)
 	{
-		if (!(Col.find(map[(y+2) * mapSize.x + x]) != Col.end())) {
+		if (currentMap < 5 && !(Col1.find(map[(y+2) * mapSize.x + x]) != Col1.end())) {
+			return true;
+		}
+		else if (currentMap >= 5 && !(Col2.find(map[(y + 2) * mapSize.x + x]) != Col2.end())) {
 			return true;
 		}
 	}
@@ -214,7 +222,7 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	return false;
 }
 
-bool TileMap::collisionMoveUP(const glm::ivec2& pos, const glm::ivec2& size) const
+bool TileMap::collisionMoveUP(const glm::ivec2& pos, const glm::ivec2& size, int currentMap) const
 {
 	int x0, x1, y;
 
@@ -223,7 +231,10 @@ bool TileMap::collisionMoveUP(const glm::ivec2& pos, const glm::ivec2& size) con
 	y = (pos.y + size.y - 1) / tileSize;
 	for (int x = x0; x <= x1; x++)
 	{
-		if (!(Col.find(map[y * mapSize.x + x]) != Col.end())) {
+		if (currentMap < 5 && !(Col1.find(map[y * mapSize.x + x]) != Col1.end())) {
+			return true;
+		}
+		else if (currentMap >= 5 && !(Col2.find(map[y * mapSize.x + x]) != Col2.end())) {
 			return true;
 		}
 	}

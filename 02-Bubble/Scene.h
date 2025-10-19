@@ -24,7 +24,8 @@ public:
 	void update(int deltaTime);
 	void render();
 	void ChangeMap(int dir);
-	void comprovar_vides(int deltaTime, Player* player, Enemy* enemy);
+	//void comprovar_vides(int deltaTime, Player* player, Enemy* enemy);
+	int CurrentMap;
 
 private:
 	void initShaders();
@@ -32,11 +33,10 @@ private:
 private:
 	TileMap *map;
 	Player *player;
-	Enemy* enemy;
+	//Enemy* enemy;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
-	int CurrentMap;
 
 };
 

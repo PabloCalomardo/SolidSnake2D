@@ -1,16 +1,18 @@
 #pragma once
 #include "Sprite.h"
 #include "TileMap.h"
+#include "Scene.h"
 
 // Enemy is basically a Sprite that represents an enemy. As such it has
 // all properties it needs to track its movement, and collisions.
 
+class Scene;
 
 class Enemy
 {
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene &sc);
 	void update(int deltaTime, glm::ivec2 posp);
 	void render();
 
@@ -42,6 +44,6 @@ private:
 	Texture spritesheet;
 	Sprite* sprite;
 	TileMap* map;
-
+	Scene* scene;
 };
 

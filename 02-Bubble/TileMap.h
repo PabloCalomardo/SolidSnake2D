@@ -7,7 +7,6 @@
 #include "Texture.h"
 #include "ShaderProgram.h"
 
-
 // Class Tilemap is capable of loading a tile map from a text file in a very
 // simple format (see level01.txt for an example). With this information
 // it builds a single VBO that contains all tiles. As a result the render
@@ -31,10 +30,10 @@ public:
 	
 	int getTileSize() const { return tileSize; }
 
-	bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
-	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const;
-	bool collisionMoveUP(const glm::ivec2& pos, const glm::ivec2& size) const;
-	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size) const;
+	bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size, int currentMap) const;
+	bool collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size, int currentMap) const;
+	bool collisionMoveUP(const glm::ivec2& pos, const glm::ivec2& size, int currentMap) const;
+	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int currentMap) const;
 
     // Retorna cert si a les coordenades (tx, ty) is transparent (no hi ha colisio) for vision purposes.
     bool isTransparentAtTile(int tx, int ty) const;
@@ -55,7 +54,8 @@ private:
 	Texture tilesheet;
 	glm::vec2 tileTexSize;
 	int *map;
-	set<int> Col = {1,2,3,5,6,7,10};
+	set<int> Col1 = {1,2,3,5,6,7,10};
+	set<int> Col2 = {1,3,10,11,12,19,20};
 
 };
 

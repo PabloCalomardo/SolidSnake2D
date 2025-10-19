@@ -30,8 +30,9 @@ enum EnemyAnims
 
 
 
-void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic)
+void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene &sc)
 {
+    scene = &sc;
     vida = 2;
     hasEnemyDetected = false;
 	EnemyType = TipusEnemic;
@@ -348,8 +349,8 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
             // Intenta diagonal com a dues passes atòmiques X+Y
             // Primer X
             posEnemy.x += dirX * step;
-            if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
-                (dirX > 0 && map->collisionMoveRight(posEnemy, bbox)))
+            if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox, scene->CurrentMap)) ||
+                (dirX > 0 && map->collisionMoveRight(posEnemy, bbox, scene->CurrentMap)))
             {
                 posEnemy.x -= dirX * step; // revertir
             } else {
@@ -358,8 +359,8 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
 
             // Després Y
             posEnemy.y += dirY * step;
-            if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
-                (dirY > 0 && map->collisionMoveDown(posEnemy, bbox)))
+            if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox, scene->CurrentMap)) ||
+                (dirY > 0 && map->collisionMoveDown(posEnemy, bbox, scene->CurrentMap)))
             {
                 posEnemy.y -= dirY * step; // revertir
                 // si X havia mogut però Y no, segueix vàlid (no diagonal estricta però avança)
@@ -384,14 +385,14 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
                 if (std::abs(dx) >= std::abs(dy)) {
                     // prova X
                     posEnemy.x += dirX * step;
-                    if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
-                        (dirX > 0 && map->collisionMoveRight(posEnemy, bbox)))
+                    if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox, scene->CurrentMap)) ||
+                        (dirX > 0 && map->collisionMoveRight(posEnemy, bbox, scene->CurrentMap)))
                     {
                         posEnemy.x -= dirX * step;
                         // prova Y
                         posEnemy.y += dirY * step;
-                        if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
-                            (dirY > 0 && map->collisionMoveDown(posEnemy, bbox)))
+                        if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox, scene->CurrentMap)) ||
+                            (dirY > 0 && map->collisionMoveDown(posEnemy, bbox, scene->CurrentMap)))
                         {
                             posEnemy.y -= dirY * step;
                         }
@@ -399,14 +400,14 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
                 } else {
                     // prova Y
                     posEnemy.y += dirY * step;
-                    if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
-                        (dirY > 0 && map->collisionMoveDown(posEnemy, bbox)))
+                    if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox, scene->CurrentMap)) ||
+                        (dirY > 0 && map->collisionMoveDown(posEnemy, bbox, scene->CurrentMap)))
                     {
                         posEnemy.y -= dirY * step;
                         // prova X
                         posEnemy.x += dirX * step;
-                        if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
-                            (dirX > 0 && map->collisionMoveRight(posEnemy, bbox)))
+                        if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox, scene->CurrentMap)) ||
+                            (dirX > 0 && map->collisionMoveRight(posEnemy, bbox, scene->CurrentMap)))
                         {
                             posEnemy.x -= dirX * step;
                         }
@@ -417,16 +418,16 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
             // Si ja estem alineats amb alguna coordenada, mou només per l'altra
             if (dirX != 0) {
                 posEnemy.x += dirX * step;
-                if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
-                    (dirX > 0 && map->collisionMoveRight(posEnemy, bbox)))
+                if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox, scene->CurrentMap)) ||
+                    (dirX > 0 && map->collisionMoveRight(posEnemy, bbox, scene->CurrentMap)))
                 {
                     posEnemy.x -= dirX * step;
                 }
             }
             if (dirY != 0) {
                 posEnemy.y += dirY * step;
-                if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
-                    (dirY > 0 && map->collisionMoveDown(posEnemy, bbox)))
+                if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox, scene->CurrentMap)) ||
+                    (dirY > 0 && map->collisionMoveDown(posEnemy, bbox, scene->CurrentMap)))
                 {
                     posEnemy.y -= dirY * step;
                 }
@@ -448,15 +449,15 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
             int dirX = sgn(dx);
             if (dirX != 0) {
                 posEnemy.x += dirX * step;
-                bool collide = (dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
-                               (dirX > 0 && map->collisionMoveRight(posEnemy, bbox));
+                bool collide = (dirX < 0 && map->collisionMoveLeft(posEnemy, bbox, scene->CurrentMap)) ||
+                               (dirX > 0 && map->collisionMoveRight(posEnemy, bbox, scene->CurrentMap));
                 if (collide) {
                     posEnemy.x -= dirX * step;
                     int dirY = sgn(dy);
                     if (dirY != 0) {
                         posEnemy.y += dirY * step;
-                        bool colY = (dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
-                                    (dirY > 0 && map->collisionMoveDown(posEnemy, bbox));
+                        bool colY = (dirY < 0 && map->collisionMoveUP(posEnemy, bbox, scene->CurrentMap)) ||
+                                    (dirY > 0 && map->collisionMoveDown(posEnemy, bbox, scene->CurrentMap));
                         if (colY) posEnemy.y -= dirY * step;
                         if (dirY < 0) {
                             if (sprite->animation() != MOVE_UP) sprite->changeAnimation(MOVE_UP);
@@ -476,15 +477,15 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
             int dirY = sgn(dy);
             if (dirY != 0) {
                 posEnemy.y += dirY * step;
-                bool collide = (dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
-                               (dirY > 0 && map->collisionMoveDown(posEnemy, bbox));
+                bool collide = (dirY < 0 && map->collisionMoveUP(posEnemy, bbox, scene->CurrentMap)) ||
+                               (dirY > 0 && map->collisionMoveDown(posEnemy, bbox, scene->CurrentMap));
                 if (collide) {
                     posEnemy.y -= dirY * step;
                     int dirX = sgn(dx);
                     if (dirX != 0) {
                         posEnemy.x += dirX * step;
-                        bool colX = (dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
-                                    (dirX > 0 && map->collisionMoveRight(posEnemy, bbox));
+                        bool colX = (dirX < 0 && map->collisionMoveLeft(posEnemy, bbox, scene->CurrentMap)) ||
+                                    (dirX > 0 && map->collisionMoveRight(posEnemy, bbox, scene->CurrentMap));
                         if (colX) posEnemy.x -= dirX * step;
                         if (dirX < 0) {
                             if (sprite->animation() != MOVE_LEFT) sprite->changeAnimation(MOVE_LEFT);

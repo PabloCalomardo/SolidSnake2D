@@ -16,7 +16,7 @@ Scene::Scene()
 {
 	map = NULL;
 	player = NULL;
-	enemy = NULL;
+	//enemy = NULL;
 }
 
 Scene::~Scene()
@@ -34,10 +34,10 @@ void Scene::init()
 	CurrentMap = 1;
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
-	enemy = new Enemy();
+	/*enemy = new Enemy();
 	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0);
 	enemy->setPosition(glm::vec2(27 * map->getTileSize(), 22 * map->getTileSize()));
-	enemy->setTileMap(map);
+	enemy->setTileMap(map);*/
 
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram,*this);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
@@ -90,6 +90,20 @@ void Scene::ChangeMap(int dir)
 			glm::vec2 posaux(player->posPlayer[0], 0);
 			player->setPosition(glm::vec2(posaux[0], posaux[1] * map->getTileSize()));
 		}
+		if (dir == 3) {
+			CurrentMap = 5;
+			map = TileMap::createTileMap("levels/level05.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+			glm::vec2 posaux(player->posPlayer[0], 24);
+			player->setPosition(glm::vec2(posaux[0], posaux[1] * map->getTileSize()));
+		}
+	}
+	else if (CurrentMap == 5) {
+		if (dir == 4) {
+			CurrentMap = 4;
+			map = TileMap::createTileMap("levels/level04.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+			glm::vec2 posaux(player->posPlayer[0], 4);
+			player->setPosition(glm::vec2(posaux[0], posaux[1] * map->getTileSize()));
+		}
 	}
 	player->setTileMap(map);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
@@ -102,9 +116,9 @@ void Scene::update(int deltaTime)
 
 	glm::ivec2 posp = player->posPlayer;
 
-	enemy->update(deltaTime, posp);
+	//enemy->update(deltaTime, posp);
 	player->update(deltaTime);
-	comprovar_vides(deltaTime, player, enemy);
+	//comprovar_vides(deltaTime, player, enemy);
 }
 
 void Scene::render()
@@ -119,7 +133,7 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	map->render();
 
-	enemy->render();
+	//enemy->render();
 	player->render();
 }
 
@@ -164,7 +178,7 @@ bool animation_not_in(int animation) {
 	}
 }
 
-void Scene::comprovar_vides(int deltaTime, Player* player, Enemy* enemy)
+/*void Scene::comprovar_vides(int deltaTime, Player* player, Enemy* enemy)
 {
 	//Si l'enemic toca al jugador, aquest perd una vida
 	glm::ivec2 posp = player->posPlayer;
@@ -179,5 +193,5 @@ void Scene::comprovar_vides(int deltaTime, Player* player, Enemy* enemy)
 		}
 		
 	}
-}
+}*/
 

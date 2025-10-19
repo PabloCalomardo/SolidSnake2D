@@ -282,7 +282,7 @@ void Player::update(int deltaTime)
 		if (posPlayer.x <= 0) {
 			scene->ChangeMap(1);
 		}
-		else if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
+		else if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32), scene->CurrentMap))
 		{
 			posPlayer.x += 2;
 			sprite->changeAnimation(Animacions[f][a][2]);
@@ -296,7 +296,7 @@ void Player::update(int deltaTime)
 		if (posPlayer.x >= ((map->mapSize[0])*16)-32) {
 			scene->ChangeMap(2);
 		}
-		else if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
+		else if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32), scene->CurrentMap))
 		{
 			posPlayer.x -= 2;
 			sprite->changeAnimation(Animacions[f][a][3]);
@@ -308,11 +308,14 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][6]);
 		
 		posPlayer.y -= 2;
-		
+		//printf("posplayer.x: %d, posplayer.y: %d\n", posPlayer.x, posPlayer.y);
 		if (posPlayer.y <= 0) {
 			scene->ChangeMap(3);
 		}
-		else if (map->collisionMoveUP(posPlayer, glm::ivec2(32, 32)))
+		else if (scene->CurrentMap == 4 && posPlayer.y <= 32 && posPlayer.x >= 352 && posPlayer.x <= 384) {
+			scene->ChangeMap(3);
+		}
+		else if (map->collisionMoveUP(posPlayer, glm::ivec2(32, 32), scene->CurrentMap))
 		{
 			posPlayer.y += 2;
 			sprite->changeAnimation(Animacions[f][a][1]);
@@ -324,11 +327,15 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][7]);
 
 		posPlayer.y += 2;
+		//printf("posplayer.x: %d, posplayer.y: %d\n", posPlayer.x, posPlayer.y);
 
 		if (posPlayer.y >= ((map->mapSize[1]) * 16) - 64) {
 			scene->ChangeMap(4);
 		}
-		else if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32)))
+		else if (scene->CurrentMap == 5 && posPlayer.y >= 386 && posPlayer.x >= 352 && posPlayer.x <= 384) {
+			scene->ChangeMap(4);
+		}
+		else if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32),scene->CurrentMap))
 		{
 			posPlayer.y -= 2;
 			sprite->changeAnimation(Animacions[f][a][0]);

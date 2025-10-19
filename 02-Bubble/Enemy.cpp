@@ -2,6 +2,9 @@
 
 #include <cmath>
 #include <iostream>
+#include <vector>
+#include <deque>
+#include <algorithm>
 #include <GL/glew.h>
 #include "Enemy.h"
 #include "Game.h"
@@ -29,6 +32,7 @@ enum EnemyAnims
 
 void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic)
 {
+    vida = 2;
     hasEnemyDetected = false;
 	EnemyType = TipusEnemic;
 	moviment_escorpi = 0;
@@ -150,71 +154,83 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 
 void Enemy::update(int deltaTime, glm::ivec2 posp)
 {
+	if (vida == 0) mort = true;
 	sprite->update(deltaTime);
-    if (!hasEnemyDetected) {
-        // Ejemplo: radio de detección configurable (8 tiles por defecto)
-        hasEnemyDetected = enemic_detectat(posp, 8);
+    // Recalcular detecció cada frame per iniciar la persecució quan entri al FOV
+    if (mort) {
+        posEnemy.x = 0;
+		posEnemy.y = 0;
     }
-	//contador per al moviment en cercle de l'escorpi
-	delta_ant += deltaTime;
+    else {
+        if (!hasEnemyDetected) {
+            hasEnemyDetected = enemic_detectat(posp, 8);
+        }
+        //contador per al moviment en cercle de l'escorpi
+        delta_ant += deltaTime;
 
-    if (EnemyType == 0) //GOS
-	{
-        if (hasEnemyDetected) {
-			cout << "Enemy has detected the player!" << endl;
-		}
-		else { //Tranquilitat (moviment en cercle)
-			if (sprite->animation() == MOVE_DOWN && moviment_escorpi == 0 && delta_ant > 500) {
-				posEnemy.y += 15;
-				posEnemy.x -= 15;
-				moviment_escorpi++;
-				delta_ant = 0;
-				sprite->changeAnimation(MOVE_DOWN);
-			}
-			else if (sprite->animation() == MOVE_DOWN && moviment_escorpi == 1 && delta_ant > 500) {
-				posEnemy.y += 15;
-				posEnemy.x += 15;
-				moviment_escorpi++;
-				delta_ant = 0;
-				sprite->changeAnimation(MOVE_DOWN);
-			}
-			else if (sprite->animation() == MOVE_DOWN && moviment_escorpi == 2 && delta_ant > 500) {
-				delta_ant = 0;
-				sprite->changeAnimation(MOVE_UP);
-			}
-			else if (sprite->animation() == MOVE_UP && moviment_escorpi == 2 && delta_ant > 500) {
-				posEnemy.y -= 15;
-				posEnemy.x += 15;
-				moviment_escorpi++;
-				delta_ant = 0;
-				sprite->changeAnimation(MOVE_UP);
-			}
-			else if (sprite->animation() == MOVE_UP && moviment_escorpi == 3 && delta_ant > 500) {
-				posEnemy.y -= 15;
-				posEnemy.x -= 15;
-				moviment_escorpi++;
-				delta_ant = 0;
-				sprite->changeAnimation(MOVE_UP);
-			}
-			else if (sprite->animation() == MOVE_UP && moviment_escorpi == 0 && delta_ant > 500) {
-				delta_ant = 0;
-				delta_ant = 0;
-				sprite->changeAnimation(MOVE_DOWN);
-			}
+        if (EnemyType == 0) //GOS
+        {
+            if (hasEnemyDetected) {
+                cout << "Enemy has detected the player!" << endl;
+                if ((EnemyType == 0 || EnemyType == 1) && delta_ant > 500) { //MELEE (ens apropem i l'ataquem)
+                    goToPosition(deltaTime, posp, 6);
+                    delta_ant = 0;
+                }
+                else { //RANGED (ens mantenim a distancia i l'ataquem)
 
-			if (moviment_escorpi == 4) moviment_escorpi = 0;
-		}
-	}
-    else { //SOLDIER
-        if (hasEnemyDetected) {
+                }
+            }
+            else { //Tranquilitat (moviment en cercle)
+                if (sprite->animation() == MOVE_DOWN && moviment_escorpi == 0 && delta_ant > 500) {
+                    posEnemy.y += 15;
+                    posEnemy.x -= 15;
+                    moviment_escorpi++;
+                    delta_ant = 0;
+                    sprite->changeAnimation(MOVE_DOWN);
+                }
+                else if (sprite->animation() == MOVE_DOWN && moviment_escorpi == 1 && delta_ant > 500) {
+                    posEnemy.y += 15;
+                    posEnemy.x += 15;
+                    moviment_escorpi++;
+                    delta_ant = 0;
+                    sprite->changeAnimation(MOVE_DOWN);
+                }
+                else if (sprite->animation() == MOVE_DOWN && moviment_escorpi == 2 && delta_ant > 500) {
+                    delta_ant = 0;
+                    sprite->changeAnimation(MOVE_UP);
+                }
+                else if (sprite->animation() == MOVE_UP && moviment_escorpi == 2 && delta_ant > 500) {
+                    posEnemy.y -= 15;
+                    posEnemy.x += 15;
+                    moviment_escorpi++;
+                    delta_ant = 0;
+                    sprite->changeAnimation(MOVE_UP);
+                }
+                else if (sprite->animation() == MOVE_UP && moviment_escorpi == 3 && delta_ant > 500) {
+                    posEnemy.y -= 15;
+                    posEnemy.x -= 15;
+                    moviment_escorpi++;
+                    delta_ant = 0;
+                    sprite->changeAnimation(MOVE_UP);
+                }
+                else if (sprite->animation() == MOVE_UP && moviment_escorpi == 0 && delta_ant > 500) {
+                    delta_ant = 0;
+                    delta_ant = 0;
+                    sprite->changeAnimation(MOVE_DOWN);
+                }
 
-		}
-		else {
-
-		}
-	}
-	
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
+                if (moviment_escorpi == 4) moviment_escorpi = 0;
+            }
+        }
+        else { //SOLDIER
+            if (hasEnemyDetected) {
+            }
+            else {
+                // de moment, cap patró especial
+            }
+        }
+    }
+    sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
 }
 
 void Enemy::render()
@@ -306,6 +322,188 @@ bool Enemy::enemic_detectat(const glm::ivec2& targetPos, int radius_detection) c
     return true;
 }
 
+// Mou una sola passa cap a targetPos. Respecta col·lisions i anima segons tipus.
+void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int speed)
+{
+    if (!map) return;
 
+    // mida hitbox coherent amb Player
+    const glm::ivec2 bbox(32, 32);
+    const int s = std::max(1, speed);
+    const int step = 3 * s;
 
+    auto sgn = [](int v) -> int { return (v > 0) - (v < 0); };
 
+    int dx = targetPos.x - posEnemy.x;
+    int dy = targetPos.y - posEnemy.y;
+
+    if (EnemyType == 0) {
+        // Moviment diagonal (+/- step en X i Y)
+        int dirX = sgn(dx);
+        int dirY = sgn(dy);
+
+        bool movedX = false, movedY = false;
+
+        if (dirX != 0 && dirY != 0) {
+            // Intenta diagonal com a dues passes atòmiques X+Y
+            // Primer X
+            posEnemy.x += dirX * step;
+            if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
+                (dirX > 0 && map->collisionMoveRight(posEnemy, bbox)))
+            {
+                posEnemy.x -= dirX * step; // revertir
+            } else {
+                movedX = true;
+            }
+
+            // Després Y
+            posEnemy.y += dirY * step;
+            if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
+                (dirY > 0 && map->collisionMoveDown(posEnemy, bbox)))
+            {
+                posEnemy.y -= dirY * step; // revertir
+                // si X havia mogut però Y no, segueix vàlid (no diagonal estricta però avança)
+            } else {
+                movedY = true;
+            }
+
+            // Animació segons diagonal prevista
+            if (dirX > 0 && dirY < 0) {
+                // dalt-dreta -> MOVE_DOWN
+                if (sprite->animation() != MOVE_DOWN) sprite->changeAnimation(MOVE_DOWN);
+            } else if (dirX < 0 && dirY > 0) {
+                // baix-esquerra -> MOVE_DOWN
+                if (sprite->animation() != MOVE_DOWN) sprite->changeAnimation(MOVE_DOWN);
+            } else {
+                // dalt-esquerra o baix-dreta -> MOVE_UP
+                if (sprite->animation() != MOVE_UP) sprite->changeAnimation(MOVE_UP);
+            }
+
+            // Si cap component ha mogut (x ni y), intenta un pla B: primer l'eix més llunyà
+            if (!movedX && !movedY) {
+                if (std::abs(dx) >= std::abs(dy)) {
+                    // prova X
+                    posEnemy.x += dirX * step;
+                    if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
+                        (dirX > 0 && map->collisionMoveRight(posEnemy, bbox)))
+                    {
+                        posEnemy.x -= dirX * step;
+                        // prova Y
+                        posEnemy.y += dirY * step;
+                        if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
+                            (dirY > 0 && map->collisionMoveDown(posEnemy, bbox)))
+                        {
+                            posEnemy.y -= dirY * step;
+                        }
+                    }
+                } else {
+                    // prova Y
+                    posEnemy.y += dirY * step;
+                    if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
+                        (dirY > 0 && map->collisionMoveDown(posEnemy, bbox)))
+                    {
+                        posEnemy.y -= dirY * step;
+                        // prova X
+                        posEnemy.x += dirX * step;
+                        if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
+                            (dirX > 0 && map->collisionMoveRight(posEnemy, bbox)))
+                        {
+                            posEnemy.x -= dirX * step;
+                        }
+                    }
+                }
+            }
+        } else {
+            // Si ja estem alineats amb alguna coordenada, mou només per l'altra
+            if (dirX != 0) {
+                posEnemy.x += dirX * step;
+                if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
+                    (dirX > 0 && map->collisionMoveRight(posEnemy, bbox)))
+                {
+                    posEnemy.x -= dirX * step;
+                }
+            }
+            if (dirY != 0) {
+                posEnemy.y += dirY * step;
+                if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
+                    (dirY > 0 && map->collisionMoveDown(posEnemy, bbox)))
+                {
+                    posEnemy.y -= dirY * step;
+                }
+            }
+
+            // Escull animació segons la intenció vertical/horizontal
+            if (dirX > 0 && dirY <= 0) {
+                if (sprite->animation() != MOVE_DOWN) sprite->changeAnimation(MOVE_DOWN);
+            } else if (dirX < 0 && dirY >= 0) {
+                if (sprite->animation() != MOVE_DOWN) sprite->changeAnimation(MOVE_DOWN);
+            } else {
+                if (sprite->animation() != MOVE_UP) sprite->changeAnimation(MOVE_UP);
+            }
+        }
+    }
+    else {
+        // Enemics no 0 es mouen en cardinal amb 3 unitats
+        if (std::abs(dx) >= std::abs(dy)) {
+            int dirX = sgn(dx);
+            if (dirX != 0) {
+                posEnemy.x += dirX * step;
+                bool collide = (dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
+                               (dirX > 0 && map->collisionMoveRight(posEnemy, bbox));
+                if (collide) {
+                    posEnemy.x -= dirX * step;
+                    int dirY = sgn(dy);
+                    if (dirY != 0) {
+                        posEnemy.y += dirY * step;
+                        bool colY = (dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
+                                    (dirY > 0 && map->collisionMoveDown(posEnemy, bbox));
+                        if (colY) posEnemy.y -= dirY * step;
+                        if (dirY < 0) {
+                            if (sprite->animation() != MOVE_UP) sprite->changeAnimation(MOVE_UP);
+                        } else if (dirY > 0) {
+                            if (sprite->animation() != MOVE_DOWN) sprite->changeAnimation(MOVE_DOWN);
+                        }
+                    }
+                } else {
+                    if (dirX < 0) {
+                        if (sprite->animation() != MOVE_LEFT) sprite->changeAnimation(MOVE_LEFT);
+                    } else if (dirX > 0) {
+                        if (sprite->animation() != MOVE_RIGHT) sprite->changeAnimation(MOVE_RIGHT);
+                    }
+                }
+            }
+        } else {
+            int dirY = sgn(dy);
+            if (dirY != 0) {
+                posEnemy.y += dirY * step;
+                bool collide = (dirY < 0 && map->collisionMoveUP(posEnemy, bbox)) ||
+                               (dirY > 0 && map->collisionMoveDown(posEnemy, bbox));
+                if (collide) {
+                    posEnemy.y -= dirY * step;
+                    int dirX = sgn(dx);
+                    if (dirX != 0) {
+                        posEnemy.x += dirX * step;
+                        bool colX = (dirX < 0 && map->collisionMoveLeft(posEnemy, bbox)) ||
+                                    (dirX > 0 && map->collisionMoveRight(posEnemy, bbox));
+                        if (colX) posEnemy.x -= dirX * step;
+                        if (dirX < 0) {
+                            if (sprite->animation() != MOVE_LEFT) sprite->changeAnimation(MOVE_LEFT);
+                        } else if (dirX > 0) {
+                            if (sprite->animation() != MOVE_RIGHT) sprite->changeAnimation(MOVE_RIGHT);
+                        }
+                    }
+                } else {
+                    if (dirY < 0) {
+                        if (sprite->animation() != MOVE_UP) sprite->changeAnimation(MOVE_UP);
+                    } else if (dirY > 0) {
+                        if (sprite->animation() != MOVE_DOWN) sprite->changeAnimation(MOVE_DOWN);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Enemy::baixavida() {
+	vida = vida - 1;
+}

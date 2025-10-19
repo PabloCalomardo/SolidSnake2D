@@ -24,6 +24,7 @@ public:
 	void update(int deltaTime);
 	void render();
 	void ChangeMap(int dir);
+	void comprovar_vides(int deltaTime, Player* player, Enemy* enemy);
 
 private:
 	void initShaders();

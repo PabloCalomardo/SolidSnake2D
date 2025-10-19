@@ -104,6 +104,7 @@ void Scene::update(int deltaTime)
 
 	enemy->update(deltaTime, posp);
 	player->update(deltaTime);
+	comprovar_vides(deltaTime, player, enemy);
 }
 
 void Scene::render()
@@ -153,4 +154,30 @@ void Scene::initShaders()
 }
 
 
+bool animation_not_in(int animation) {
+	switch (animation) {
+	case 8: case 9: case 10: case 11:
+	case 28: case 29: case 30: case 31:
+		return false; // está en la lista -> NO permitido
+	default:
+		return true;  // no está -> permitido
+	}
+}
+
+void Scene::comprovar_vides(int deltaTime, Player* player, Enemy* enemy)
+{
+	//Si l'enemic toca al jugador, aquest perd una vida
+	glm::ivec2 posp = player->posPlayer;
+	glm::ivec2 pose = enemy->posEnemy;
+	Sprite* spr_player = player->getSprite();
+	if ((abs(posp.x - pose.x) < 20 && abs(posp.y - pose.y) < 20)) {
+		if (animation_not_in(spr_player->animation())) { //Treiem una vida al jugador
+			player->baixavida();
+		}
+		else { //Treiem una vida a l'enemic
+			enemy->baixavida();
+		}
+		
+	}
+}
 

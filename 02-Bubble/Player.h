@@ -24,8 +24,11 @@ public:
 	void setPosition(const glm::vec2 &pos);
 
 	glm::ivec2 tileMapDispl, posPlayer;
+	Sprite* getSprite() { return sprite; }
+	void baixavida();
 	
 private:
+	int vida;
 	bool porta_arma;
 	bool ferit;
 	bool mort;

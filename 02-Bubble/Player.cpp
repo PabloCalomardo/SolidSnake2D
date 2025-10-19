@@ -31,6 +31,7 @@ vector<vector<vector<PlayerAnims>>> Animacions = {
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Scene &sc)
 {
+	vida = 3;
 	scene = &sc;
 	porta_arma = false;
 	ferit = false;
@@ -263,6 +264,8 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 
 void Player::update(int deltaTime)
 {
+	if (vida == 0) mort = true;
+
 	int a = porta_arma;
 	int f = ferit;
 	sprite->update(deltaTime);
@@ -387,6 +390,10 @@ void Player::setPosition(const glm::vec2 &pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
+void Player::baixavida()
+{
+	vida = vida - 1;
+}
 
 
 

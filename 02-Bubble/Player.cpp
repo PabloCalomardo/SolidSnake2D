@@ -1,8 +1,10 @@
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 #include <GL/glew.h>
 #include "Player.h"
 #include "Game.h"
+#include "Enemy.h"
 
 
 #define JUMP_ANGLE_STEP 4
@@ -33,7 +35,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 {
 	vida = 3;
 	scene = &sc;
-	porta_arma = false;
+	porta_arma = true;
 	ferit = false;
 	mort = false;
 	spritesheet.loadFromFile("images/Solid_snake.png", TEXTURE_PIXEL_FORMAT_RGBA);	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
@@ -264,15 +266,17 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 
 void Player::update(int deltaTime)
 {
-	if (vida == 0) mort = true;
+	if (vida < 3) ferit = true;
 
 	int a = porta_arma;
 	int f = ferit;
 	sprite->update(deltaTime);
+    shootTimer += deltaTime;
 
 	if(mort) {
 		if (sprite->animation() != Animacions[f][0][12])
 			sprite->changeAnimation(Animacions[f][0][12]);
+		return;
 	}
 	else if(Game::instance().getKey(GLFW_KEY_LEFT))
 	{
@@ -378,12 +382,21 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][3]);
 	}
 	
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+    // Disparar amb arma fins i tot mentre es mou
+    if (Game::instance().getKey(GLFW_KEY_X) && porta_arma) {
+        tryShoot();
+    }
+
+    sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+
+    // Update projectiles after movement
+    updateProjectiles(deltaTime);
 }
 
 void Player::render()
 {
-	sprite->render();
+    sprite->render();
+    renderProjectiles();
 }
 
 void Player::setTileMap(TileMap *tileMap)
@@ -400,6 +413,159 @@ void Player::setPosition(const glm::vec2 &pos)
 void Player::baixavida()
 {
 	vida = vida - 1;
+	if (vida < 3) ferit = true;
+	if (vida <= 0) mort = true;
+	cout << vida << endl;
+}
+
+glm::ivec2 Player::facingDirFromAnim(int anim) const
+{
+    // Mirror EnemyFacingFromAnim mapping for player animations
+    switch (anim) {
+    // Unarmed
+    case STAND_LEFT:
+    case MOVE_LEFT:
+    case STAND_LEFT_FERIT:
+    case MOVE_LEFT_FERIT:
+        return glm::ivec2(-1, 0);
+    case STAND_RIGHT:
+    case MOVE_RIGHT:
+    case STAND_RIGHT_FERIT:
+    case MOVE_RIGHT_FERIT:
+        return glm::ivec2(1, 0);
+    case STAND_UP:
+    case MOVE_UP:
+    case STAND_UP_FERIT:
+    case MOVE_UP_FERIT:
+        return glm::ivec2(0, -1);
+    case STAND_NORMAL:
+    case MOVE_DOWN:
+    case STAND_NORMAL_FERIT:
+    case MOVE_DOWN_FERIT:
+        return glm::ivec2(0, 1);
+    // Armed
+    case ARMED_STAND_LEFT:
+    case ARMED_MOVE_LEFT:
+    case ARMED_STAND_LEFT_FERIT:
+    case ARMED_MOVE_LEFT_FERIT:
+        return glm::ivec2(-1, 0);
+    case ARMED_STAND_RIGHT:
+    case ARMED_MOVE_RIGHT:
+    case ARMED_STAND_RIGHT_FERIT:
+    case ARMED_MOVE_RIGHT_FERIT:
+        return glm::ivec2(1, 0);
+    case ARMED_STAND_UP:
+    case ARMED_MOVE_UP:
+    case ARMED_STAND_UP_FERIT:
+    case ARMED_MOVE_UP_FERIT:
+        return glm::ivec2(0, -1);
+    case ARMED_STAND_NORMAL:
+    case ARMED_MOVE_DOWN:
+    case ARMED_STAND_NORMAL_FERIT:
+    case ARMED_MOVE_DOWN_FERIT:
+        return glm::ivec2(0, 1);
+    default:
+        return glm::ivec2(0, 1);
+    }
+}
+
+void Player::tryShoot()
+{
+    if (!porta_arma) return;
+    if (shootTimer < shootCooldownMs) return;
+
+    Bullet b;
+    const int ts = map->getTileSize();
+    glm::vec2 center = glm::vec2(posPlayer.x + ts / 2.0f, posPlayer.y + ts / 2.0f);
+    b.pos = center;
+    b.dir = facingDirFromAnim(sprite->animation());
+    b.speed = bulletSpeedPxPerMs;
+    b.active = true;
+    bullets.push_back(b);
+    shootTimer = 0;
+}
+
+void Player::updateProjectiles(int deltaTime)
+{
+    if (bullets.empty()) return;
+
+    const int ts = map->getTileSize();
+    // AABB de enemigo asumida 32x32 como Player para esta lógica
+    glm::ivec2 enemySize(32, 32);
+
+    auto hitEnemy = [&](const glm::vec2& p, Enemy* e) {
+        if (!e) return false;
+        // solo afectar enemigos del mapa actual
+        if (e->Escena_Original != scene->CurrentMap) return false;
+        glm::ivec2 ep = e->posEnemy;
+        return p.x >= ep.x && p.x <= ep.x + enemySize.x &&
+               p.y >= ep.y && p.y <= ep.y + enemySize.y;
+    };
+
+    for (auto& b : bullets) {
+        if (!b.active) continue;
+        b.pos.x += b.dir.x * b.speed * deltaTime;
+        b.pos.y += b.dir.y * b.speed * deltaTime;
+
+        // si choca con un tile sólido se desactiva
+        int tx = int(b.pos.x) / ts;
+        int ty = int(b.pos.y) / ts;
+        if (!map->isTransparentAtTile(tx, ty)) {
+            b.active = false;
+            continue;
+        }
+
+        // revisar colisión con enemigos vivos del mapa
+        auto& enemies = scene->getEnemies();
+        for (auto* e : enemies) {
+            if (hitEnemy(b.pos, e)) {
+                e->baixavida();
+                b.active = false;
+                break;
+            }
+        }
+    }
+
+    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& b) { return !b.active; }), bullets.end());
+}
+
+void Player::renderProjectiles()
+{
+    // Igual que en Enemy: dibujar en espacio de pantalla
+    GLint prevProgram = 0;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &prevProgram);
+
+    glUseProgram(0);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glDisable(GL_TEXTURE_2D);
+    glColor3f(0.9f, 0.9f, 0.9f); // bala gris
+    glBegin(GL_QUADS);
+    for (const auto& b : bullets) {
+        if (!b.active) continue;
+        float x = tileMapDispl.x + b.pos.x;
+        float y = tileMapDispl.y + b.pos.y;
+        float s = 5.0f;
+        glVertex2f(x,     y);
+        glVertex2f(x + s, y);
+        glVertex2f(x + s, y + s);
+        glVertex2f(x,     y + s);
+    }
+    glEnd();
+    glEnable(GL_TEXTURE_2D);
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+
+    glUseProgram(prevProgram);
 }
 
 

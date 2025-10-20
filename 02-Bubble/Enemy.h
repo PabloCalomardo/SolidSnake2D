@@ -12,7 +12,7 @@ class Enemy
 {
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene &sc);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene &sc, bool mh, bool q, bool mv, int OriginalScene);
 	void update(int deltaTime, glm::ivec2 posp);
 	void render();
 
@@ -31,19 +31,42 @@ public:
     void goToPosition(int deltaTime, const glm::ivec2& targetPos, int speed = 1);
 	glm::ivec2 posEnemy;
 	void baixavida();
+	int Escena_Original;
+    bool mort;
+    int EnemyType; // 0: DOG, 1: SOLDIER, 2: SOLDIER2
 
 private:
-	int EnemyType; // 0: DOG, 1: SOLDIER, 2: SOLDIER2
+    struct Bullet {
+        glm::vec2 pos;      // top-left in pixels
+        glm::ivec2 dir;     // unit direction (1,0),(0,1),(-1,0),(0,-1)
+        float speed;        // pixels per millisecond
+        bool active;
+    };
+
+    void updateProjectiles(int deltaTime);
+    void renderProjectiles();
+    void tryShootAt(const glm::ivec2& targetPos);
+    bool hasClearAxisShot(const glm::ivec2& targetPos, glm::ivec2& outDir) const;
+
+	
 	int vida;
 	int moviment_escorpi;
     bool hasEnemyDetected;
-	bool mort;
+	bool moviment_horitzontal, quiet, moviment_vertical;
 	glm::ivec2 tileMapDispl;
 	int jumpAngle, startY;
 	int delta_ant;
+	
 	Texture spritesheet;
 	Sprite* sprite;
 	TileMap* map;
 	Scene* scene;
+
+    // Projectiles state
+    std::vector<Bullet> bullets;
+    Texture bulletTexture;
+    Sprite* bulletSprite = nullptr;
+    int shootCooldownMs = 600; // time between shots
+    int shootTimer = 0;        // accumulative timer
 };
 

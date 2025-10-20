@@ -34,8 +34,8 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
-	CurrentMap = 6;
-	map = TileMap::createTileMap("levels/level06.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	CurrentMap = 1;
+	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
 
     // Create enemies and push them into the vector
@@ -134,6 +134,20 @@ void Scene::ChangeMap(int dir)
 		if (dir == 1) {
 			CurrentMap = 5;
 			map = TileMap::createTileMap("levels/level05.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+			glm::vec2 posaux(36, player->posPlayer[1]);
+			player->setPosition(glm::vec2(posaux[0] * map->getTileSize(), posaux[1]));
+		}
+		if (dir == 2) {
+			CurrentMap = 7;
+			map = TileMap::createTileMap("levels/level07.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+			glm::vec2 posaux(2, player->posPlayer[1]);
+			player->setPosition(glm::vec2(posaux[0] * map->getTileSize(), posaux[1]));
+		}
+	}
+	else if (CurrentMap == 7) {
+		if (dir == 1) {
+			CurrentMap = 6;
+			map = TileMap::createTileMap("levels/level06.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 			glm::vec2 posaux(36, player->posPlayer[1]);
 			player->setPosition(glm::vec2(posaux[0] * map->getTileSize(), posaux[1]));
 		}

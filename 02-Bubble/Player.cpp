@@ -286,7 +286,7 @@ void Player::update(int deltaTime)
 		if (posPlayer.x <= 0) {
 			scene->ChangeMap(1);
 		}
-		else if (scene->CurrentMap == 6 && posPlayer.x <= 30 && posPlayer.y >= 176 && posPlayer.y <= 224) {
+		else if ((scene->CurrentMap == 6 || scene-> CurrentMap == 7) && posPlayer.x <= 30 && posPlayer.y >= 176 && posPlayer.y <= 224) {
 			scene->ChangeMap(1);
 		}
 		else if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32), scene->CurrentMap))
@@ -303,7 +303,7 @@ void Player::update(int deltaTime)
 		if (posPlayer.x >= ((map->mapSize[0])*16)-32) {
 			scene->ChangeMap(2);
 		}
-		else if (scene->CurrentMap == 5 && posPlayer.x >= 578 && posPlayer.y >= 176 && posPlayer.y <= 224) {
+		else if ((scene->CurrentMap == 5 || scene->CurrentMap == 6) && posPlayer.x >= 578 && posPlayer.y >= 176 && posPlayer.y <= 224) {
 			scene->ChangeMap(2);
 		}
 		else if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32), scene->CurrentMap))

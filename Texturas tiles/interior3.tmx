@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="9" height="9" tilewidth="8" tileheight="8" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" source="NES - Metal Gear - Maps - Building 1 (Floor I).tsx"/>
+ <tileset firstgid="12289" source="NES - Metal Gear - Maps - Building 1 (Floor II).tsx"/>
+ <layer id="1" name="Capa de patrones 1" width="9" height="9">
+  <data encoding="csv">
+2454,11894,11385,4246,23781,23909,23910,19602,9194,
+3475,6771,1405,6233,6240,24038,24039,19730,19858,
+2723,10875,12129,6617,6624,7936,19603,19731,19986,
+7263,7391,11360,6751,6146,7274,8311,19601,19604,
+6145,6658,12128,6879,6274,7402,8439,19729,19732,
+112,367,377,7007,6402,7530,8567,19857,19860,
+240,239,9575,7135,6530,7658,8695,19985,19988,
+7782,7910,8038,8166,8294,8422,8550,8678,12117,
+16279,16151,16023,8810,8938,9066,0,0,0
+</data>
+ </layer>
+</map>

@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "TileMap.h"
 #include "Scene.h"
+#include <vector>
 
 class Scene;
 
@@ -26,8 +27,22 @@ public:
 	glm::ivec2 tileMapDispl, posPlayer;
 	Sprite* getSprite() { return sprite; }
 	void baixavida();
+    // Optional: set bullet speed in pixels per second
+    void setBulletSpeedPerSecond(float pxPerSec) { bulletSpeedPxPerMs = pxPerSec / 1000.0f; }
 	
 private:
+    struct Bullet {
+        glm::vec2 pos;      // top-left in pixels
+        glm::ivec2 dir;     // unit dir (1,0),(0,1),(-1,0),(0,-1)
+        float speed;        // pixels per millisecond
+        bool active;
+    };
+
+    void updateProjectiles(int deltaTime);
+    void renderProjectiles();
+    void tryShoot();
+    glm::ivec2 facingDirFromAnim(int anim) const;
+
 	int vida;
 	bool porta_arma;
 	bool ferit;
@@ -37,6 +52,12 @@ private:
 	Sprite *sprite;
 	TileMap *map;
 	Scene *scene;
+
+    // Player projectile state
+    std::vector<Bullet> bullets;
+    int shootCooldownMs = 400;
+    int shootTimer = 0;
+    float bulletSpeedPxPerMs = 0.5f; // 500 px/s
 
 };
 

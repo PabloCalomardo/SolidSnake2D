@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Scene.h"
 #include "Game.h"
+#include "Enemy.h"
 
 
 #define SCREEN_X 32
@@ -16,7 +17,7 @@ Scene::Scene()
 {
 	map = NULL;
 	player = NULL;
-	//enemy = NULL;
+    enemies.clear();
 }
 
 Scene::~Scene()
@@ -25,6 +26,8 @@ Scene::~Scene()
 		delete map;
 	if(player != NULL)
 		delete player;
+    for (Enemy* e : enemies) delete e;
+    enemies.clear();
 }
 
 
@@ -34,10 +37,26 @@ void Scene::init()
 	CurrentMap = 6;
 	map = TileMap::createTileMap("levels/level06.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
-	/*enemy = new Enemy();
-	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0);
-	enemy->setPosition(glm::vec2(27 * map->getTileSize(), 22 * map->getTileSize()));
-	enemy->setTileMap(map);*/
+
+    // Create enemies and push them into the vector
+    // Example enemies across maps:
+    {
+        // Soldier in map 1
+        Enemy* e = new Enemy();
+        e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, false, true, 1);
+        // Set initial position directly to avoid setPosition guard against non-current maps
+        e->posEnemy = glm::ivec2(25 * map->getTileSize(), 10 * map->getTileSize());
+        e->setTileMap(map);
+        enemies.push_back(e);
+    }
+    // You can add more enemies here for other maps if desired, e.g.:
+    {
+        Enemy* e = new Enemy();
+        e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, false, false, true, 2);
+        e->posEnemy = glm::ivec2(15 * map->getTileSize(), 15 * map->getTileSize());
+		e->setTileMap(map);
+        enemies.push_back(e);
+    }
 
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram,*this);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
@@ -120,6 +139,10 @@ void Scene::ChangeMap(int dir)
 		}
 	}
 	player->setTileMap(map);
+    // Update map on all enemies
+    for (Enemy* e : enemies) {
+        e->setTileMap(map);
+    }
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
 }
@@ -129,10 +152,12 @@ void Scene::update(int deltaTime)
 	currentTime += deltaTime;
 
 	glm::ivec2 posp = player->posPlayer;
-
-	//enemy->update(deltaTime, posp);
+    // Update all enemies
+    for (Enemy* e : enemies) {
+        e->update(deltaTime, posp);
+    }
 	player->update(deltaTime);
-	//comprovar_vides(deltaTime, player, enemy);
+    comprovar_vides(deltaTime);
 }
 
 void Scene::render()
@@ -146,8 +171,10 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	map->render();
-
-	//enemy->render();
+    // Render all enemies
+    for (Enemy* e : enemies) {
+        e->render();
+    }
 	player->render();
 }
 
@@ -192,20 +219,26 @@ bool animation_not_in(int animation) {
 	}
 }
 
-/*void Scene::comprovar_vides(int deltaTime, Player* player, Enemy* enemy)
+void Scene::comprovar_vides(int deltaTime)
 {
 	//Si l'enemic toca al jugador, aquest perd una vida
 	glm::ivec2 posp = player->posPlayer;
-	glm::ivec2 pose = enemy->posEnemy;
-	Sprite* spr_player = player->getSprite();
-	if ((abs(posp.x - pose.x) < 20 && abs(posp.y - pose.y) < 20)) {
-		if (animation_not_in(spr_player->animation())) { //Treiem una vida al jugador
-			player->baixavida();
-		}
-		else { //Treiem una vida a l'enemic
-			enemy->baixavida();
-		}
-		
-	}
-}*/
+    Sprite* spr_player = player->getSprite();
+
+    // Comprovar per cada enemic actiu (CurrentMap == e->Escena_Original)
+    for (Enemy* e : enemies) {
+        if (!e) continue;
+		if (e->mort) continue;
+		if (e->Escena_Original != CurrentMap && (e->EnemyType != 0)) continue;
+        glm::ivec2 pose = e->posEnemy;
+        if ((abs(posp.x - pose.x) < 20 && abs(posp.y - pose.y) < 20)) {
+            if (animation_not_in(spr_player->animation())) { //Treiem una vida al jugador
+                player->baixavida();
+            }
+            else { //Treiem una vida a l'enemic
+                e->baixavida();
+            }
+        }
+    }
+}
 

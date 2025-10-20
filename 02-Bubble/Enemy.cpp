@@ -6,6 +6,7 @@
 #include <deque>
 #include <algorithm>
 #include <GL/glew.h>
+#include <GL/gl.h>
 #include "Enemy.h"
 #include "Game.h"
 
@@ -30,8 +31,13 @@ enum EnemyAnims
 
 
 
-void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene &sc)
+void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene &sc, bool mh, bool q, bool mv, int OriginalScene)
 {
+	Escena_Original = OriginalScene;
+	moviment_horitzontal = mh;
+	quiet = q;
+	moviment_vertical = mv;
+
     scene = &sc;
     vida = 2;
     hasEnemyDetected = false;
@@ -76,36 +82,32 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		//==============================
 		//			STANDS 
 		//==============================
-		sprite->setAnimationSpeed(STAND_NORMAL, 8);
-		sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X * (2 + 136), PIXEL_Y * 26)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
-		sprite->setAnimationSpeed(STAND_UP, 8);
-		sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X * (21 + 136), PIXEL_Y * 26)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
-		sprite->setAnimationSpeed(STAND_LEFT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
-		sprite->addKeyframe(STAND_LEFT, glm::vec2(PIXEL_X * (2 + 136), PIXEL_Y * 61));
-		sprite->setAnimationSpeed(STAND_RIGHT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
-		sprite->addKeyframe(STAND_RIGHT, glm::vec2(PIXEL_X * (21 + 136), PIXEL_Y * 61));
+		sprite->setAnimationSpeed(STAND_NORMAL, 4);
+		sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X * (2), PIXEL_Y * 56)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
+		sprite->setAnimationSpeed(STAND_UP, 4);
+		sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X * (21), PIXEL_Y * 56)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
+		sprite->setAnimationSpeed(STAND_LEFT, 4);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+		sprite->addKeyframe(STAND_LEFT, glm::vec2(PIXEL_X * (2 ), PIXEL_Y * 56));
+		sprite->setAnimationSpeed(STAND_RIGHT, 4);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->addKeyframe(STAND_RIGHT, glm::vec2(PIXEL_X * (21), PIXEL_Y * 56));
 		//==============================
 		//			MOVES
 		//==============================
-		sprite->setAnimationSpeed(MOVE_LEFT, 8); // Inicialment STAND LEFT, despres les animacions de caminar
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * 2, PIXEL_Y * 61)); //Stand left
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (36 + 11), PIXEL_Y * 61));
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (36 + 11 + 38), PIXEL_Y * 61));
+		sprite->setAnimationSpeed(MOVE_LEFT, 4); // Inicialment STAND LEFT, despres les animacions de caminar
+		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * 2, PIXEL_Y * 91)); //Stand left
+		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (40), PIXEL_Y * 91));
 
-		sprite->setAnimationSpeed(MOVE_RIGHT, 8);
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * 21, PIXEL_Y * 61)); //Stand right
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8 + 1), PIXEL_Y * 61));
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19 + 1), PIXEL_Y * 61));
+		sprite->setAnimationSpeed(MOVE_RIGHT, 4);
+		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * 21, PIXEL_Y * 91)); //Stand right
+		sprite->addKeyframe(MOVE_RIGHT, glm::vec2((PIXEL_X * 59), PIXEL_Y * 91));
 
-		sprite->setAnimationSpeed(MOVE_UP, 8);
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * 21, PIXEL_Y * 26)); //Stand up
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (3 + 54 + 8 + 1), PIXEL_Y * 26));
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19 + 1), PIXEL_Y * 26));
+		sprite->setAnimationSpeed(MOVE_UP, 4);
+		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * 21, PIXEL_Y * 56)); //Stand up
+		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (59), PIXEL_Y * 56));
 
-		sprite->setAnimationSpeed(MOVE_DOWN, 8);
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * 2, PIXEL_Y * 26)); //Stand normal
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 1), PIXEL_Y * 26));
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 38 + 1), PIXEL_Y * 26));
+		sprite->setAnimationSpeed(MOVE_DOWN, 4);
+		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * 2, PIXEL_Y * 56)); //Stand normal
+		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (40), PIXEL_Y * 56));
 
 	}
 	else {
@@ -155,16 +157,24 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 
 void Enemy::update(int deltaTime, glm::ivec2 posp)
 {
-	if (vida == 0) mort = true;
-	sprite->update(deltaTime);
+	if (scene->CurrentMap != Escena_Original) return;
+    if (mort) {
+        sprite->setPosition(glm::vec2(float(-100), float(-100)));
+        return;
+    }
+    sprite->update(deltaTime);
+    shootTimer += deltaTime;
     // Recalcular detecció cada frame per iniciar la persecució quan entri al FOV
     if (mort) {
         posEnemy.x = 0;
-		posEnemy.y = 0;
+        posEnemy.y = 0;
     }
     else {
-        if (!hasEnemyDetected) {
+        if (!hasEnemyDetected && EnemyType == 0) {
             hasEnemyDetected = enemic_detectat(posp, 8);
+        }
+        else if (!hasEnemyDetected){
+            hasEnemyDetected = enemic_detectat(posp, 10);
         }
         //contador per al moviment en cercle de l'escorpi
         delta_ant += deltaTime;
@@ -225,18 +235,74 @@ void Enemy::update(int deltaTime, glm::ivec2 posp)
         }
         else { //SOLDIER
             if (hasEnemyDetected) {
-            }
-            else {
-                // de moment, cap patró especial
+                // 1) Perseguir fins tenir-lo a tiro
+                glm::ivec2 shootDir(0, 0);
+                bool inLine = hasClearAxisShot(posp, shootDir);
+                if (!inLine) {
+                    // Perseguir cap al player (moviment cardinal)
+                    if (delta_ant > 200) {
+                        goToPosition(deltaTime, posp, 2);
+                        delta_ant = 0;
+                    }
+                } else {
+                    // Orientar animació segons direcció
+                    if (shootDir.x < 0) {
+                        if (sprite->animation() != MOVE_LEFT) sprite->changeAnimation(MOVE_LEFT);
+                    } else if (shootDir.x > 0) {
+                        if (sprite->animation() != MOVE_RIGHT) sprite->changeAnimation(MOVE_RIGHT);
+                    } else if (shootDir.y < 0) {
+                        if (sprite->animation() != MOVE_UP) sprite->changeAnimation(MOVE_UP);
+                    } else if (shootDir.y > 0) {
+                        if (sprite->animation() != MOVE_DOWN) sprite->changeAnimation(MOVE_DOWN);
+                    }
+
+                    // 2) Disparar si cooldown permès
+                    if (shootTimer >= shootCooldownMs) {
+                        tryShootAt(posp);
+                        shootTimer = 0;
+                    }
+                }
+            } else { // Tranquilitat, patrullem (pot ser en vertical o horitzontal segons el moviment que vulguem)
+                if (moviment_horitzontal) {
+                    if ((sprite->animation() == STAND_NORMAL) || (sprite->animation() == MOVE_RIGHT) && delta_ant > 1000) {
+                        posEnemy.x -= 10;
+                        delta_ant = 0;
+                        sprite->changeAnimation(MOVE_LEFT);
+                    }
+                    else if (sprite->animation() == MOVE_LEFT && delta_ant > 1000) {
+                        posEnemy.x += 10;
+                        delta_ant = 0;
+                        sprite->changeAnimation(MOVE_RIGHT);
+                    }
+                }
+                else if (moviment_vertical) {
+                    if ((sprite->animation() == STAND_NORMAL) || (sprite->animation() == MOVE_DOWN) && delta_ant > 1000) {
+                        posEnemy.y -= 10;
+                        delta_ant = 0;
+                        sprite->changeAnimation(MOVE_UP);
+                    }
+                    else if (sprite->animation() == MOVE_UP && delta_ant > 1000) {
+                        posEnemy.y += 10;
+                        delta_ant = 0;
+                        sprite->changeAnimation(MOVE_DOWN);
+                    }
+
+                }
             }
         }
+        sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
     }
-    sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
+
+    // Update projectiles irrespective of detection
+    updateProjectiles(deltaTime);
 }
 
 void Enemy::render()
 {
+    if (scene->CurrentMap != Escena_Original) return;
+    if (mort) return;
 	sprite->render();
+    renderProjectiles();
 }
 
 void Enemy::setTileMap(TileMap* tileMap)
@@ -246,8 +312,148 @@ void Enemy::setTileMap(TileMap* tileMap)
 
 void Enemy::setPosition(const glm::vec2& pos)
 {
+    if (scene->CurrentMap != Escena_Original) return;
+    if (mort) return;
 	posEnemy = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
+}
+
+bool Enemy::hasClearAxisShot(const glm::ivec2& targetPos, glm::ivec2& outDir) const
+{
+    if (!map) return false;
+    const int ts = map->getTileSize();
+    // Same row
+    if (targetPos.y / ts == posEnemy.y / ts) {
+        int dir = (targetPos.x > posEnemy.x) ? 1 : -1;
+        // Check tiles between enemy and player on same row
+        int y = posEnemy.y / ts;
+        int x0 = posEnemy.x / ts;
+        int x1 = targetPos.x / ts;
+        if (x0 > x1) std::swap(x0, x1);
+        for (int x = x0; x <= x1; ++x) {
+            if (!map->isTransparentAtTile(x, y)) {
+                // Allow if final tile is target tile
+                if (x == targetPos.x / ts) break;
+                return false;
+            }
+        }
+        outDir = glm::ivec2(dir, 0);
+        return true;
+    }
+    // Same column
+    if (targetPos.x / ts == posEnemy.x / ts) {
+        int dir = (targetPos.y > posEnemy.y) ? 1 : -1;
+        int x = posEnemy.x / ts;
+        int y0 = posEnemy.y / ts;
+        int y1 = targetPos.y / ts;
+        if (y0 > y1) std::swap(y0, y1);
+        for (int y = y0; y <= y1; ++y) {
+            if (!map->isTransparentAtTile(x, y)) {
+                if (y == targetPos.y / ts) break;
+                return false;
+            }
+        }
+        outDir = glm::ivec2(0, dir);
+        return true;
+    }
+    return false;
+}
+
+void Enemy::tryShootAt(const glm::ivec2& targetPos)
+{
+    if (EnemyType == 0) return; // only armed enemies
+    glm::ivec2 dir;
+    if (!hasClearAxisShot(targetPos, dir)) return;
+
+    Bullet b;
+    // Spawn from enemy center
+    const int ts = map->getTileSize();
+    glm::vec2 center = glm::vec2(posEnemy.x + ts / 2.0f, posEnemy.y + ts / 2.0f);
+    b.pos = center;
+    b.dir = dir;
+    b.speed = 0.2f; // pixels per ms -> 0.5 px/ms = 500 px/s
+    b.active = true;
+    bullets.push_back(b);
+}
+
+void Enemy::updateProjectiles(int deltaTime)
+{
+    if (bullets.empty()) return;
+    Player* pl = scene->getPlayer();
+    if (!pl) return;
+    const int ts = map->getTileSize();
+    glm::ivec2 playerPos = pl->posPlayer;
+
+    // simple AABB for player (32x32)
+    glm::ivec2 playerSize(32, 32);
+    auto intersects = [&](const glm::vec2& p) {
+        return p.x >= playerPos.x && p.x <= playerPos.x + playerSize.x &&
+               p.y >= playerPos.y && p.y <= playerPos.y + playerSize.y;
+    };
+
+    for (auto& b : bullets) {
+        if (!b.active) continue;
+        b.pos.x += b.dir.x * b.speed * deltaTime;
+        b.pos.y += b.dir.y * b.speed * deltaTime;
+
+        // If hits a blocking tile, deactivate
+        int tx = int(b.pos.x) / ts;
+        int ty = int(b.pos.y) / ts;
+        if (!map->isTransparentAtTile(tx, ty)) {
+            b.active = false;
+            continue;
+        }
+
+        // If hits player, damage and deactivate
+        if (intersects(b.pos)) {
+            pl->baixavida();
+            b.active = false;
+        }
+    }
+
+    // Remove inactive bullets (optional keep minimal list)
+    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& b) { return !b.active; }), bullets.end());
+}
+
+void Enemy::renderProjectiles()
+{
+    // Render bullets in screen space using fixed-function pipeline and restore shader after
+    GLint prevProgram = 0;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &prevProgram);
+
+    glUseProgram(0);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glDisable(GL_TEXTURE_2D);
+    glColor3f(0.9f, 0.9f, 0.9f); // bala gris
+    glBegin(GL_QUADS);
+    for (const auto& b : bullets) {
+        if (!b.active) continue;
+        float x = tileMapDispl.x + b.pos.x;
+        float y = tileMapDispl.y + b.pos.y;
+        float s = 5.0f;
+        glVertex2f(x,     y);
+        glVertex2f(x + s, y);
+        glVertex2f(x + s, y + s);
+        glVertex2f(x,     y + s);
+    }
+    glEnd();
+    glEnable(GL_TEXTURE_2D);
+
+    // Restore matrices
+    glPopMatrix(); // MODELVIEW
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+
+    // Restore previous shader program
+    glUseProgram(prevProgram);
 }
 
 // Helper to get facing direction unit vector from current animation
@@ -506,5 +712,7 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
 }
 
 void Enemy::baixavida() {
+    
 	vida = vida - 1;
+    if (vida == 0) mort = true;
 }

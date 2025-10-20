@@ -3,14 +3,17 @@
 
 
 #include <glm/glm.hpp>
+#include <vector>
 #include "ShaderProgram.h"
 #include "TileMap.h"
 #include "Player.h"
-#include "Enemy.h"
+// Forward declare to avoid heavy includes here
+class Enemy;
 
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
+class Enemy;
 class Player;
 
 class Scene
@@ -24,8 +27,12 @@ public:
 	void update(int deltaTime);
 	void render();
 	void ChangeMap(int dir);
-	//void comprovar_vides(int deltaTime, Player* player, Enemy* enemy);
+    void comprovar_vides(int deltaTime);
 	int CurrentMap;
+    // Accessor for enemies to interact with the player (e.g., projectile hits)
+    Player* getPlayer() const { return player; }
+    // Access enemies for collision checks (player bullets)
+    std::vector<Enemy*>& getEnemies() { return enemies; }
 
 private:
 	void initShaders();
@@ -33,7 +40,7 @@ private:
 private:
 	TileMap *map;
 	Player *player;
-	//Enemy* enemy;
+    std::vector<Enemy*> enemies;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;

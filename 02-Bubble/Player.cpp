@@ -324,6 +324,9 @@ void Player::update(int deltaTime)
 		else if (scene->CurrentMap == 4 && posPlayer.y <= 32 && posPlayer.x >= 352 && posPlayer.x <= 384) {
 			scene->ChangeMap(3);
 		}
+		else if (scene->CurrentMap == 5 && posPlayer.y <= 32 && posPlayer.x >= 96 && posPlayer.x <= 128) {
+			scene->ChangeMap(3);
+		}
 		else if (map->collisionMoveUP(posPlayer, glm::ivec2(32, 32), scene->CurrentMap))
 		{
 			posPlayer.y += 2;

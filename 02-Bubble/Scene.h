@@ -9,6 +9,7 @@
 #include "Player.h"
 // Forward declare to avoid heavy includes here
 class Enemy;
+class InferiorBar;
 
 
 // Scene contains all the entities of our game.
@@ -45,6 +46,7 @@ private:
 	float currentTime;
 	glm::mat4 projection;
 
+    InferiorBar* hud = nullptr;
 };
 
 

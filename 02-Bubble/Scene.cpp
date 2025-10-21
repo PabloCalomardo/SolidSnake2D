@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Game.h"
 #include "Enemy.h"
+#include "InferiorBar.h"
 
 
 #define SCREEN_X 32
@@ -18,6 +19,8 @@ Scene::Scene()
 	map = NULL;
 	player = NULL;
     enemies.clear();
+    // HUD
+    hud = nullptr;
 }
 
 Scene::~Scene()
@@ -28,6 +31,7 @@ Scene::~Scene()
 		delete player;
     for (Enemy* e : enemies) delete e;
     enemies.clear();
+    if (hud) { delete hud; hud = nullptr; }
 }
 
 
@@ -154,6 +158,10 @@ void Scene::init()
 	player->setTileMap(map);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
+
+    // HUD
+    hud = new InferiorBar();
+    hud->init(this);
 }
 
 void Scene::ChangeMap(int dir) 
@@ -263,6 +271,7 @@ void Scene::update(int deltaTime)
     }
 	player->update(deltaTime);
     comprovar_vides(deltaTime);
+    if (hud) hud->update(deltaTime);
 }
 
 void Scene::render()
@@ -281,6 +290,9 @@ void Scene::render()
         e->render();
     }
 	player->render();
+
+    // Render HUD last so it overlays
+    if (hud) hud->render();
 }
 
 void Scene::initShaders()

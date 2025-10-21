@@ -29,6 +29,10 @@ public:
 	void baixavida();
     // Optional: set bullet speed in pixels per second
     void setBulletSpeedPerSecond(float pxPerSec) { bulletSpeedPxPerMs = pxPerSec / 1000.0f; }
+
+    // HUD accessors
+    int getLives() const { return vida; }
+    bool hasWeapon() const { return porta_arma; }
 	
 private:
     struct Bullet {

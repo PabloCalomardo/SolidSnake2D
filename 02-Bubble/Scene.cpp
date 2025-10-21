@@ -38,25 +38,116 @@ void Scene::init()
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
 
-    // Create enemies and push them into the vector
-    // Example enemies across maps:
-    {
-        // Soldier in map 1
-        Enemy* e = new Enemy();
-        e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, false, true, 1);
-        // Set initial position directly to avoid setPosition guard against non-current maps
-        e->posEnemy = glm::ivec2(25 * map->getTileSize(), 10 * map->getTileSize());
-        e->setTileMap(map);
-        enemies.push_back(e);
-    }
-    // You can add more enemies here for other maps if desired, e.g.:
-    {
+	//==============================
+	//			ENEMICS
+	//==============================
+	{
+		// Soldat mapa 1
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, false, true, 1);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(30 * map->getTileSize(), 20 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+     // Escorpí mapa 2
         Enemy* e = new Enemy();
         e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, false, false, true, 2);
-        e->posEnemy = glm::ivec2(15 * map->getTileSize(), 15 * map->getTileSize());
+        e->posEnemy = glm::ivec2(8 * map->getTileSize(), 5 * map->getTileSize());
 		e->setTileMap(map);
         enemies.push_back(e);
     }
+	{
+		// Soldat mapa 2
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, false, true, 2);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(25 * map->getTileSize(), 20 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 2
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, true, false, false, 2);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(22 * map->getTileSize(), 5 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Escorpí1 mapa 3
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, true, false, false, 3);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(7 * map->getTileSize(), 2 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Escorpí2 mapa 3
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, true, false, false, 3);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(12 * map->getTileSize(), 8 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Escorpí3 mapa 3
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, true, false, false, 3);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(20 * map->getTileSize(), 8 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Escorpí4 mapa 3
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, true, false, false, 3);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(30 * map->getTileSize(), 4 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Escorpí5 mapa 3
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, true, false, false, 3);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(15 * map->getTileSize(), 2 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Escorpí6 mapa 3
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, true, false, false, 3);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(25 * map->getTileSize(), 6 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat1 mapa 4
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, true, false, false, 4);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(30 * map->getTileSize(), 17 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 4
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, false, true, 4);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(22 * map->getTileSize(), 6 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
 
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram,*this);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
@@ -243,7 +334,7 @@ void Scene::comprovar_vides(int deltaTime)
     for (Enemy* e : enemies) {
         if (!e) continue;
 		if (e->mort) continue;
-		if (e->Escena_Original != CurrentMap && (e->EnemyType != 0)) continue;
+		if (e->Escena_Original != CurrentMap || (e->EnemyType != 0)) continue;
         glm::ivec2 pose = e->posEnemy;
         if ((abs(posp.x - pose.x) < 20 && abs(posp.y - pose.y) < 20)) {
             if (animation_not_in(spr_player->animation())) { //Treiem una vida al jugador

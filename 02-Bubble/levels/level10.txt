@@ -1,0 +1,34 @@
+TILEMAP
+40 30 							-- Size of tile map in tiles
+16 16 							-- Tile size & block size
+images/interior4.png 	-- Tilesheet
+9 9								-- Number of tiles in tilesheet
+UP^^^_^^^^^`^^^^^^^_^^^^^^^^^`^^^^^^_^ON
+UYhghghghghhghghgghhghghgghghghghghghgXN
+Ub^`^^^^^_^^^^^^^_^^^^^^`^^^^^^^`^^^^^aN
+UkhghgghhghghghghghghgghghhghghghghhghjN
+UV::::::::::::::::::::::::::::::::::::pN
+UV:11111111111111111111111111111111111qN
+UV:11111111111111111111111111111111111rN
+UV:11111111111111111111111111111111111sN
+UV:111{=xxxxxxxxxxx>=xxxxxxxxxxx>|1111tN
+UV:111zN^^^^^^^^^^^HN^^^^^_^^^^^H}1111uN
+UV:111yN^^^^^_^^^^^HN^^^^^^^^^^^H~1111vN
+UV:111MN^^^^^^^^^^^HN^^`^^^^^^^^H91111wN
+UV:111LN^^^`^^^^^^^HN^^^^^^^^_^^HV:111MN
+UV:111LN^^^^^^^^^`^HN^^^^^^^^^^^HV:111LN
+UV:111MN^^^^^^^^^^^HN^^^^`^^^^^^HV:111MN
+UV:111LN^_^^^^^^^^^HN^^^^^^^^^^^HV:111LN
+UV:111MN^^^^^^`^^^^HN^^^_^^^^^^^HV:111MN
+UV:111MN^^^_^^^^^^^HN^^^^^^^^^`^HV:111LN
+UV:111LFxxxxxxxxxxxGFxxxxxxxxxxxGV:111MN
+UV:111R^^^_^^^^`^^^^^^^`^^^^_^^^^Q:111LN
+UV:111[hghghhghghgghghghghhghhgghZ:111MN
+UV:111d^^^^`^^^^^^_^^^^^^_^^^^^`^c:111LN
+UV:111mhghghhghghgghghghghhhghgghl:111LN
+UV:111;::::::::::::::::::::::::::::111MN
+UV:11111111111111111111111111111111111LN
+UV:11111111111111111111111111111111111MN
+UV:11111111111111111111111111111111111LN
+ExxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxW
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

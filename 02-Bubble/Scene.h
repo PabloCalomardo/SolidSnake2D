@@ -7,6 +7,8 @@
 #include "ShaderProgram.h"
 #include "TileMap.h"
 #include "Player.h"
+#include "objeto.h"
+
 // Forward declare to avoid heavy includes here
 class Enemy;
 class InferiorBar;
@@ -35,6 +37,7 @@ public:
     Player* getPlayer() const { return player; }
     // Access enemies for collision checks (player bullets)
     std::vector<Enemy*>& getEnemies() { return enemies; }
+	std::vector<objeto*>& getObjetos() { return objetos; }
 
 private:
 	void initShaders();
@@ -43,6 +46,7 @@ private:
 	TileMap *map;
 	Player *player;
     std::vector<Enemy*> enemies;
+	std::vector<objeto*> objetos;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;

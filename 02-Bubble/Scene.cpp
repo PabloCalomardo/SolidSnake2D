@@ -5,7 +5,7 @@
 #include "Game.h"
 #include "Enemy.h"
 #include "InferiorBar.h"
-
+#include "objeto.h"
 
 #define SCREEN_X 32
 #define SCREEN_Y 16
@@ -41,6 +41,31 @@ void Scene::init()
 	CurrentMap = 4;
 	map = TileMap::createTileMap("levels/level04.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
+
+	//==============================
+	//			OBJECTES
+	//==============================
+	{
+		// Caixa mapa 1
+		objeto* o = new objeto();
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, 1, glm::ivec2(15 * map->getTileSize(), 15 * map->getTileSize()));
+		o->setTileMap(map);
+		objetos.push_back(o);
+	} 
+	{
+		// Arma mapa 1
+		objeto* o = new objeto();
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, 1, glm::ivec2(15 * map->getTileSize(), 20 * map->getTileSize()));
+		o->setTileMap(map);
+		objetos.push_back(o);
+	}
+	{
+		// Vida mapa 1
+		objeto* o = new objeto();
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, 1, glm::ivec2(15 * map->getTileSize(), 25 * map->getTileSize()));
+		o->setTileMap(map);
+		objetos.push_back(o);
+	}
 
 	//==============================
 	//			ENEMICS
@@ -371,6 +396,9 @@ void Scene::update(int deltaTime)
     for (Enemy* e : enemies) {
         e->update(deltaTime, posp);
     }
+	for (objeto* e : objetos) {
+		e->update(deltaTime);
+	}
 	player->update(deltaTime);
     comprovar_vides(deltaTime);
     if (hud) hud->update(deltaTime);
@@ -391,6 +419,9 @@ void Scene::render()
     for (Enemy* e : enemies) {
         e->render();
     }
+	for (objeto* e : objetos) {
+		e->render();
+	}
 	player->render();
 
     // Render HUD last so it overlays

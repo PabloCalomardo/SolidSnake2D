@@ -33,6 +33,7 @@ public:
 	void tp_to_init(int m);
     void comprovar_vides(int deltaTime);
 	int CurrentMap;
+	bool detectable;
     // Accessor for enemies to interact with the player (e.g., projectile hits)
     Player* getPlayer() const { return player; }
     // Access enemies for collision checks (player bullets)

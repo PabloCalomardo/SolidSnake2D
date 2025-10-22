@@ -38,6 +38,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 	porta_arma = true;
 	ferit = false;
 	mort = false;
+	god = false;
 	spritesheet.loadFromFile("images/Solid_snake.png", TEXTURE_PIXEL_FORMAT_RGBA);	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
 	sprite = Sprite::createSprite(glm::ivec2(16*2,32*2), glm::vec2(PIXEL_X *16, PIXEL_Y *32), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(42);
@@ -266,7 +267,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 
 void Player::update(int deltaTime)
 {
-	if (vida < 3) ferit = true;
+	// if (vida < 3) ferit = true;
 
 	int a = porta_arma;
 	int f = ferit;
@@ -278,7 +279,7 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][0][12]);
 		return;
 	}
-	else if(Game::instance().getKey(GLFW_KEY_LEFT))
+	else if(Game::instance().getKey(GLFW_KEY_LEFT) || Game::instance().getKey(GLFW_KEY_A))
 	{
 		if(sprite->animation() != Animacions[f][a][4])
 			sprite->changeAnimation(Animacions[f][a][4]);
@@ -298,7 +299,7 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][2]);
 		}
 	}
-	else if(Game::instance().getKey(GLFW_KEY_RIGHT))
+	else if(Game::instance().getKey(GLFW_KEY_RIGHT) || Game::instance().getKey(GLFW_KEY_D))
 	{
 		if(sprite->animation() != Animacions[f][a][5])
 			sprite->changeAnimation(Animacions[f][a][5]);
@@ -318,7 +319,7 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][3]);
 		}
 	}
-	else if (Game::instance().getKey(GLFW_KEY_UP))
+	else if (Game::instance().getKey(GLFW_KEY_UP) || Game::instance().getKey(GLFW_KEY_W))
 	{
 		if (sprite->animation() != Animacions[f][a][6])
 			sprite->changeAnimation(Animacions[f][a][6]);
@@ -339,7 +340,7 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][1]);
 		}
 	}
-	else if (Game::instance().getKey(GLFW_KEY_DOWN))
+	else if (Game::instance().getKey(GLFW_KEY_DOWN) || Game::instance().getKey(GLFW_KEY_S))
 	{
 		if (sprite->animation() != Animacions[f][a][7])
 			sprite->changeAnimation(Animacions[f][a][7]);
@@ -359,7 +360,7 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][0]);
 		}
 	}
-	else if (Game::instance().getKey(GLFW_KEY_X) && !porta_arma)		// PUNCH NOMÉS SI NO PORTA ARMA
+	else if (Game::instance().getKey(GLFW_KEY_Z) && !porta_arma)		// PUNCH NOMÉS SI NO PORTA ARMA
 	{
         handlePunchNoWeapon(f, a);
 	}
@@ -372,18 +373,39 @@ void Player::update(int deltaTime)
 	else if (Game::instance().getKey(GLFW_KEY_B)) {
 		scene->tp_to_init(11);
 	}
+	else if (Game::instance().getKey(GLFW_KEY_N)) {
+		scene->detectable = false;
+	}
 	else if (Game::instance().getKey(GLFW_KEY_H)) {
 		vida = 3;
 		ferit = 0;
-		if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
-		else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
-		else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
-		else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
-		else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
-		else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
-		else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
-		else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
-		f = ferit;
+		if (ferit != f) {
+			if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
+			else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
+			else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
+			else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
+			else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
+			else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
+			else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
+			else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
+			f = ferit;
+		}
+	}
+	else if (Game::instance().getKey(GLFW_KEY_G)) {
+		vida = 3;
+		ferit = 0;
+		god = true;
+		if (ferit != f) {
+			if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
+			else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
+			else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
+			else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
+			else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
+			else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
+			else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
+			else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
+			f = ferit;
+		}
 	}
 	else
 	{
@@ -439,22 +461,24 @@ void Player::setPosition(const glm::vec2 &pos)
 
 void Player::baixavida()
 {
-	vida = vida - 1;
-	if (vida < 3) {
-		ferit = 1;
-		int f = 0;
-		int a = porta_arma;
-		if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
-		else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
-		else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
-		else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
-		else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
-		else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
-		else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
-		else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
+	if (!god) {
+		vida = vida - 1;
+		if (vida < 3) {
+			ferit = 1;
+			int f = 0;
+			int a = porta_arma;
+			if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
+			else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
+			else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
+			else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
+			else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
+			else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
+			else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
+			else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
+		}
+		if (vida <= 0) mort = true;
+		cout << vida << endl;
 	}
-	if (vida <= 0) mort = true;
-	cout << vida << endl;
 }
 
 glm::ivec2 Player::facingDirFromAnim(int anim) const

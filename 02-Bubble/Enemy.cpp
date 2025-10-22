@@ -170,7 +170,8 @@ void Enemy::update(int deltaTime, glm::ivec2 posp)
         posEnemy.y = 0;
     }
     else {
-        if (!hasEnemyDetected && EnemyType == 0) {
+        if (!scene->detectable) hasEnemyDetected = false;
+        else if (!hasEnemyDetected && EnemyType == 0) {
             hasEnemyDetected = enemic_detectat(posp, 8);
         }
         else if (!hasEnemyDetected){

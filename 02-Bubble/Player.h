@@ -60,6 +60,7 @@ private:
 	bool porta_arma;
 	bool ferit;
 	bool mort;
+    bool god;
 	int jumpAngle, startY;
 	Texture spritesheet;
 	Sprite *sprite;

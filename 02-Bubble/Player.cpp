@@ -116,7 +116,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 
 		sprite->setAnimationSpeed(ARMED_STAND_UP, 8);
 		sprite->addKeyframe(ARMED_STAND_UP, glm::vec2(PIXEL_X * (21+136), PIXEL_Y * 26)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
-
+		
 		sprite->setAnimationSpeed(ARMED_STAND_LEFT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
 		sprite->addKeyframe(ARMED_STAND_LEFT, glm::vec2(PIXEL_X * (2 + 136), PIXEL_Y * 61));
 
@@ -361,18 +361,7 @@ void Player::update(int deltaTime)
 	}
 	else if (Game::instance().getKey(GLFW_KEY_X) && !porta_arma)		// PUNCH NOMÉS SI NO PORTA ARMA
 	{
-		if (sprite->animation() == Animacions[f][a][0] || sprite->animation() == Animacions[f][a][7]){
-			sprite->changeAnimation(Animacions[f][a][11]);
-		}
-		else if (sprite->animation() == Animacions[f][a][1] || sprite->animation() == Animacions[f][a][6]) {
-			sprite->changeAnimation(Animacions[f][a][10]);
-		}
-		else if (sprite->animation() == Animacions[f][a][2] || sprite->animation() == Animacions[f][a][4]){
-			sprite->changeAnimation(Animacions[f][a][8]);
-		}
-		else if (sprite->animation() == Animacions[f][a][3] || sprite->animation() == Animacions[f][a][5]) {
-			sprite->changeAnimation(Animacions[f][a][9]);
-		}	
+        handlePunchNoWeapon(f, a);
 	}
 	else if (Game::instance().getKey(GLFW_KEY_K)) {
 		scene->tp_to_init(5);
@@ -426,6 +415,9 @@ void Player::update(int deltaTime)
 
     // Update projectiles after movement
     updateProjectiles(deltaTime);
+
+    // Check pick up objects after movement
+    checkObjectPickup();
 }
 
 void Player::render()
@@ -522,10 +514,22 @@ void Player::tryShoot()
     if (shootTimer < shootCooldownMs) return;
 
     Bullet b;
-    const int ts = map->getTileSize();
-    glm::vec2 center = glm::vec2(posPlayer.x + ts / 2.0f, posPlayer.y + ts / 2.0f);
-    b.pos = center;
+    // Decideix direcció primer
     b.dir = facingDirFromAnim(sprite->animation());
+
+    // Punt d'origen segons direcció: si apuntem amunt, surt del cap; en cas contrari, lleugerament per sobre del centre
+    const float muzzleYOffset = -6.0f; // elevar una mica quan no és cap amunt
+    float spawnX = posPlayer.x + 16.0f;
+    float spawnY;
+    if (b.dir.y < 0) {
+        // cap amunt -> antiga posició del cap
+        spawnY = posPlayer.y + 16.0f;
+    } else {
+        // resta direccions -> centre elevat
+        spawnY = posPlayer.y + 32.0f + muzzleYOffset;
+    }
+    b.pos = glm::vec2(spawnX, spawnY);
+
     b.speed = bulletSpeedPxPerMs;
     b.active = true;
     bullets.push_back(b);
@@ -537,14 +541,13 @@ void Player::updateProjectiles(int deltaTime)
     if (bullets.empty()) return;
 
     const int ts = map->getTileSize();
-    // AABB de enemigo asumida 32x32 como Player para esta lógica
-    glm::ivec2 enemySize(32, 32);
 
     auto hitEnemy = [&](const glm::vec2& p, Enemy* e) {
         if (!e) return false;
-        // solo afectar enemigos del mapa actual
         if (e->Escena_Original != scene->CurrentMap) return false;
         glm::ivec2 ep = e->posEnemy;
+        // Enemy size: scorpion 32x32, soldiers 32x64
+        glm::ivec2 enemySize = (e->EnemyType == 0) ? glm::ivec2(32, 32) : glm::ivec2(32, 64);
         return p.x >= ep.x && p.x <= ep.x + enemySize.x &&
                p.y >= ep.y && p.y <= ep.y + enemySize.y;
     };
@@ -562,7 +565,7 @@ void Player::updateProjectiles(int deltaTime)
             continue;
         }
 
-        // revisar colisión con enemigos vivos del mapa
+        // revisar colisión con enemigos del mapa
         auto& enemies = scene->getEnemies();
         for (auto* e : enemies) {
             if (hitEnemy(b.pos, e)) {
@@ -614,6 +617,58 @@ void Player::renderProjectiles()
 
     glUseProgram(prevProgram);
 }
+
+void Player::checkObjectPickup()
+{
+    if (!scene) return;
+    // AABB del jugador: 32x64. Volem tot el cos, del cap als peus
+    glm::ivec2 pMin = posPlayer;                 // top-left del cos
+    glm::ivec2 pMax = posPlayer + glm::ivec2(32, 64); // bottom-right del cos
+
+    auto& objs = scene->getObjetos();
+    for (auto* o : objs) {
+        if (!o) continue;
+        if (o->recollit) continue;
+        if (o->Escena_Original != scene->CurrentMap) continue; // només a la seva escena
+
+        // Usem la posició pública "position" que s'emplena a init()
+        glm::ivec2 oMin = o->position;
+        glm::ivec2 oMax = o->position + o->getSize();
+
+        bool overlap = !(pMax.x <= oMin.x || pMin.x >= oMax.x || pMax.y <= oMin.y || pMin.y >= oMax.y);
+        if (overlap) {
+            // afegir a inventari i marcar recollit
+            inventari.push_back(o);
+            o->recollit = true;
+            if (o->getSprite() && o->getSprite()->animation() == 1) {
+                porta_arma = true; // recollir arma
+            }
+        }
+    }
+}
+
+void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
+{
+    const int sAnim = sprite->animation();
+    if (sAnim == Animacions[feritIdx][armaIdx][0] || sAnim == Animacions[feritIdx][armaIdx][7]) {
+        sprite->changeAnimation(Animacions[feritIdx][armaIdx][11]);
+    }
+    else if (sAnim == Animacions[feritIdx][armaIdx][1] || sAnim == Animacions[feritIdx][armaIdx][6]) {
+        sprite->changeAnimation(Animacions[feritIdx][armaIdx][10]);
+    }
+    else if (sAnim == Animacions[feritIdx][armaIdx][2] || sAnim == Animacions[feritIdx][armaIdx][4]) {
+        sprite->changeAnimation(Animacions[feritIdx][armaIdx][8]);
+    }
+    else if (sAnim == Animacions[feritIdx][armaIdx][3] || sAnim == Animacions[feritIdx][armaIdx][5]) {
+        sprite->changeAnimation(Animacions[feritIdx][armaIdx][9]);
+    }
+}
+
+
+
+
+
+
 
 
 

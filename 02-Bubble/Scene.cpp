@@ -38,8 +38,8 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
-	CurrentMap = 4;
-	map = TileMap::createTileMap("levels/level04.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	CurrentMap = 1;
+	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
 
 	//==============================

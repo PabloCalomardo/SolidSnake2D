@@ -366,12 +366,21 @@ void Enemy::tryShootAt(const glm::ivec2& targetPos)
     if (!hasClearAxisShot(targetPos, dir)) return;
 
     Bullet b;
-    // Spawn from enemy center
-    const int ts = map->getTileSize();
-    glm::vec2 center = glm::vec2(posEnemy.x + ts / 2.0f, posEnemy.y + ts / 2.0f);
-    b.pos = center;
+    // Spawn segons direcció: amunt surt del cap, altrament del centre lleugerament amunt
+    const float muzzleYOffset = -10.0f; // per la resta direccions
+    float spawnX = posEnemy.x + 16.0f;
+    float spawnY;
+    if (dir.y < 0) {
+        // cap amunt -> cap de sprite (soldat 32x64 => cap ~ y+16)
+        spawnY = (EnemyType == 0) ? (posEnemy.y + 16.0f) : (posEnemy.y + 16.0f);
+    } else {
+        // resta direccions -> centre
+        spawnY = (EnemyType == 0) ? (posEnemy.y + 16.0f + muzzleYOffset) : (posEnemy.y + 32.0f + muzzleYOffset);
+    }
+
+    b.pos = glm::vec2(spawnX, spawnY);
     b.dir = dir;
-    b.speed = 0.2f; // pixels per ms -> 0.5 px/ms = 500 px/s
+    b.speed = 0.2f; // pixels per ms
     b.active = true;
     bullets.push_back(b);
 }
@@ -381,22 +390,22 @@ void Enemy::updateProjectiles(int deltaTime)
     if (bullets.empty()) return;
     Player* pl = scene->getPlayer();
     if (!pl) return;
-    const int ts = map->getTileSize();
-    glm::ivec2 playerPos = pl->posPlayer;
 
-    // simple AABB for player (32x32)
-    glm::ivec2 playerSize(32, 32);
+    // Player full body 32x64
+    glm::ivec2 playerPos = pl->posPlayer;
+    glm::ivec2 playerSize(32, 64);
+
     auto intersects = [&](const glm::vec2& p) {
         return p.x >= playerPos.x && p.x <= playerPos.x + playerSize.x &&
                p.y >= playerPos.y && p.y <= playerPos.y + playerSize.y;
     };
 
+    const int ts = map->getTileSize();
     for (auto& b : bullets) {
         if (!b.active) continue;
         b.pos.x += b.dir.x * b.speed * deltaTime;
         b.pos.y += b.dir.y * b.speed * deltaTime;
 
-        // If hits a blocking tile, deactivate
         int tx = int(b.pos.x) / ts;
         int ty = int(b.pos.y) / ts;
         if (!map->isTransparentAtTile(tx, ty)) {
@@ -404,14 +413,12 @@ void Enemy::updateProjectiles(int deltaTime)
             continue;
         }
 
-        // If hits player, damage and deactivate
         if (intersects(b.pos)) {
             pl->baixavida();
             b.active = false;
         }
     }
 
-    // Remove inactive bullets (optional keep minimal list)
     bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& b) { return !b.active; }), bullets.end());
 }
 

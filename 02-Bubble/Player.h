@@ -6,6 +6,7 @@
 #include "TileMap.h"
 #include "Scene.h"
 #include <vector>
+#include "objeto.h"
 
 
 class Scene;
@@ -31,6 +32,8 @@ public:
     // Optional: set bullet speed in pixels per second
     void setBulletSpeedPerSecond(float pxPerSec) { bulletSpeedPxPerMs = pxPerSec / 1000.0f; }
 
+	std::vector<objeto*> inventari;
+
     // HUD accessors
     int getLives() const { return vida; }
     bool hasWeapon() const { return porta_arma; }
@@ -47,6 +50,11 @@ private:
     void renderProjectiles();
     void tryShoot();
     glm::ivec2 facingDirFromAnim(int anim) const;
+    
+    // Check collision with objects and pick them
+    void checkObjectPickup();
+    // Handle punch animation selection when unarmed
+    void handlePunchNoWeapon(int feritIdx, int armaIdx);
 
 	int vida;
 	bool porta_arma;

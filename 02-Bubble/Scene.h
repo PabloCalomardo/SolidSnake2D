@@ -28,6 +28,7 @@ public:
 	void update(int deltaTime);
 	void render();
 	void ChangeMap(int dir);
+	void tp_to_init(int m);
     void comprovar_vides(int deltaTime);
 	int CurrentMap;
     // Accessor for enemies to interact with the player (e.g., projectile hits)

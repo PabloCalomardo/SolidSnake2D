@@ -38,8 +38,8 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
-	CurrentMap = 1;
-	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	CurrentMap = 4;
+	map = TileMap::createTileMap("levels/level04.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
 
 	//==============================
@@ -152,6 +152,42 @@ void Scene::init()
 		e->setTileMap(map);
 		enemies.push_back(e);
 	}
+	{
+		// Soldat1 mapa 5
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, true, false, 5);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(7 * map->getTileSize(), 6 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 5
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, true, false, false, 5);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(34 * map->getTileSize(), 13 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 5
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, true, false, false, 6);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(8 * map->getTileSize(), 4 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 5
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, true, false, false, 6);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(34 * map->getTileSize(), 13 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
 
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram,*this);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
@@ -162,6 +198,24 @@ void Scene::init()
     // HUD
     hud = new InferiorBar();
     hud->init(this);
+}
+
+void Scene::tp_to_init(int m)
+{
+	CurrentMap = m;
+	string aux;
+	if (m < 10) aux = "levels/level0" + to_string(m) + ".txt";
+	else aux = "levels/level" + to_string(m) + ".txt";
+	map = TileMap::createTileMap(aux, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	if (m == 1) player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	else if (m == 5) {
+		glm::vec2 posaux(23, 24);
+		player->setPosition(glm::vec2(posaux[0] * map->getTileSize(), posaux[1] * map->getTileSize()));
+	}
+	else if (m == 11) {
+		glm::vec2 posaux(19, 24);
+		player->setPosition(glm::vec2(posaux[0] * map->getTileSize(), posaux[1] * map->getTileSize()));
+	}
 }
 
 void Scene::ChangeMap(int dir) 

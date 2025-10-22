@@ -372,8 +372,29 @@ void Player::update(int deltaTime)
 		}
 		else if (sprite->animation() == Animacions[f][a][3] || sprite->animation() == Animacions[f][a][5]) {
 			sprite->changeAnimation(Animacions[f][a][9]);
-		}
-			
+		}	
+	}
+	else if (Game::instance().getKey(GLFW_KEY_K)) {
+		scene->tp_to_init(5);
+	}
+	else if (Game::instance().getKey(GLFW_KEY_P)) {
+		scene->tp_to_init(1);
+	}
+	else if (Game::instance().getKey(GLFW_KEY_B)) {
+		scene->tp_to_init(11);
+	}
+	else if (Game::instance().getKey(GLFW_KEY_H)) {
+		vida = 3;
+		ferit = 0;
+		if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
+		else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
+		else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
+		else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
+		else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
+		else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
+		else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
+		else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
+		f = ferit;
 	}
 	else
 	{
@@ -427,7 +448,19 @@ void Player::setPosition(const glm::vec2 &pos)
 void Player::baixavida()
 {
 	vida = vida - 1;
-	if (vida < 3) ferit = true;
+	if (vida < 3) {
+		ferit = 1;
+		int f = 0;
+		int a = porta_arma;
+		if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
+		else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
+		else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
+		else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
+		else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
+		else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
+		else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
+		else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
+	}
 	if (vida <= 0) mort = true;
 	cout << vida << endl;
 }

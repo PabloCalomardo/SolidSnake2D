@@ -46,9 +46,13 @@ void InferiorBar::render() {
     Player* player = scene->getPlayer();
     int lives = 0;
     bool arma = false;
+    std::vector<objeto*> inv;
+    int sel = -1;
     if (player) {
         lives = player->getLives();
         arma = player->hasWeapon();
+        inv = player->inventari;
+        sel = player->getSelectedItemIndex();
     }
 
     int map = scene->CurrentMap;
@@ -69,7 +73,7 @@ void InferiorBar::render() {
 
     // Sections
     renderLivesSection(padding, innerY, sectionW - padding * 2, lives);
-    renderWeaponSection(sectionW + padding, innerY, sectionW - padding * 2, arma);
+    renderWeaponSection(sectionW + padding, innerY, sectionW - padding * 2, arma, inv, sel);
     renderMapSection(sectionW * 2 + padding, innerY, sectionW - padding * 2, map);
 
     glEnable(GL_TEXTURE_2D);
@@ -199,7 +203,7 @@ void InferiorBar::renderLivesSection(int x, int y, int width, int lives) {
     }
 }
 
-void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon) {
+void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, const std::vector<objeto*>& inventory, int selectedIndex) {
     // Title
     const int titleSize = 2;
     drawText(x, y, "ARMS", titleSize, 1);
@@ -212,17 +216,47 @@ void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon) {
     glColor3f(1.f, 1.f, 1.f);
     drawRect(boxX, boxY, boxW, boxH);
 
-    // Label inside: NONE or GUN-like filled icon bar
-    if (!hasWeapon) {
-        drawText(boxX + 6, boxY + 8, "NONE", 2, 1);
-    } else {
-        // Simple stylized weapon icon as horizontal bars
-        int ix = boxX + 6;
-        int iy = boxY + 6;
-        glColor3f(1.f, 1.f, 1.f);
-        drawFilledRect(ix, iy, boxW - 12, 4);
-        drawFilledRect(ix, iy + 8, boxW - 30, 4);
-        drawFilledRect(ix, iy + 16, boxW - 20, 4);
+    // If no inventory, show NONE or existing weapon status
+    if (inventory.empty()) {
+        if (!hasWeapon) drawText(boxX + 6, boxY + 8, "NONE", 2, 1);
+        else drawText(boxX + 6, boxY + 8, "GUN", 2, 1);
+        return;
+    }
+
+    // Draw up to 3 inventory slots horizontally inside the box
+    int maxSlots = std::min(3, int(inventory.size()));
+    int slotW = 16;
+    int slotH = 16;
+    int totalW = maxSlots * slotW + (maxSlots - 1) * 4;
+    int startX = boxX + (boxW - totalW) / 2;
+    int startY = boxY + (boxH - slotH) / 2;
+
+    for (int i = 0; i < maxSlots; ++i) {
+        int sx = startX + i * (slotW + 4);
+        int sy = startY;
+        // outline
+        drawRect(sx, sy, slotW, slotH);
+        // fill based on item type: draw simple patterns
+        objeto* it = inventory[i];
+        if (!it) continue;
+        int typeAnim = -1;
+        if (it->getSprite()) typeAnim = it->getSprite()->animation();
+        if (typeAnim == 1) {
+            // arma -> horizontal bars
+            drawFilledRect(sx + 2, sy + 6, slotW - 4, 3);
+        } else if (typeAnim == 0) {
+            // caixa -> square center
+            drawFilledRect(sx + 4, sy + 4, slotW - 8, slotH - 8);
+        } else if (typeAnim == 2) {
+            // vida -> small heart-like (two pixels)
+            drawFilledRect(sx + 6, sy + 6, 4, 4);
+        }
+        // highlight selected
+        if (i == selectedIndex) {
+            // draw a white border thicker
+            glColor3f(1.f, 1.f, 1.f);
+            drawRect(sx - 2, sy - 2, slotW + 4, slotH + 4);
+        }
     }
 }
 

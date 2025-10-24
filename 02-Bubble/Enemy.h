@@ -13,7 +13,7 @@ class Enemy
 
 public:
 	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene &sc, bool mh, bool q, bool mv, int OriginalScene);
-	void update(int deltaTime, glm::ivec2 posp);
+	void update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat);
 	void render();
 
 	void setTileMap(TileMap* tileMap);

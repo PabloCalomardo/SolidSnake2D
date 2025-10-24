@@ -6,7 +6,9 @@
 #include <unordered_map>
 #include <array>
 #include <string>
+#include <vector>
 
+#include "objeto.h"
 class Scene;
 
 // Simple black & white pixel-art HUD rendered at the bottom of the screen.
@@ -34,7 +36,7 @@ private:
 
     // NES-like layout sections
     void renderLivesSection(int x, int y, int width, int lives);
-    void renderWeaponSection(int x, int y, int width, bool hasWeapon);
+    void renderWeaponSection(int x, int y, int width, bool hasWeapon, const std::vector<objeto*>& inventory, int selectedIndex);
     void renderMapSection(int x, int y, int width, int mapId);
 
 private:

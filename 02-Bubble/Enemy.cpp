@@ -155,9 +155,10 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 
 }
 
-void Enemy::update(int deltaTime, glm::ivec2 posp)
+void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat)
 {
 	if (scene->CurrentMap != Escena_Original) return;
+	if (player_ha_disparat) hasEnemyDetected = true;
     if (mort) {
         sprite->setPosition(glm::vec2(float(-100), float(-100)));
         return;

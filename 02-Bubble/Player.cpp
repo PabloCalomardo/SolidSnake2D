@@ -7,6 +7,7 @@
 #include "Enemy.h"
 
 
+
 #define JUMP_ANGLE_STEP 4
 #define PIXEL_X 1/368.0f
 #define PIXEL_Y 1/189.0f
@@ -19,7 +20,7 @@ enum PlayerAnims
 	ARMED_STAND_NORMAL, ARMED_STAND_UP, ARMED_STAND_LEFT, ARMED_STAND_RIGHT, ARMED_MOVE_LEFT, ARMED_MOVE_RIGHT, ARMED_MOVE_UP, ARMED_MOVE_DOWN,
 	STAND_NORMAL_FERIT, STAND_UP_FERIT, STAND_LEFT_FERIT, STAND_RIGHT_FERIT, MOVE_LEFT_FERIT, MOVE_RIGHT_FERIT, MOVE_UP_FERIT, MOVE_DOWN_FERIT, PUNCH_LEFT_FERIT, PUNCH_RIGHT_FERIT, PUNCH_UP_FERIT, PUNCH_DOWN_FERIT,
 	ARMED_STAND_NORMAL_FERIT, ARMED_STAND_UP_FERIT, ARMED_STAND_LEFT_FERIT, ARMED_STAND_RIGHT_FERIT, ARMED_MOVE_LEFT_FERIT, ARMED_MOVE_RIGHT_FERIT, ARMED_MOVE_UP_FERIT, ARMED_MOVE_DOWN_FERIT,
-	MORT, MORT_FERIT
+	MORT, MORT_FERIT, CAIXA
 };
 
 vector<vector<vector<PlayerAnims>>> Animacions = {
@@ -35,14 +36,16 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 {
 	vida = 3;
 	scene = &sc;
-	porta_arma = true;
+	porta_arma = false;
 	ferit = false;
 	mort = false;
 	god = false;
-	spritesheet.loadFromFile("images/Solid_snake.png", TEXTURE_PIXEL_FORMAT_RGBA);	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
+	spritesheet.loadFromFile("images/Solid_snake.png", TEXTURE_PIXEL_FORMAT_RGBA); 	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
 	sprite = Sprite::createSprite(glm::ivec2(16*2,32*2), glm::vec2(PIXEL_X *16, PIXEL_Y *32), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(42);
-	
+	sprite->setNumberAnimations(43);
+
+	sprite->setAnimationSpeed(CAIXA, 8);
+	sprite->addKeyframe(CAIXA, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19 + 1 + 136 + 34 + 19 + 36), PIXEL_Y * 26)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
 
 		//==============================
 		//			STANDS 
@@ -53,17 +56,17 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 		sprite->setAnimationSpeed(STAND_UP, 8);
 		sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X *21, PIXEL_Y * 26)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
 		
-		sprite->setAnimationSpeed(STAND_LEFT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+		sprite->setAnimationSpeed(STAND_LEFT, 8); 	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
 		sprite->addKeyframe(STAND_LEFT, glm::vec2(PIXEL_X * 2, PIXEL_Y * 61));
 
-		sprite->setAnimationSpeed(STAND_RIGHT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->setAnimationSpeed(STAND_RIGHT, 8); 	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
 		sprite->addKeyframe(STAND_RIGHT, glm::vec2(PIXEL_X *21, PIXEL_Y * 61));
 
 		//==============================
 		//			MORT
 		//==============================
 
-		sprite->setAnimationSpeed(MORT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->setAnimationSpeed(MORT, 8); 	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
 		sprite->addKeyframe(MORT, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19 + 1 + 136 + 34 + 19 + 36), PIXEL_Y * 61));
 
 		//==============================
@@ -118,10 +121,10 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 		sprite->setAnimationSpeed(ARMED_STAND_UP, 8);
 		sprite->addKeyframe(ARMED_STAND_UP, glm::vec2(PIXEL_X * (21+136), PIXEL_Y * 26)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
 		
-		sprite->setAnimationSpeed(ARMED_STAND_LEFT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+		sprite->setAnimationSpeed(ARMED_STAND_LEFT, 8); 	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
 		sprite->addKeyframe(ARMED_STAND_LEFT, glm::vec2(PIXEL_X * (2 + 136), PIXEL_Y * 61));
 
-		sprite->setAnimationSpeed(ARMED_STAND_RIGHT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->setAnimationSpeed(ARMED_STAND_RIGHT, 8); 	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
 		sprite->addKeyframe(ARMED_STAND_RIGHT, glm::vec2(PIXEL_X * (21 + 136), PIXEL_Y * 61));
 
 		//==============================
@@ -132,7 +135,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 		sprite->addKeyframe(ARMED_MOVE_LEFT, glm::vec2(PIXEL_X * (2+136), PIXEL_Y * 61)); //Stand left
 		sprite->addKeyframe(ARMED_MOVE_LEFT, glm::vec2(PIXEL_X * (36 + 11 + 136), PIXEL_Y * 61));
 		sprite->addKeyframe(ARMED_MOVE_LEFT, glm::vec2(PIXEL_X * (36 + 11 + 38 + 136), PIXEL_Y * 61));
-
+		
 		sprite->setAnimationSpeed(ARMED_MOVE_RIGHT, 8);
 		sprite->addKeyframe(ARMED_MOVE_RIGHT, glm::vec2(PIXEL_X * (21 + 136), PIXEL_Y * 61)); //Stand right
 		sprite->addKeyframe(ARMED_MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8 + 1 + 136), PIXEL_Y * 61));
@@ -162,17 +165,17 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 		sprite->setAnimationSpeed(STAND_UP_FERIT, 8);
 		sprite->addKeyframe(STAND_UP_FERIT, glm::vec2(PIXEL_X * 21, PIXEL_Y * 120)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
 
-		sprite->setAnimationSpeed(STAND_LEFT_FERIT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+		sprite->setAnimationSpeed(STAND_LEFT_FERIT, 8); 	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
 		sprite->addKeyframe(STAND_LEFT_FERIT, glm::vec2(PIXEL_X * 2, PIXEL_Y * 155));
 
-		sprite->setAnimationSpeed(STAND_RIGHT_FERIT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->setAnimationSpeed(STAND_RIGHT_FERIT, 8); 	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
 		sprite->addKeyframe(STAND_RIGHT_FERIT, glm::vec2(PIXEL_X * 21, PIXEL_Y * 155));
 
 		//==============================
 		//			MORT_ferit
 		//==============================
 
-		sprite->setAnimationSpeed(MORT_FERIT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->setAnimationSpeed(MORT_FERIT, 8); 	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
 		sprite->addKeyframe(MORT_FERIT, glm::vec2(PIXEL_X* (3 + 54 + 8 + 19 + 19 + 1 + 136 + 34 + 19 + 36), PIXEL_Y * 155));
 
 		//==============================
@@ -227,10 +230,10 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 		sprite->setAnimationSpeed(ARMED_STAND_UP_FERIT, 8);
 		sprite->addKeyframe(ARMED_STAND_UP_FERIT, glm::vec2(PIXEL_X* (21 + 136), PIXEL_Y * 120)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
 
-		sprite->setAnimationSpeed(ARMED_STAND_LEFT_FERIT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+		sprite->setAnimationSpeed(ARMED_STAND_LEFT_FERIT, 8); 	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
 		sprite->addKeyframe(ARMED_STAND_LEFT_FERIT, glm::vec2(PIXEL_X* (2 + 136), PIXEL_Y * 155));
 
-		sprite->setAnimationSpeed(ARMED_STAND_RIGHT_FERIT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->setAnimationSpeed(ARMED_STAND_RIGHT_FERIT, 8); 	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
 		sprite->addKeyframe(ARMED_STAND_RIGHT_FERIT, glm::vec2(PIXEL_X* (21 + 136), PIXEL_Y * 155));
 
 		//==============================
@@ -257,7 +260,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 		sprite->addKeyframe(ARMED_MOVE_DOWN_FERIT, glm::vec2(PIXEL_X* (36 + 10 + 1 + 136), PIXEL_Y * 120));
 		sprite->addKeyframe(ARMED_MOVE_DOWN_FERIT, glm::vec2(PIXEL_X* (36 + 10 + 38 + 1 + 136), PIXEL_Y * 120));
 
-	if(ferit) sprite->changeAnimation(Animacions[1][0][0]);
+	if(ferit) sprite->changeAnimation(Animacions[1][0][12]);
 	else sprite->changeAnimation(Animacions[0][0][0]);
 
 	tileMapDispl = tileMapPos;
@@ -273,6 +276,9 @@ void Player::update(int deltaTime)
 	int f = ferit;
 	sprite->update(deltaTime);
     shootTimer += deltaTime;
+
+    // handle item action cooldown (prevents multiple triggers on single keypress)
+    if (itemActionCooldownMs > 0) itemActionCooldownMs -= deltaTime;
 
 	if(mort) {
 		if (sprite->animation() != Animacions[f][0][12])
@@ -360,7 +366,7 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][0]);
 		}
 	}
-	else if (Game::instance().getKey(GLFW_KEY_Z) && !porta_arma)		// PUNCH NOMÉS SI NO PORTA ARMA
+	else if (Game::instance().getKey(GLFW_KEY_Z) && !porta_arma) 		// PUNCH NOMÉS SI NO PORTA ARMA
 	{
         handlePunchNoWeapon(f, a);
 	}
@@ -428,9 +434,117 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][3]);
 	}
 	
+    // Inventory cycling with C key
+    if (Game::instance().getKey(GLFW_KEY_C) && itemActionCooldownMs <= 0 && !inventari.empty()) {
+        // if only one item, do nothing
+        if (inventari.size() > 1) {
+            int oldSelected = selectedItem;
+            if (selectedItem < 0) selectedItem = 0;
+            else selectedItem = (selectedItem + 1) % int(inventari.size());
+
+            // switching item cancels caja active and makes player detectable again
+            if (cajaActive) {
+                cajaActive = false;
+                if (scene) scene->detectable = true;
+            }
+
+            // If we switched away from a weapon, deactivate porta_arma
+            if (oldSelected >= 0 && oldSelected < int(inventari.size())) {
+                objeto* oldIt = inventari[oldSelected];
+                if (oldIt && oldIt->getSprite() && oldIt->getSprite()->animation() == 1) {
+                    // old was weapon and now not selected -> turn off
+                    // Also if newly selected is not weapon
+                    bool newIsWeapon = false;
+                    if (selectedItem >= 0 && selectedItem < int(inventari.size())) {
+                        objeto* newIt = inventari[selectedItem];
+                        if (newIt && newIt->getSprite() && newIt->getSprite()->animation() == 1) newIsWeapon = true;
+                    }
+                    if (!newIsWeapon) porta_arma = false;
+                }
+            }
+
+            itemActionCooldownMs = 200; // 200ms debounce
+        }
+    }
+
+    // Activate selected item with X key (toggle behavior)
+    if (Game::instance().getKey(GLFW_KEY_X) && itemActionCooldownMs <= 0 && selectedItem >= 0 && selectedItem < int(inventari.size())) {
+        objeto* it = inventari[selectedItem];
+        if (it) {
+            int typeAnim = 0;
+            if (it->getSprite()) typeAnim = it->getSprite()->animation();
+            // From objeto::init: animations: 0 Caja, 1 Arma, 2 Vida
+            int fcur = ferit ? 1 : 0;
+            if (typeAnim == 1) {
+                // ARMA: toggle armed state
+                if (porta_arma) {
+                    // if currently armed and selected item is a weapon, deselect -> deactivate
+                    porta_arma = false;
+                    // map armed animations to unarmed equivalents
+                    for (int i = 0; i <= 11; ++i) {
+                        if (sprite->animation() == Animacions[fcur][1][i]) {
+                            sprite->changeAnimation(Animacions[fcur][0][i]);
+                            break;
+                        }
+                    }
+                } else {
+                    porta_arma = true;
+                    // map unarmed animations to armed equivalents
+                    for (int i = 0; i <= 11; ++i) {
+                        if (sprite->animation() == Animacions[fcur][0][i]) {
+                            sprite->changeAnimation(Animacions[fcur][1][i]);
+                            break;
+                        }
+                    }
+                }
+            }
+            else if (typeAnim == 0) {
+                // CAIXA: toggle box state
+                if (cajaActive) {
+                    // deactivate box
+                    cajaActive = false;
+                    if (scene) scene->detectable = true;
+                    // restore appropriate stand animation
+                    int a2 = porta_arma ? 1 : 0;
+                    // if currently CAIXA, change to stand
+                    if (sprite->animation() == CAIXA) sprite->changeAnimation(Animacions[fcur][a2][0]);
+                } else {
+                    // activate box
+                    cajaActive = true;
+                    sprite->changeAnimation(CAIXA);
+                    if (scene) scene->detectable = false;
+                }
+            }
+            else if (typeAnim == 2) {
+                // VIDA: heal 1 and remove item from inventory (no toggle)
+                vida = std::min(3, vida + 1);
+                inventari.erase(inventari.begin() + selectedItem);
+                if (inventari.empty()) selectedItem = -1;
+                else selectedItem = selectedItem % int(inventari.size());
+            }
+        }
+        itemActionCooldownMs = 200;
+    }
+
+    // If player gets attacked (baixavida triggers ferit) we should cancel caja
+    if (ferit && cajaActive) {
+        cajaActive = false;
+        if (scene) scene->detectable = true;
+        // restore appropriate stand animation
+        int a2 = porta_arma;
+        if (sprite->animation() == CAIXA) sprite->changeAnimation(Animacions[ferit][a2][0]);
+    }
+
     // Disparar amb arma fins i tot mentre es mou
-    if (Game::instance().getKey(GLFW_KEY_X) && porta_arma) {
+    if (Game::instance().getKey(GLFW_KEY_Z) && porta_arma) {
         tryShoot();
+    }
+
+    // If cajaActive is true keep CAIXA animation regardless of movement and remain undetectable
+    if (cajaActive) {
+        // Ensure scene undetectable
+        if (scene) scene->detectable = false;
+        if (sprite->animation() != CAIXA) sprite->changeAnimation(CAIXA);
     }
 
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
@@ -478,6 +592,12 @@ void Player::baixavida()
 		}
 		if (vida <= 0) mort = true;
 		cout << vida << endl;
+
+		// If player was in box state, cancel it and become detectable again
+		if (cajaActive) {
+			cajaActive = false;
+			if (scene) scene->detectable = true;
+		}
 	}
 }
 
@@ -540,7 +660,7 @@ void Player::tryShoot()
     Bullet b;
     // Decideix direcció primer
     b.dir = facingDirFromAnim(sprite->animation());
-
+	ha_disparat = true;
     // Punt d'origen segons direcció: si apuntem amunt, surt del cap; en cas contrari, lleugerament per sobre del centre
     const float muzzleYOffset = -6.0f; // elevar una mica quan no és cap amunt
     float spawnX = posPlayer.x + 16.0f;
@@ -581,7 +701,7 @@ void Player::updateProjectiles(int deltaTime)
         b.pos.x += b.dir.x * b.speed * deltaTime;
         b.pos.y += b.dir.y * b.speed * deltaTime;
 
-        // si choca con un tile sólido se desactiva
+        // si choca con un tile sòlid se desactiva
         int tx = int(b.pos.x) / ts;
         int ty = int(b.pos.y) / ts;
         if (!map->isTransparentAtTile(tx, ty)) {
@@ -667,6 +787,8 @@ void Player::checkObjectPickup()
             if (o->getSprite() && o->getSprite()->animation() == 1) {
                 porta_arma = true; // recollir arma
             }
+            // If no selected item, select this one
+            if (selectedItem < 0) selectedItem = int(inventari.size()) - 1;
         }
     }
 }

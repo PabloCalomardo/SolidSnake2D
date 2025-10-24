@@ -247,6 +247,7 @@ void Scene::tp_to_init(int m)
 void Scene::ChangeMap(int dir) 
 {
 	glm::vec2 posaux(0, player->posPlayer[1]);
+	player->ha_disparat = false;
 	if (CurrentMap == 1) {
 		CurrentMap = 2;
 		map = TileMap::createTileMap("levels/level02.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -394,8 +395,9 @@ void Scene::update(int deltaTime)
 
 	glm::ivec2 posp = player->posPlayer;
     // Update all enemies
+	bool player_ha_disparat = player->ha_disparat;
     for (Enemy* e : enemies) {
-        e->update(deltaTime, posp);
+        e->update(deltaTime, posp, player_ha_disparat);
     }
 	for (objeto* e : objetos) {
 		e->update(deltaTime);

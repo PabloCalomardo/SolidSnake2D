@@ -37,7 +37,9 @@ public:
     // HUD accessors
     int getLives() const { return vida; }
     bool hasWeapon() const { return porta_arma; }
-	
+    int getSelectedItemIndex() const { return selectedItem; }
+    bool ha_disparat = false;
+
 private:
     struct Bullet {
         glm::vec2 pos;      // top-left in pixels
@@ -73,9 +75,15 @@ private:
     int shootTimer = 0;
     float bulletSpeedPxPerMs = 0.5f; // 500 px/s
 
+    // Inventory selection state
+    int selectedItem = -1; // index into inventari or -1 when none
+    bool cajaActive = false; // true when player activated the CAIXA object
+    int itemActionCooldownMs = 0; // cooldown to avoid multiple triggers from a single key press
+
 };
 
 
 #endif // _PLAYER_INCLUDE
+
 
 

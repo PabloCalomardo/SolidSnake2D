@@ -25,6 +25,7 @@ public:
 
 	void update(int deltaTime);
 	void render() const;
+	void renderAt(const glm::vec2 &pos) const; // render at given screen/world position without changing internal state
 	void free();
 
 	void setNumberAnimations(int nAnimations);

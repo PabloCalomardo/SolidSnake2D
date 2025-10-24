@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "objeto.h"
+#include "ShaderProgram.h"
 class Scene;
 
 // Simple black & white pixel-art HUD rendered at the bottom of the screen.
@@ -18,9 +19,11 @@ public:
     InferiorBar();
     ~InferiorBar() = default;
 
-    void init(Scene* scene);
+    void init(Scene* scene, ShaderProgram& shaderProgram, const glm::ivec2& tileMapPos);
     void update(int deltaTime);
     void render();
+    Texture spritesheet;
+    Sprite* sprite;
 
 private:
     void ensureFont();
@@ -30,6 +33,7 @@ private:
 
     void drawText(int x, int y, const std::string& text, int pixelSize = 3, int spacing = 1);
     void drawChar(int x, int y, char c, int pixelSize, int spacing);
+    void drawCharDigitAt(int x, int y, char digit);
 
     void drawFilledRect(int x, int y, int w, int h);
     void drawRect(int x, int y, int w, int h);
@@ -46,6 +50,9 @@ private:
     std::unordered_map<char, std::array<uint8_t, 7>> font;
 
     int barHeight = 80; // pixels
+
+    // Shader used by Sprite rendering (set in init)
+    ShaderProgram* shaderProg = nullptr;
 };
 
 #endif // _INFERIOR_BAR_INCLUDE

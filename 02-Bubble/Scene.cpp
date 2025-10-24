@@ -223,7 +223,7 @@ void Scene::init()
 
     // HUD
     hud = new InferiorBar();
-    hud->init(this);
+    hud->init(this, texProgram, glm::ivec2(SCREEN_X, SCREEN_Y));
 }
 
 void Scene::tp_to_init(int m)

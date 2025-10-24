@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include <vector>
 #include "objeto.h"
+#include "Enemy.h"
 
 
 class Scene;
@@ -53,6 +54,7 @@ private:
     void tryShoot();
     glm::ivec2 facingDirFromAnim(int anim) const;
     
+    void GetAllObjects();
     // Check collision with objects and pick them
     void checkObjectPickup();
     // Handle punch animation selection when unarmed
@@ -64,6 +66,7 @@ private:
 	bool mort;
     bool god;
 	int jumpAngle, startY;
+    char lastButton;
 	Texture spritesheet;
 	Sprite *sprite;
 	TileMap *map;
@@ -84,6 +87,3 @@ private:
 
 
 #endif // _PLAYER_INCLUDE
-
-
-

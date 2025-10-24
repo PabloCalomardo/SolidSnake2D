@@ -27,10 +27,12 @@ public:
 	~Scene();
 
 	void init();
+	void ChargeEnemiesAndObjects();
+	void DeleteObjectsAndEnemies();
 	void update(int deltaTime);
 	void render();
 	void ChangeMap(int dir);
-	void tp_to_init(int m);
+	void tp_to_map(int m);
     void comprovar_vides(int deltaTime);
 	int CurrentMap;
 	bool detectable;

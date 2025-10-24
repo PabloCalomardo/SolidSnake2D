@@ -40,6 +40,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 	ferit = false;
 	mort = false;
 	god = false;
+	lastButton = ' ';
 	spritesheet.loadFromFile("images/Solid_snake.png", TEXTURE_PIXEL_FORMAT_RGBA); 	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
 	sprite = Sprite::createSprite(glm::ivec2(16*2,32*2), glm::vec2(PIXEL_X *16, PIXEL_Y *32), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(43);
@@ -283,10 +284,24 @@ void Player::update(int deltaTime)
 	if(mort) {
 		if (sprite->animation() != Animacions[f][0][12])
 			sprite->changeAnimation(Animacions[f][0][12]);
+		else if (Game::instance().getKey(GLFW_KEY_ENTER)) {
+			lastButton = ' ';
+			vida = 3;
+			mort = false;
+			porta_arma = false;
+			ha_disparat = false;
+			ferit = 0;
+			scene->DeleteObjectsAndEnemies();
+			scene->ChargeEnemiesAndObjects();
+			inventari.clear();
+			sprite->changeAnimation(Animacions[0][0][0]);
+			scene->tp_to_map(1);
+		}
 		return;
 	}
 	else if(Game::instance().getKey(GLFW_KEY_LEFT) || Game::instance().getKey(GLFW_KEY_A))
 	{
+		lastButton = 'A';
 		if(sprite->animation() != Animacions[f][a][4])
 			sprite->changeAnimation(Animacions[f][a][4]);
 		posPlayer.x -= 2;
@@ -307,6 +322,7 @@ void Player::update(int deltaTime)
 	}
 	else if(Game::instance().getKey(GLFW_KEY_RIGHT) || Game::instance().getKey(GLFW_KEY_D))
 	{
+		lastButton = 'D';
 		if(sprite->animation() != Animacions[f][a][5])
 			sprite->changeAnimation(Animacions[f][a][5]);
 		posPlayer.x += 2;
@@ -327,6 +343,7 @@ void Player::update(int deltaTime)
 	}
 	else if (Game::instance().getKey(GLFW_KEY_UP) || Game::instance().getKey(GLFW_KEY_W))
 	{
+		lastButton = 'W';
 		if (sprite->animation() != Animacions[f][a][6])
 			sprite->changeAnimation(Animacions[f][a][6]);
 		
@@ -348,6 +365,7 @@ void Player::update(int deltaTime)
 	}
 	else if (Game::instance().getKey(GLFW_KEY_DOWN) || Game::instance().getKey(GLFW_KEY_S))
 	{
+		lastButton = 'S';
 		if (sprite->animation() != Animacions[f][a][7])
 			sprite->changeAnimation(Animacions[f][a][7]);
 
@@ -366,23 +384,34 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][0]);
 		}
 	}
-	else if (Game::instance().getKey(GLFW_KEY_Z) && !porta_arma) 		// PUNCH NOMÉS SI NO PORTA ARMA
+	else if (!cajaActive && Game::instance().getKey(GLFW_KEY_Z) && !porta_arma) 		// PUNCH NOMÉS SI NO PORTA ARMA
 	{
+		lastButton = 'Z';
         handlePunchNoWeapon(f, a);
 	}
-	else if (Game::instance().getKey(GLFW_KEY_K)) {
-		scene->tp_to_init(5);
+	else if (lastButton != 'K' && Game::instance().getKey(GLFW_KEY_K)) {
+		lastButton = 'K';
+		scene->tp_to_map(5);
 	}
-	else if (Game::instance().getKey(GLFW_KEY_P)) {
-		scene->tp_to_init(1);
+	else if (lastButton != 'P' && Game::instance().getKey(GLFW_KEY_P)) {
+		lastButton = 'P';
+		scene->tp_to_map(1);
 	}
-	else if (Game::instance().getKey(GLFW_KEY_B)) {
-		scene->tp_to_init(11);
+	else if (lastButton != 'B' && Game::instance().getKey(GLFW_KEY_B)) {
+		lastButton = 'B';
+		scene->tp_to_map(11);
 	}
-	else if (Game::instance().getKey(GLFW_KEY_N)) {
-		scene->detectable = false;
+	else if (lastButton != 'N' && Game::instance().getKey(GLFW_KEY_N)) {
+		lastButton = 'N';
+		if (scene->detectable)  scene->detectable = false;
+		else scene->detectable = true;
 	}
-	else if (Game::instance().getKey(GLFW_KEY_H)) {
+	else if (lastButton != 'I' && Game::instance().getKey(GLFW_KEY_I)) {
+		lastButton = 'I';
+		GetAllObjects();
+	}
+	else if (lastButton != 'H' && Game::instance().getKey(GLFW_KEY_H)) {
+		lastButton = 'H';
 		vida = 3;
 		ferit = 0;
 		if (ferit != f) {
@@ -397,21 +426,25 @@ void Player::update(int deltaTime)
 			f = ferit;
 		}
 	}
-	else if (Game::instance().getKey(GLFW_KEY_G)) {
-		vida = 3;
-		ferit = 0;
-		god = true;
-		if (ferit != f) {
-			if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
-			else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
-			else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
-			else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
-			else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
-			else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
-			else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
-			else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
-			f = ferit;
+	else if (lastButton != 'G' && Game::instance().getKey(GLFW_KEY_G)) {
+		lastButton = 'G';
+		if (!god) {
+			vida = 3;
+			ferit = 0;
+			god = true;
+			if (ferit != f) {
+				if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
+				else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
+				else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
+				else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
+				else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
+				else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
+				else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
+				else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
+				f = ferit;
+			}
 		}
+		else god = false;
 	}
 	else
 	{
@@ -436,6 +469,7 @@ void Player::update(int deltaTime)
 	
     // Inventory cycling with C key
     if (Game::instance().getKey(GLFW_KEY_C) && itemActionCooldownMs <= 0 && !inventari.empty()) {
+		lastButton = 'C';
         // if only one item, do nothing
         if (inventari.size() > 1) {
             int oldSelected = selectedItem;
@@ -469,6 +503,7 @@ void Player::update(int deltaTime)
 
     // Activate selected item with X key (toggle behavior)
     if (Game::instance().getKey(GLFW_KEY_X) && itemActionCooldownMs <= 0 && selectedItem >= 0 && selectedItem < int(inventari.size())) {
+		lastButton = 'X';
         objeto* it = inventari[selectedItem];
         if (it) {
             int typeAnim = 0;
@@ -536,7 +571,8 @@ void Player::update(int deltaTime)
     }
 
     // Disparar amb arma fins i tot mentre es mou
-    if (Game::instance().getKey(GLFW_KEY_Z) && porta_arma) {
+    if (!cajaActive && Game::instance().getKey(GLFW_KEY_Z) && porta_arma) {
+		lastButton = 'Z';
         tryShoot();
     }
 
@@ -762,6 +798,21 @@ void Player::renderProjectiles()
     glUseProgram(prevProgram);
 }
 
+void Player::GetAllObjects() {
+	auto& objs = scene->getObjetos();
+	for (auto* o : objs) {
+		if (!o) continue;
+		if (o->recollit) continue;
+		inventari.push_back(o);
+		o->recollit = true;
+		if (o->getSprite() && o->getSprite()->animation() == 1) {
+			porta_arma = true; // recollir arma
+		}
+		// If no selected item, select this one
+		if (selectedItem < 0) selectedItem = int(inventari.size()) - 1;
+	}
+}
+
 void Player::checkObjectPickup()
 {
     if (!scene) return;
@@ -796,18 +847,39 @@ void Player::checkObjectPickup()
 void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 {
     const int sAnim = sprite->animation();
+	glm::ivec2 posPuny = posPlayer;
     if (sAnim == Animacions[feritIdx][armaIdx][0] || sAnim == Animacions[feritIdx][armaIdx][7]) {
         sprite->changeAnimation(Animacions[feritIdx][armaIdx][11]);
+		posPuny.y += 48;
     }
     else if (sAnim == Animacions[feritIdx][armaIdx][1] || sAnim == Animacions[feritIdx][armaIdx][6]) {
         sprite->changeAnimation(Animacions[feritIdx][armaIdx][10]);
+		posPuny.y += 24;
     }
     else if (sAnim == Animacions[feritIdx][armaIdx][2] || sAnim == Animacions[feritIdx][armaIdx][4]) {
         sprite->changeAnimation(Animacions[feritIdx][armaIdx][8]);
+		posPuny.x -= 4;
     }
     else if (sAnim == Animacions[feritIdx][armaIdx][3] || sAnim == Animacions[feritIdx][armaIdx][5]) {
         sprite->changeAnimation(Animacions[feritIdx][armaIdx][9]);
+		posPuny.x += 36;
     }
+	auto hitEnemy = [&](const glm::vec2& p, Enemy* e) {
+		if (!e) return false;
+		if (e->Escena_Original != scene->CurrentMap) return false;
+		glm::ivec2 ep = e->posEnemy;
+		// Enemy size: scorpion 32x32, soldiers 32x64
+		glm::ivec2 enemySize = (e->EnemyType == 0) ? glm::ivec2(32, 32) : glm::ivec2(32, 64);
+		return p.x >= ep.x && p.x <= ep.x + enemySize.x &&
+			p.y >= ep.y && p.y <= ep.y + enemySize.y;
+	};
+	auto& enemies = scene->getEnemies();
+	for (auto* e : enemies) {
+		if (hitEnemy(posPuny, e)) {
+			e->baixavida();
+			printf("ENEMIC Puncheado!\n");
+		}
+	}
 }
 
 

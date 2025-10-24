@@ -43,16 +43,30 @@ void Scene::init()
 	detectable = true;
 	player = new Player();
 
-	//==============================
-	//			OBJECTES
-	//==============================
+	ChargeEnemiesAndObjects();
+
+	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram,*this);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	player->setTileMap(map);
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+	currentTime = 0.0f;
+
+    // HUD
+    hud = new InferiorBar();
+    hud->init(this, texProgram, glm::ivec2(SCREEN_X, SCREEN_Y));
+}
+
+void Scene::ChargeEnemiesAndObjects() {
 	{
+		//==============================
+		//			OBJECTES
+		//==============================
 		// Caixa mapa 1
 		objeto* o = new objeto();
 		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, 1, glm::ivec2(15 * map->getTileSize(), 15 * map->getTileSize()));
 		o->setTileMap(map);
 		objetos.push_back(o);
-	} 
+	}
 	{
 		// Arma mapa 1
 		objeto* o = new objeto();
@@ -81,13 +95,13 @@ void Scene::init()
 		enemies.push_back(e);
 	}
 	{
-     // Escorpí mapa 2
-        Enemy* e = new Enemy();
-        e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, false, false, true, 2);
-        e->posEnemy = glm::ivec2(8 * map->getTileSize(), 5 * map->getTileSize());
+		// Escorpí mapa 2
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, false, false, true, 2);
+		e->posEnemy = glm::ivec2(8 * map->getTileSize(), 5 * map->getTileSize());
 		e->setTileMap(map);
-        enemies.push_back(e);
-    }
+		enemies.push_back(e);
+	}
 	{
 		// Soldat mapa 2
 		Enemy* e = new Enemy();
@@ -214,19 +228,20 @@ void Scene::init()
 		e->setTileMap(map);
 		enemies.push_back(e);
 	}
-
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram,*this);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	player->setTileMap(map);
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
-	currentTime = 0.0f;
-
-    // HUD
-    hud = new InferiorBar();
-    hud->init(this, texProgram, glm::ivec2(SCREEN_X, SCREEN_Y));
 }
 
-void Scene::tp_to_init(int m)
+void Scene::DeleteObjectsAndEnemies() {
+	for (objeto* o : objetos) {
+		delete o;
+	}
+	objetos.clear();
+	for (Enemy* e : enemies) {
+		delete e;
+	}
+	enemies.clear();
+}
+
+void Scene::tp_to_map(int m)
 {
 	CurrentMap = m;
 	string aux;
@@ -241,6 +256,10 @@ void Scene::tp_to_init(int m)
 	else if (m == 11) {
 		glm::vec2 posaux(19, 24);
 		player->setPosition(glm::vec2(posaux[0] * map->getTileSize(), posaux[1] * map->getTileSize()));
+	}
+	player->setTileMap(map);
+	for (Enemy* e : enemies) {
+		e->setTileMap(map);
 	}
 }
 

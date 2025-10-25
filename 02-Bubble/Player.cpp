@@ -478,14 +478,18 @@ void Player::update(int deltaTime)
 
             // switching item cancels caja active and makes player detectable again
             if (cajaActive) {
+                // deactivate box and set player to standing down immediately
                 cajaActive = false;
                 if (scene) scene->detectable = true;
+                int fcur = ferit ? 1 : 0;
+                int a2 = porta_arma ? 1 : 0;
+                // Force stand-down animation (index 0) for current ferit/armed state
+                sprite->changeAnimation(Animacions[fcur][a2][0]);
             }
-
             // If we switched away from a weapon, deactivate porta_arma
-            if (oldSelected >= 0 && oldSelected < int(inventari.size())) {
-                objeto* oldIt = inventari[oldSelected];
-                if (oldIt && oldIt->getSprite() && oldIt->getSprite()->animation() == 1) {
+            else if (oldSelected >= 0 && oldSelected < int(inventari.size())) {
+                 objeto* oldIt = inventari[oldSelected];
+                 if (oldIt && oldIt->getSprite() && oldIt->getSprite()->animation() == 1) {
                     // old was weapon and now not selected -> turn off
                     // Also if newly selected is not weapon
                     bool newIsWeapon = false;
@@ -493,11 +497,21 @@ void Player::update(int deltaTime)
                         objeto* newIt = inventari[selectedItem];
                         if (newIt && newIt->getSprite() && newIt->getSprite()->animation() == 1) newIsWeapon = true;
                     }
-                    if (!newIsWeapon) porta_arma = false;
-                }
-            }
+					if (!newIsWeapon) {
+						// disable armed state and update sprite animation mapping immediately
+						porta_arma = false;
+						int fcur = ferit ? 1 : 0;
+						// Map any currently armed animation to its unarmed counterpart
+						sprite->changeAnimation(Animacions[fcur][0][0]);
+					}
+                 }
+             }
 
             itemActionCooldownMs = 200; // 200ms debounce
+
+            // We don't directly render here (Scene::render will draw the player this frame).
+            // The sprite animation/state was already updated above (armed/unarmed mapping), so the next
+            // Scene::render call will display the correct appearance immediately.
         }
     }
 
@@ -745,7 +759,7 @@ void Player::updateProjectiles(int deltaTime)
             continue;
         }
 
-        // revisar colisión con enemigos del mapa
+        // revisar colisión con enemies del mapa
         auto& enemies = scene->getEnemies();
         for (auto* e : enemies) {
             if (hitEnemy(b.pos, e)) {
@@ -881,12 +895,3 @@ void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 		}
 	}
 }
-
-
-
-
-
-
-
-
-

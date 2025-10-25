@@ -25,6 +25,12 @@ public:
     Texture spritesheet;
     Sprite* sprite;
 
+	objeto* Caja;
+	objeto* Vida1;
+	objeto* Vida2;
+	objeto* Vida3;
+	objeto* Arma;
+
 private:
     void ensureFont();
     void drawBarBackground();

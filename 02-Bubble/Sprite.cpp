@@ -75,6 +75,21 @@ void Sprite::renderAt(const glm::vec2 &pos) const {
 	glDisable(GL_TEXTURE_2D);
 }
 
+void Sprite::renderAtScaled(const glm::vec2 &pos, float scale) const {
+	// Scale around top-left: translate -> scale -> draw
+	glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.f));
+	modelview = glm::scale(modelview, glm::vec3(scale, scale, 1.f));
+	shaderProgram->setUniformMatrix4f("modelview", modelview);
+	shaderProgram->setUniform2f("texCoordDispl", texCoordDispl.x, texCoordDispl.y);
+	glEnable(GL_TEXTURE_2D);
+	texture->use();
+	glBindVertexArray(vao);
+	glEnableVertexAttribArray(posLocation);
+	glEnableVertexAttribArray(texCoordLocation);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisable(GL_TEXTURE_2D);
+}
+
 void Sprite::free()
 {
 	glDeleteBuffers(1, &vbo);

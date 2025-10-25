@@ -7,6 +7,7 @@
 #include <GL/glew.h>
 
 #include "Game.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 #define PIXEL_X 1/301.0f
 #define PIXEL_Y 1/127.0f
@@ -45,7 +46,30 @@ void InferiorBar::init(Scene* sc, ShaderProgram& shaderProgram, const glm::ivec2
 }
 
 void InferiorBar::update(int /*deltaTime*/) {
-    // Nothing dynamic to update yet; values are pulled at render time.
+    // Sync HUD items from player inventory each frame
+    if (!scene) return;
+    Player* player = scene->getPlayer();
+    // Reset HUD object pointers
+    Caja = nullptr;
+    Arma = nullptr;
+    Vida1 = Vida2 = Vida3 = nullptr;
+    if (!player) return;
+
+    for (objeto* o : player->inventari) {
+        if (!o) continue;
+        Sprite* s = o->getSprite();
+        if (!s) continue;
+        int t = s->animation();
+        if (t == 0) {
+            if (!Caja) Caja = o;
+        } else if (t == 1) {
+            if (!Arma) Arma = o;
+        } else if (t == 2) {
+            if (!Vida1) Vida1 = o;
+            else if (!Vida2) Vida2 = o;
+            else if (!Vida3) Vida3 = o;
+        }
+    }
 }
 
 // Helper: draw a single character using sprite font if available; otherwise fallback to bitmap font
@@ -286,57 +310,86 @@ void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, c
     const int titleSize = 2;
     drawText(x, y, "ARMS", titleSize, 1);
 
-    // Item box (NES-like slot)
-    int boxW = 60;
-    int boxH = 28;
+    // Use the provided section width for the item box so slots can expand
+    int boxW = width;
+    int boxH = 44; // make box taller to fit larger icons
     int boxX = x;
     int boxY = y + 22;
     glColor3f(1.f, 1.f, 1.f);
     drawRect(boxX, boxY, boxW, boxH);
 
-    // If no inventory, show NONE or existing weapon status
-    if (inventory.empty()) {
-        if (!hasWeapon) drawText(boxX + 6, boxY + 8, "NONE", 2, 1);
-        else drawText(boxX + 6, boxY + 8, "GUN", 2, 1);
-        return;
-    }
-
-    // Draw up to 3 inventory slots horizontally inside the box
-    int maxSlots = std::min(3, int(inventory.size()));
-    int slotW = 16;
-    int slotH = 16;
-    int totalW = maxSlots * slotW + (maxSlots - 1) * 4;
-    int startX = boxX + (boxW - totalW) / 2;
+    // We'll reserve up to 5 slots: Caja, Arma, Vida1, Vida2, Vida3
+    const int totalSlots = 5;
+    // make slots reasonably large so caja/vida (larger sprites) fit comfortably
+    int slotW = 28; // slot square size
+    int slotH = 28;
+    int spacing = 10; // more separation to avoid overlap
+    int totalW = totalSlots * slotW + (totalSlots - 1) * spacing;
+    int startX = boxX + std::max(0, (boxW - totalW) / 2);
     int startY = boxY + (boxH - slotH) / 2;
 
-    for (int i = 0; i < maxSlots; ++i) {
-        int sx = startX + i * (slotW + 4);
+    // Determine which HUD pointer corresponds to player's selected item (to highlight)
+    Player* player = scene ? scene->getPlayer() : nullptr;
+    objeto* selectedObj = nullptr;
+    if (player && player->getSelectedItemIndex() >= 0 && player->getSelectedItemIndex() < (int)player->inventari.size())
+        selectedObj = player->inventari[player->getSelectedItemIndex()];
+
+    // Prepare shader projection for sprite rendering
+    glm::mat4 proj = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+    glm::mat4 modelview = glm::mat4(1.0f);
+
+    for (int i = 0; i < totalSlots; ++i) {
+        int sx = startX + i * (slotW + spacing);
         int sy = startY;
-        // outline box
+        // draw slot outline
         drawRect(sx, sy, slotW, slotH);
 
-        // draw simple HUD icon for item type
-        objeto* it = inventory[i];
-        if (it) {
-            int typeAnim = -1;
-            if (it->getSprite()) typeAnim = it->getSprite()->animation();
-            if (typeAnim == 1) {
-                // arma -> horizontal bars
-                drawFilledRect(sx + 2, sy + 6, slotW - 4, 3);
-            } else if (typeAnim == 0) {
-                // caixa -> square center
-                drawFilledRect(sx + 4, sy + 4, slotW - 8, slotH - 8);
-            } else if (typeAnim == 2) {
-                // vida -> small heart-like (two pixels)
-                drawFilledRect(sx + 6, sy + 6, 4, 4);
+        objeto* slotObj = nullptr;
+        switch (i) {
+            case 0: slotObj = Caja; break;
+            case 1: slotObj = Arma; break;
+            case 2: slotObj = Vida1; break;
+            case 3: slotObj = Vida2; break;
+            case 4: slotObj = Vida3; break;
+        }
+
+        if (slotObj && slotObj->getSprite()) {
+            Sprite* itemSpr = slotObj->getSprite();
+            // set shader projection and modelview for HUD rendering
+            if (shaderProg) {
+                shaderProg->use();
+                shaderProg->setUniformMatrix4f("projection", proj);
+                shaderProg->setUniformMatrix4f("modelview", modelview);
+                shaderProg->setUniform2f("texCoordDispl", 0.f, 0.f);
             }
+
+            // Compute center within slot and render sprite there
+            float centerX = float(sx + slotW / 2);
+            float centerY = float(sy + slotH / 2);
+
+            // If Caja or Vida, render at half size (scale 0.5) and center
+            bool isLarge = (slotObj == Caja) || (slotObj == Vida1) || (slotObj == Vida2) || (slotObj == Vida3);
+            if (isLarge) {
+                float scale = 0.5f; // half size
+                // sprite quad original size is 16x16 or 24x16 (we offset to center)
+                float drawX = centerX - (slotW * scale) / 2.0f;
+                float drawY = centerY - (slotH * scale) / 2.0f;
+                itemSpr->renderAtScaled(glm::vec2(drawX, drawY), scale);
+            } else {
+                // weapon: draw normally centered
+                float drawX = centerX - slotW / 2.0f + 2.0f;
+                float drawY = centerY - slotH / 2.0f + 2.0f;
+                itemSpr->renderAt(glm::vec2(drawX, drawY));
+            }
+
+            // restore fixed-function
+            glUseProgram(0);
         }
 
         // highlight selected
-        if (i == selectedIndex) {
-            // draw a white border thicker
+        if (slotObj && selectedObj && slotObj == selectedObj) {
             glColor3f(1.f, 1.f, 1.f);
-            drawRect(sx - 2, sy - 2, slotW + 4, slotH + 4);
+            drawRect(sx - 3, sy - 3, slotW + 6, slotH + 6);
         }
     }
 }

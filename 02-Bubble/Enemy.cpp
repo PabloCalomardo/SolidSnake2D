@@ -39,9 +39,10 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 	moviment_vertical = mv;
 
     scene = &sc;
-    vida = 2;
     hasEnemyDetected = false;
 	EnemyType = TipusEnemic;
+    if (EnemyType == 0) vida = 2;
+    else vida = 4;
 	moviment_escorpi = 0;
 	mort = false;
 	spritesheet.loadFromFile("images/Enemies.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211
@@ -416,7 +417,7 @@ void Enemy::updateProjectiles(int deltaTime)
         }
 
         if (intersects(b.pos)) {
-            pl->baixavida();
+            pl->baixavida(3);
             b.active = false;
         }
     }
@@ -720,8 +721,8 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
     }
 }
 
-void Enemy::baixavida() {
+void Enemy::baixavida(int dg) {
     
-	vida = vida - 1;
-    if (vida == 0) mort = true;
+	vida = vida - dg;
+    if (vida <= 0) mort = true;
 }

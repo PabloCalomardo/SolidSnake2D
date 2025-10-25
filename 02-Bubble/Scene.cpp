@@ -81,6 +81,13 @@ void Scene::ChargeEnemiesAndObjects() {
 		o->setTileMap(map);
 		objetos.push_back(o);
 	}
+	{
+		// Vida mapa 1
+		objeto* o = new objeto();
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, 1, glm::ivec2(15 * map->getTileSize(), 10 * map->getTileSize()));
+		o->setTileMap(map);
+		objetos.push_back(o);
+	}
 
 	//==============================
 	//			ENEMICS
@@ -505,10 +512,7 @@ void Scene::comprovar_vides(int deltaTime)
         glm::ivec2 pose = e->posEnemy;
         if ((abs(posp.x - pose.x) < 20 && abs(posp.y - pose.y) < 20)) {
             if (animation_not_in(spr_player->animation())) { //Treiem una vida al jugador
-                player->baixavida();
-            }
-            else { //Treiem una vida a l'enemic
-                e->baixavida();
+                player->baixavida(2);
             }
         }
     }

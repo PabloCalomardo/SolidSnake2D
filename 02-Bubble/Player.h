@@ -29,7 +29,7 @@ public:
 
 	glm::ivec2 tileMapDispl, posPlayer;
 	Sprite* getSprite() { return sprite; }
-	void baixavida();
+	void baixavida(int dg);
     // Optional: set bullet speed in pixels per second
     void setBulletSpeedPerSecond(float pxPerSec) { bulletSpeedPxPerMs = pxPerSec / 1000.0f; }
 
@@ -41,6 +41,7 @@ public:
     int getSelectedItemIndex() const { return selectedItem; }
     bool ha_disparat = false;
     bool hasKey = false;
+    bool god;
 
 private:
     struct Bullet {
@@ -65,7 +66,6 @@ private:
 	bool porta_arma;
 	bool ferit;
 	bool mort;
-    bool god;
 	int jumpAngle, startY;
     char lastButton;
 	Texture spritesheet;

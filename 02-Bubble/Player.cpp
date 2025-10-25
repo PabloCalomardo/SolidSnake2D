@@ -34,7 +34,7 @@ vector<vector<vector<PlayerAnims>>> Animacions = {
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Scene &sc)
 {
-	vida = 3;
+	vida = 7;
 	scene = &sc;
 	porta_arma = false;
 	ferit = false;
@@ -413,7 +413,7 @@ void Player::update(int deltaTime)
 	}
 	else if (lastButton != 'H' && Game::instance().getKey(GLFW_KEY_H)) {
 		lastButton = 'H';
-		vida = 3;
+		vida = 7;
 		ferit = 0;
 		if (ferit != f) {
 			if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
@@ -430,7 +430,7 @@ void Player::update(int deltaTime)
 	else if (lastButton != 'G' && Game::instance().getKey(GLFW_KEY_G)) {
 		lastButton = 'G';
 		if (!god) {
-			vida = 3;
+			vida = 7;
 			ferit = 0;
 			god = true;
 			if (ferit != f) {
@@ -624,10 +624,10 @@ void Player::setPosition(const glm::vec2 &pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
-void Player::baixavida()
+void Player::baixavida(int dg)
 {
 	if (!god) {
-		vida = vida - 1;
+		vida = vida - dg;
 		if (vida < 3) {
 			ferit = 1;
 			int f = 0;
@@ -642,7 +642,6 @@ void Player::baixavida()
 			else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
 		}
 		if (vida <= 0) mort = true;
-		cout << vida << endl;
 
 		// If player was in box state, cancel it and become detectable again
 		if (cajaActive) {
@@ -763,8 +762,8 @@ void Player::updateProjectiles(int deltaTime)
         // revisar colisión con enemies del mapa
         auto& enemies = scene->getEnemies();
         for (auto* e : enemies) {
-            if (hitEnemy(b.pos, e)) {
-                e->baixavida();
+            if (!e->mort && hitEnemy(b.pos, e)) {
+                e->baixavida(3);
                 b.active = false;
                 break;
             }
@@ -891,7 +890,7 @@ void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 	auto& enemies = scene->getEnemies();
 	for (auto* e : enemies) {
 		if (hitEnemy(posPuny, e)) {
-			e->baixavida();
+			e->baixavida(1);
 			printf("ENEMIC Puncheado!\n");
 		}
 	}

@@ -50,6 +50,10 @@ bool Texture::loadFromFile(const string &filename, PixelFormat format)
 
 	glGenTextures(1, &texId);
 	glBindTexture(GL_TEXTURE_2D, texId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glBindTexture(GL_TEXTURE_2D, 0);
+
 	switch(format)
 	{
 	case TEXTURE_PIXEL_FORMAT_RGB:

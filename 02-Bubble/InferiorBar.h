@@ -44,7 +44,7 @@ private:
     void drawRect(int x, int y, int w, int h);
 
     // NES-like layout sections
-    void renderLivesSection(int x, int y, int width, int lives);
+    void renderLivesSection(int x, int y, int width, int lives, bool g, bool det);
     void renderWeaponSection(int x, int y, int width, bool hasWeapon, const std::vector<objeto*>& inventory, int selectedIndex);
     void renderMapSection(int x, int y, int width, int mapId);
 

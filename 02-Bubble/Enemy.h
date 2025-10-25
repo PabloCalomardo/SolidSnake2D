@@ -30,7 +30,7 @@ public:
     // speed: multiplica la longitud de la passa (base 3 píxels) -> pas = 3 * speed.
     void goToPosition(int deltaTime, const glm::ivec2& targetPos, int speed = 1);
 	glm::ivec2 posEnemy;
-	void baixavida();
+	void baixavida(int dg);
 	int Escena_Original;
     bool mort;
     int EnemyType; // 0: DOG, 1: SOLDIER, 2: SOLDIER2

@@ -25,7 +25,7 @@ void InferiorBar::init(Scene* sc, ShaderProgram& shaderProgram, const glm::ivec2
     shaderProg = &shaderProgram;
 
     spritesheet.loadFromFile("images/lletres.png", TEXTURE_PIXEL_FORMAT_RGBA); 
-    sprite = Sprite::createSprite(glm::ivec2(8 * 2, 8 * 2), glm::vec2(PIXEL_X * 8, PIXEL_Y * 8), &spritesheet, shaderProg);
+    sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(PIXEL_X * 8, PIXEL_Y * 8), &spritesheet, shaderProg);
     sprite->setNumberAnimations(36);
 
     int j = 9;
@@ -41,7 +41,7 @@ void InferiorBar::init(Scene* sc, ShaderProgram& shaderProgram, const glm::ivec2
     j = 9;
     for (int i = 0; i < 10; ++i) {
         sprite->setAnimationSpeed(i + 26, 8);
-        sprite->addKeyframe(i + 26, glm::vec2(PIXEL_X * (181 + (i * 11)), PIXEL_Y * (1 + j + 11)));
+        sprite->addKeyframe(i + 26, glm::vec2(PIXEL_X * (181 + (i * 11)), PIXEL_Y * (1 + j)));
     }
 }
 
@@ -209,10 +209,14 @@ void InferiorBar::render() {
     Player* player = scene->getPlayer();
     int lives = 0;
     bool arma = false;
+	bool god = false;
+    bool detectable = true;
     std::vector<objeto*> inv;
     int sel = -1;
     if (player) {
         lives = player->getLives();
+        god = player->god;
+        detectable = scene->detectable;
         arma = player->hasWeapon();
         inv = player->inventari;
         sel = player->getSelectedItemIndex();
@@ -235,7 +239,7 @@ void InferiorBar::render() {
     }
 
     // Sections (these will call drawText which may enable textures briefly for sprites)
-    renderLivesSection(padding, innerY, sectionW - padding * 2, lives);
+    renderLivesSection(padding, innerY, sectionW - padding * 2, lives, god, detectable);
     renderWeaponSection(sectionW-24 + padding, innerY, sectionW - padding * 2, arma, inv, sel);
     renderMapSection((sectionW-16) * 2 + padding, innerY, sectionW - padding * 2, map);
 
@@ -286,13 +290,13 @@ void InferiorBar::drawSeparator(int x) {
     glEnd();
 }
 
-void InferiorBar::renderLivesSection(int x, int y, int width, int lives) {
+void InferiorBar::renderLivesSection(int x, int y, int width, int lives, bool g, bool det) {
     // Title
     const int titleSize = 2;
     drawText(x, y, "LIFE", titleSize, 1);
 
     // Clamp lives 0..3
-    int displayLives = std::max(0, std::min(3, lives));
+    int displayLives = std::max(0, std::min(7, lives));
 
     // Compute center position inside section to draw the digit sprite
     int startY = y ; // a bit below the title
@@ -301,12 +305,19 @@ void InferiorBar::renderLivesSection(int x, int y, int width, int lives) {
     int drawX = cx - charW / 2;
     // Draw the number as a sprite digit
     drawChar(drawX, startY, char('0' + displayLives), 3, 1);
+
+    if (g) {
+		drawText(x + 86, y + 48, "GOD", 2, 1);
+    }
+    if (!det) {
+        drawText(x + 156, y + 48, "INV", 2, 1);
+    }
 }
 
 void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, const std::vector<objeto*>& inventory, int selectedIndex) {
     // Title
     const int titleSize = 2;
-    drawText(x, y, "ARMS", titleSize, 1);
+    drawText(x, y, "OBJECTS", titleSize, 1);
 
     // Use the provided section width for the item box so slots can expand
     int boxW = width;
@@ -336,13 +347,19 @@ void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, c
     glm::mat4 proj = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
     glm::mat4 modelview = glm::mat4(1.0f);
 
-    for (int i = 0; i < totalSlots; ++i) {
-        int sx = startX + i * (slotW + spacing);
+    objeto* slotObj = nullptr;
+    /*for (int i = 0; i < totalSlots + 1; ++i) {
+        int sx = startX + (i) * (slotW + spacing);
         int sy = startY;
         // draw slot outline
+        glColor3f(1.f, 1.f, 1.f);
         drawRect(sx, sy, slotW, slotH);
+    }*/
+    for (int i = 0; i < totalSlots + 1; ++i) {
 
-        objeto* slotObj = nullptr;
+        int sx = startX + (i) * (slotW + spacing);
+        int sy = startY;
+
         switch (i) {
             case 0: slotObj = Caja; break;
             case 1: slotObj = Arma; break;
@@ -350,6 +367,7 @@ void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, c
             case 3: slotObj = Vida2; break;
             case 4: slotObj = Vida3; break;
         }
+        if (slotObj == nullptr) continue;
 
         if (slotObj && slotObj->getSprite()) {
             Sprite* itemSpr = slotObj->getSprite();
@@ -371,13 +389,13 @@ void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, c
                 float scale = 0.5f; // half size
                 // sprite quad original size is 16x16 or 24x16 (we offset to center)
                 float drawX;
-                if (slotObj == Caja) drawX = centerX - (slotW * scale) / 2.0f;
-                else drawX = centerX - 1 - (slotW * scale) / 2.0f;
+                if (slotObj == Caja) drawX = (centerX + (slotW + spacing)) - (slotW * scale) / 2.0f;
+                else drawX = (centerX + (slotW + spacing)) - 1 - (slotW * scale) / 2.0f;
                 float drawY = centerY - (slotH * scale) / 2.0f;
                 itemSpr->renderAtScaled(glm::vec2(drawX, drawY), scale);
             } else {
                 // weapon: draw normally centered
-                float drawX = centerX + 1 - slotW / 2.0f + 2.0f;
+                float drawX = (centerX + (slotW + spacing)) + 1 - slotW / 2.0f + 2.0f;
                 float drawY = centerY + 5 - slotH / 2.0f + 2.0f;
                 itemSpr->renderAt(glm::vec2(drawX, drawY));
             }
@@ -389,8 +407,9 @@ void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, c
         // highlight selected
         if (slotObj && selectedObj && slotObj == selectedObj) {
             glColor3f(1.f, 1.f, 1.f);
-            drawRect(sx - 3, sy - 3, slotW + 6, slotH + 6);
+            drawRect((sx + (slotW + spacing)) - 3, sy - 3, slotW + 6, slotH + 6);
         }
+        slotObj = nullptr;
     }
 }
 

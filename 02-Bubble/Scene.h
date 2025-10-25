@@ -8,6 +8,7 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "objeto.h"
+#include "Sprite.h"
 
 // Forward declare to avoid heavy includes here
 class Enemy;
@@ -36,6 +37,7 @@ public:
     void comprovar_vides(int deltaTime);
 	int CurrentMap;
 	bool detectable;
+	Texture spritesheet;
     // Accessor for enemies to interact with the player (e.g., projectile hits)
     Player* getPlayer() const { return player; }
     // Access enemies for collision checks (player bullets)
@@ -54,6 +56,7 @@ private:
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
+	Sprite* sprite;
 
     InferiorBar* hud = nullptr;
 };

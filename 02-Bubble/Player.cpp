@@ -32,7 +32,7 @@ vector<vector<vector<PlayerAnims>>> Animacions = {
 };	
 
 
-void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Scene &sc)
+void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Scene &sc, bool render)
 {
 	vida = 7;
 	scene = &sc;
@@ -40,6 +40,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 	ferit = false;
 	mort = false;
 	god = false;
+	rend = render;
 	lastButton = ' ';
 	spritesheet.loadFromFile("images/Solid_snake.png", TEXTURE_PIXEL_FORMAT_RGBA); 	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
 	sprite = Sprite::createSprite(glm::ivec2(16*2,32*2), glm::vec2(PIXEL_X *16, PIXEL_Y *32), &spritesheet, &shaderProgram);
@@ -287,7 +288,7 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][0][12]);
 		else if (Game::instance().getKey(GLFW_KEY_ENTER)) {
 			lastButton = ' ';
-			vida = 3;
+			vida = 7;
 			mort = false;
 			porta_arma = false;
 			ha_disparat = false;
@@ -299,6 +300,12 @@ void Player::update(int deltaTime)
 			scene->tp_to_map(1);
 		}
 		return;
+	}
+	else if (scene->CurrentMap == 0) {
+		if (Game::instance().getKey(GLFW_KEY_ENTER)) {
+			lastButton = 'T';
+			scene->ChangeMap(0);
+		}
 	}
 	else if(Game::instance().getKey(GLFW_KEY_LEFT) || Game::instance().getKey(GLFW_KEY_A))
 	{
@@ -627,7 +634,8 @@ void Player::update(int deltaTime)
 
 void Player::render()
 {
-    sprite->render();
+	if (rend == false) return;
+	sprite->render();
     renderProjectiles();
 }
 

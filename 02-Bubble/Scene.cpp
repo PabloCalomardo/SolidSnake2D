@@ -6,12 +6,16 @@
 #include "Enemy.h"
 #include "InferiorBar.h"
 #include "objeto.h"
+//#include "Sprite.h"
 
 #define SCREEN_X 32
 #define SCREEN_Y 16
 
 #define INIT_PLAYER_X_TILES 12
 #define INIT_PLAYER_Y_TILES 4
+
+#define PIXEL_X 1/808.0f
+#define PIXEL_Y 1/546.0f
 
 
 Scene::Scene()
@@ -38,22 +42,31 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
-	CurrentMap = 1;
-	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	detectable = true;
+	CurrentMap = 0;
 	player = new Player();
-
-	ChargeEnemiesAndObjects();
-
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram,*this);
+	map = TileMap::createTileMap("levels/level00.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, *this, false);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
-	currentTime = 0.0f;
 
-    // HUD
-    hud = new InferiorBar();
-    hud->init(this, texProgram, glm::ivec2(SCREEN_X, SCREEN_Y));
+	ChargeEnemiesAndObjects();
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+
+	// HUD
+	hud = new InferiorBar();
+	hud->init(this, texProgram, glm::ivec2(SCREEN_X, SCREEN_Y));
+
+	spritesheet.loadFromFile("images/Pantallas_Inicio.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	sprite = Sprite::createSprite(glm::ivec2(PIXEL_X*8, PIXEL_Y*8), glm::vec2(PIXEL_X * 256, PIXEL_Y * 240), &spritesheet, &texProgram);
+	sprite->setNumberAnimations(1);
+
+	sprite->setAnimationSpeed(0, 8);
+	sprite->addKeyframe(0, glm::vec2(PIXEL_X * (550), PIXEL_Y * (18)));
+	sprite->changeAnimation(0);
+	sprite->setPosition(glm::vec2(0, 0));
+
+	sprite->render();
+
 }
 
 void Scene::ChargeEnemiesAndObjects() {
@@ -274,7 +287,18 @@ void Scene::ChangeMap(int dir)
 {
 	glm::vec2 posaux(0, player->posPlayer[1]);
 	player->ha_disparat = false;
-	if (CurrentMap == 1) {
+	if (CurrentMap == 0) {
+		printf("entra\n");
+		detectable = true;
+		sprite->free();
+		CurrentMap = 1;
+		map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+		player->rend = true;
+		currentTime = 0.0f;
+	}
+	else if (CurrentMap == 1) {
+		printf("entra1\n");
 		CurrentMap = 2;
 		map = TileMap::createTileMap("levels/level02.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 		glm::vec2 posaux(0, player->posPlayer[1]);

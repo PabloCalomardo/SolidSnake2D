@@ -203,6 +203,7 @@ void InferiorBar::render() {
     glDisable(GL_TEXTURE_2D);
 
     drawBarBackground();
+    if (scene->CurrentMap == 0) return;
     drawFrame();
 
     // Gather data

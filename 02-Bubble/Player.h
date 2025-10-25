@@ -20,7 +20,7 @@ class Player
 {
 
 public:
-	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Scene &sc);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, Scene& sc, bool render);
 	void update(int deltaTime);
 	void render();
 	
@@ -42,6 +42,7 @@ public:
     bool ha_disparat = false;
     bool hasKey = false;
     bool god;
+    bool rend;
     int pegaTimer = 0;
 	bool HaPegat = false;
 

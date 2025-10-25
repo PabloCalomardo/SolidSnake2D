@@ -32,7 +32,6 @@ public:
 	objeto* Arma;
 
 private:
-    void ensureFont();
     void drawBarBackground();
     void drawFrame();
     void drawSeparator(int x);

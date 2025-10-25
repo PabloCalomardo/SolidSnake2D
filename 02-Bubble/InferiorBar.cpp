@@ -174,10 +174,10 @@ void InferiorBar::drawText(int x, int y, const std::string& text, int pixelSize,
         }
         // If char is letter, use sprite with fixed advance; otherwise use bitmap advance
         if (std::isalpha(static_cast<unsigned char>(c))) {
-            drawChar(cursorX, y, c, pixelSize, spacing);
+            drawChar(cursorX+32, y-24, c, pixelSize, spacing);
             cursorX += spriteAdvance;
         } else {
-            drawChar(cursorX, y, c, pixelSize, spacing);
+            drawChar(cursorX+32, y-24, c, pixelSize, spacing);
             cursorX += (5 * pixelSize) + spacing * 6;
         }
     }
@@ -185,8 +185,6 @@ void InferiorBar::drawText(int x, int y, const std::string& text, int pixelSize,
 
 void InferiorBar::render() {
     if (!scene) return;
-
-    ensureFont();
 
     // Save previous state, switch to fixed-function immediate mode for simple 2D drawing
     GLint prevProgram = 0;
@@ -238,8 +236,8 @@ void InferiorBar::render() {
 
     // Sections (these will call drawText which may enable textures briefly for sprites)
     renderLivesSection(padding, innerY, sectionW - padding * 2, lives);
-    renderWeaponSection(sectionW + padding, innerY, sectionW - padding * 2, arma, inv, sel);
-    renderMapSection(sectionW * 2 + padding, innerY, sectionW - padding * 2, map);
+    renderWeaponSection(sectionW-24 + padding, innerY, sectionW - padding * 2, arma, inv, sel);
+    renderMapSection((sectionW-16) * 2 + padding, innerY, sectionW - padding * 2, map);
 
     // Restore matrices
     glPopMatrix();
@@ -254,19 +252,19 @@ void InferiorBar::drawBarBackground() {
     // Solid black rectangle at the bottom
     glColor3f(0.f, 0.f, 0.f);
     glBegin(GL_QUADS);
-    glVertex2f(0.f, float(SCREEN_HEIGHT - barHeight));
-    glVertex2f(float(SCREEN_WIDTH), float(SCREEN_HEIGHT - barHeight));
-    glVertex2f(float(SCREEN_WIDTH), float(SCREEN_HEIGHT));
-    glVertex2f(0.f, float(SCREEN_HEIGHT));
+    glVertex2f(32.f, float(SCREEN_HEIGHT - barHeight - 24));
+    glVertex2f(float(672), float(SCREEN_HEIGHT - barHeight - 24));
+    glVertex2f(float(672), float(SCREEN_HEIGHT - 24));
+    glVertex2f(32.f, float(SCREEN_HEIGHT - 24));
     glEnd();
 }
 
 void InferiorBar::drawFrame() {
     // White 1px rectangle border around the HUD bar
     glColor3f(1.f, 1.f, 1.f);
-    const int x = 0;
-    const int y = SCREEN_HEIGHT - barHeight;
-    const int w = SCREEN_WIDTH;
+    const int x = 32;
+    const int y = SCREEN_HEIGHT - barHeight - 24;
+    const int w = 640;
     const int h = barHeight;
 
     glBegin(GL_LINE_LOOP);
@@ -280,7 +278,7 @@ void InferiorBar::drawFrame() {
 void InferiorBar::drawSeparator(int x) {
     // Thin vertical line separator
     glColor3f(1.f, 1.f, 1.f);
-    const int y = SCREEN_HEIGHT - barHeight + 2;
+    const int y = SCREEN_HEIGHT - barHeight + 2 - 24;
     const int h = barHeight - 4;
     glBegin(GL_LINES);
     glVertex2f(float(x), float(y));
@@ -297,7 +295,7 @@ void InferiorBar::renderLivesSection(int x, int y, int width, int lives) {
     int displayLives = std::max(0, std::min(3, lives));
 
     // Compute center position inside section to draw the digit sprite
-    int startY = y + 24; // a bit below the title
+    int startY = y ; // a bit below the title
     int cx = x + width / 2; // center x relative to section
     int charW = 16; // sprite width used in drawText
     int drawX = cx - charW / 2;
@@ -314,7 +312,7 @@ void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, c
     int boxW = width;
     int boxH = 44; // make box taller to fit larger icons
     int boxX = x;
-    int boxY = y + 22;
+    int boxY = y - 2;
     glColor3f(1.f, 1.f, 1.f);
     drawRect(boxX, boxY, boxW, boxH);
 
@@ -372,13 +370,15 @@ void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, c
             if (isLarge) {
                 float scale = 0.5f; // half size
                 // sprite quad original size is 16x16 or 24x16 (we offset to center)
-                float drawX = centerX - (slotW * scale) / 2.0f;
+                float drawX;
+                if (slotObj == Caja) drawX = centerX - (slotW * scale) / 2.0f;
+                else drawX = centerX - 1 - (slotW * scale) / 2.0f;
                 float drawY = centerY - (slotH * scale) / 2.0f;
                 itemSpr->renderAtScaled(glm::vec2(drawX, drawY), scale);
             } else {
                 // weapon: draw normally centered
-                float drawX = centerX - slotW / 2.0f + 2.0f;
-                float drawY = centerY - slotH / 2.0f + 2.0f;
+                float drawX = centerX + 1 - slotW / 2.0f + 2.0f;
+                float drawY = centerY + 5 - slotH / 2.0f + 2.0f;
                 itemSpr->renderAt(glm::vec2(drawX, drawY));
             }
 
@@ -397,68 +397,12 @@ void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, c
 void InferiorBar::renderMapSection(int x, int y, int width, int mapId) {
     // Title
     const int titleSize = 2;
-    drawText(x, y, "MAP", titleSize, 1);
-
-    // Big number centered in the section
-    std::string num = std::to_string(mapId);
-
-    // Compute rough centered x based on char advance used in drawText
-    int pixelSize = 3;
-    int charAdvance = (5 * pixelSize) + 6; // spacing *6 like drawText
-    int totalW = int(num.size()) * charAdvance;
-
-    int cx = x + std::max(0, (width - totalW) / 2);
-    int cy = y + 20;
-
-    drawText(cx, cy, num, pixelSize, 1);
-}
-
-void InferiorBar::ensureFont() {
-    if (fontInitialized) return;
-    fontInitialized = true;
-
-    // Digits 0-9
-    font['0'] = { 0b01110, 0b10001, 0b10011, 0b10101, 0b11001, 0b10001, 0b01110 };
-    font['1'] = { 0b00100, 0b01100, 0b00100, 0b00100, 0b00100, 0b00100, 0b01110 };
-    font['2'] = { 0b01110, 0b10001, 0b00001, 0b00010, 0b00100, 0b01000, 0b11111 };
-    font['3'] = { 0b11110, 0b00001, 0b00001, 0b01110, 0b00001, 0b00001, 0b11110 };
-    font['4'] = { 0b00010, 0b00110, 0b01010, 0b10010, 0b11111, 0b00010, 0b00010 };
-    font['5'] = { 0b11111, 0b10000, 0b11110, 0b00001, 0b00001, 0b10001, 0b01110 };
-    font['6'] = { 0b00110, 0b01000, 0b10000, 0b11110, 0b10001, 0b10001, 0b01110 };
-    font['7'] = { 0b11111, 0b00001, 0b00010, 0b00100, 0b01000, 0b01000, 0b01000 };
-    font['8'] = { 0b01110, 0b10001, 0b10001, 0b01110, 0b10001, 0b10001, 0b01110 };
-    font['9'] = { 0b01110, 0b10001, 0b10001, 0b01111, 0b00001, 0b00010, 0b01100 };
-
-    // Letters (subset): A-Z
-    font['A'] = { 0b01110, 0b10001, 0b10001, 0b11111, 0b10001, 0b10001, 0b10001 };
-    font['B'] = { 0b11110, 0b10001, 0b10001, 0b11110, 0b10001, 0b10001, 0b11110 };
-    font['C'] = { 0b01110, 0b10001, 0b10000, 0b10000, 0b10000, 0b10001, 0b01110 };
-    font['D'] = { 0b11100, 0b10010, 0b10001, 0b10001, 0b10001, 0b10010, 0b11100 };
-    font['E'] = { 0b11111, 0b10000, 0b10000, 0b11110, 0b10000, 0b10000, 0b11111 };
-    font['F'] = { 0b11111, 0b10000, 0b10000, 0b11110, 0b10000, 0b10000, 0b10000 };
-    font['G'] = { 0b01110, 0b10001, 0b10000, 0b10111, 0b10001, 0b10001, 0b01110 };
-    font['H'] = { 0b10001, 0b10001, 0b10001, 0b11111, 0b10001, 0b10001, 0b10001 };
-    font['I'] = { 0b01110, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100, 0b01110 };
-    font['J'] = { 0b00001, 0b00001, 0b00001, 0b00001, 0b10001, 0b10001, 0b01110 };
-    font['K'] = { 0b10001, 0b10010, 0b10100, 0b11000, 0b10100, 0b10010, 0b10001 };
-    font['L'] = { 0b10000, 0b10000, 0b10000, 0b10000, 0b10000, 0b10000, 0b11111 };
-    font['M'] = { 0b10001, 0b11011, 0b10101, 0b10101, 0b10001, 0b10001, 0b10001 };
-    font['N'] = { 0b10001, 0b10001, 0b11001, 0b10101, 0b10011, 0b10001, 0b10001 };
-    font['O'] = { 0b01110, 0b10001, 0b10001, 0b10001, 0b10001, 0b10001, 0b01110 };
-    font['P'] = { 0b11110, 0b10001, 0b10001, 0b11110, 0b10000, 0b10000, 0b10000 };
-    font['Q'] = { 0b01110, 0b10001, 0b10001, 0b10001, 0b10101, 0b10010, 0b01101 };
-    font['R'] = { 0b11110, 0b10001, 0b10001, 0b11110, 0b10100, 0b10010, 0b10001 };
-    font['S'] = { 0b01111, 0b10000, 0b10000, 0b01110, 0b00001, 0b00001, 0b11110 };
-    font['T'] = { 0b11111, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100 };
-    font['U'] = { 0b10001, 0b10001, 0b10001, 0b10001, 0b10001, 0b10001, 0b01110 };
-    font['V'] = { 0b10001, 0b10001, 0b10001, 0b10001, 0b01010, 0b01010, 0b00100 };
-    font['W'] = { 0b10001, 0b10001, 0b10001, 0b10101, 0b10101, 0b11011, 0b10001 };
-    font['X'] = { 0b10001, 0b10001, 0b01010, 0b00100, 0b01010, 0b10001, 0b10001 };
-    font['Y'] = { 0b10001, 0b10001, 0b01010, 0b00100, 0b00100, 0b00100, 0b00100 };
-    font['Z'] = { 0b11111, 0b00001, 0b00010, 0b00100, 0b01000, 0b10000, 0b11111 };
-
-    // Colon and dash
-    font[':'] = { 0b00000, 0b00100, 0b00000, 0b00000, 0b00100, 0b00000, 0b00000 };
+    drawText(x, y, "KEY", titleSize, 1);
+    Player* player = scene ? scene->getPlayer() : nullptr;
+    if (player != nullptr) {
+        if (player->hasKey) drawText(x + 32, y + 28, "YES", titleSize, 1);
+        else drawText(x + 40, y + 28, "NO", titleSize, 1);
+    }
 }
 
 void InferiorBar::drawFilledRect(int x, int y, int w, int h) {

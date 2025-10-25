@@ -40,6 +40,7 @@ public:
     bool hasWeapon() const { return porta_arma; }
     int getSelectedItemIndex() const { return selectedItem; }
     bool ha_disparat = false;
+    bool hasKey = false;
 
 private:
     struct Bullet {

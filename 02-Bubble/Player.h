@@ -42,6 +42,8 @@ public:
     bool ha_disparat = false;
     bool hasKey = false;
     bool god;
+    int pegaTimer = 0;
+	bool HaPegat = false;
 
 private:
     struct Bullet {

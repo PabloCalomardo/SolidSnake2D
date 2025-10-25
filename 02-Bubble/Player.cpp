@@ -277,6 +277,7 @@ void Player::update(int deltaTime)
 	int f = ferit;
 	sprite->update(deltaTime);
     shootTimer += deltaTime;
+	pegaTimer += deltaTime;
 
     // handle item action cooldown (prevents multiple triggers on single keypress)
     if (itemActionCooldownMs > 0) itemActionCooldownMs -= deltaTime;
@@ -384,10 +385,11 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][0]);
 		}
 	}
-	else if (!cajaActive && Game::instance().getKey(GLFW_KEY_Z) && !porta_arma) 		// PUNCH NOMÉS SI NO PORTA ARMA
+	else if (!cajaActive && Game::instance().getKey(GLFW_KEY_Z) && !porta_arma && pegaTimer >= 50) 		// PUNCH NOMÉS SI NO PORTA ARMA
 	{
+		cout << "PEGA INICIADA SENSE ARMA" << endl;
 		lastButton = 'Z';
-        handlePunchNoWeapon(f, a);
+		if(!HaPegat) handlePunchNoWeapon(f, a);
 	}
 	else if (lastButton != 'K' && Game::instance().getKey(GLFW_KEY_K)) {
 		lastButton = 'K';
@@ -449,9 +451,9 @@ void Player::update(int deltaTime)
 	}
 	else
 	{
-		if(sprite->animation() == Animacions[f][a][4])
+		if (sprite->animation() == Animacions[f][a][4])
 			sprite->changeAnimation(Animacions[f][a][2]);
-		else if(sprite->animation() == Animacions[f][a][5])
+		else if (sprite->animation() == Animacions[f][a][5])
 			sprite->changeAnimation(Animacions[f][a][3]);
 		else if (sprite->animation() == Animacions[f][a][6])
 			sprite->changeAnimation(Animacions[f][a][1]);
@@ -459,13 +461,29 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][0]);
 		// Acabar Animacions de punch
 		else if (!porta_arma && sprite->animation() == Animacions[f][a][11])
+		{
+			pegaTimer = 0;
 			sprite->changeAnimation(Animacions[f][a][0]);
+			HaPegat = false;
+		}
 		else if (!porta_arma && sprite->animation() == Animacions[f][a][10])
+		{
+			pegaTimer = 0;
 			sprite->changeAnimation(Animacions[f][a][1]);
+			HaPegat = false;
+		}
 		else if (!porta_arma && sprite->animation() == Animacions[f][a][8])
+		{
+			pegaTimer = 0;
 			sprite->changeAnimation(Animacions[f][a][2]);
+			HaPegat = false;
+		}
 		else if (!porta_arma && sprite->animation() == Animacions[f][a][9])
+		{
+			pegaTimer = 0;
 			sprite->changeAnimation(Animacions[f][a][3]);
+			HaPegat = false;
+		}
 	}
 	
     // Inventory cycling with C key
@@ -888,10 +906,11 @@ void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 			p.y >= ep.y && p.y <= ep.y + enemySize.y;
 	};
 	auto& enemies = scene->getEnemies();
+	cout << "Checking punch at pos (" << posPuny.x << ", " << posPuny.y << ")\n";
 	for (auto* e : enemies) {
 		if (!e->mort && hitEnemy(posPuny, e)) {
 			e->baixavida(1);
-			printf("ENEMIC Puncheado!\n");
+			HaPegat = true;
 		}
 	}
 }

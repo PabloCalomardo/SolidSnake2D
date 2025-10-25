@@ -501,6 +501,12 @@ bool animation_not_in(int animation) {
 void Scene::comprovar_vides(int deltaTime)
 {
 	//Si l'enemic toca al jugador, aquest perd una vida
+
+	if (damageCD > 0) {
+		damageCD -= deltaTime;
+		return;
+	}
+
 	glm::ivec2 posp = player->posPlayer;
     Sprite* spr_player = player->getSprite();
 
@@ -513,6 +519,7 @@ void Scene::comprovar_vides(int deltaTime)
         if ((abs(posp.x - pose.x) < 20 && abs(posp.y - pose.y) < 20)) {
             if (animation_not_in(spr_player->animation())) { //Treiem una vida al jugador
                 player->baixavida(2);
+				damageCD = 500;
             }
         }
     }

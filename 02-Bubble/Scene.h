@@ -46,6 +46,7 @@ private:
 	void initShaders();
 
 private:
+	int damageCD;
 	TileMap *map;
 	Player *player;
     std::vector<Enemy*> enemies;

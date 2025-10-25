@@ -889,7 +889,7 @@ void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 	};
 	auto& enemies = scene->getEnemies();
 	for (auto* e : enemies) {
-		if (hitEnemy(posPuny, e)) {
+		if (!e->mort && hitEnemy(posPuny, e)) {
 			e->baixavida(1);
 			printf("ENEMIC Puncheado!\n");
 		}

@@ -22,6 +22,7 @@ public:
     void init(Scene* scene, ShaderProgram& shaderProgram, const glm::ivec2& tileMapPos);
     void update(int deltaTime);
     void render();
+    bool mort = false;
     Texture spritesheet;
     Sprite* sprite;
 
@@ -47,6 +48,7 @@ private:
     void renderLivesSection(int x, int y, int width, int lives, bool g, bool det);
     void renderWeaponSection(int x, int y, int width, bool hasWeapon, const std::vector<objeto*>& inventory, int selectedIndex);
     void renderMapSection(int x, int y, int width, int mapId);
+    void renderDeathMessage();
 
 private:
     Scene* scene = nullptr;

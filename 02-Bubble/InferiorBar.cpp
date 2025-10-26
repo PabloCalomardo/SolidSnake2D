@@ -202,6 +202,11 @@ void InferiorBar::render() {
     // Draw background and frame with textures disabled
     glDisable(GL_TEXTURE_2D);
 
+    if (mort) {
+        renderDeathMessage();
+        return;
+    }
+
     drawBarBackground();
     if (scene->CurrentMap == 0) return;
     drawFrame();
@@ -289,6 +294,19 @@ void InferiorBar::drawSeparator(int x) {
     glVertex2f(float(x), float(y));
     glVertex2f(float(x), float(y + h));
     glEnd();
+}
+
+void InferiorBar::renderDeathMessage() {
+    drawBarBackground();
+    drawFrame();
+    const int titleSize = 2;
+    const int yTop = SCREEN_HEIGHT - barHeight;
+    const int padding = 10;
+    const int innerY = yTop + padding;
+    const int innerH = barHeight - padding * 2;
+    drawText(innerH, innerY, "GAME OVER", titleSize, 1);
+    drawText(innerH + 32, innerY + 24, "PRESS ENTER TO RESTART", 1, 1);
+    drawText(innerH + 32, innerY + 48, "PRESS M TO GO TO TITLE SCREEN", 1, 1);
 }
 
 void InferiorBar::renderLivesSection(int x, int y, int width, int lives, bool g, bool det) {

@@ -159,7 +159,8 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat)
 {
 	if (scene->CurrentMap != Escena_Original) return;
-	if (player_ha_disparat) hasEnemyDetected = true;
+    if (noUpdate) return;
+	if (!mort && player_ha_disparat) hasEnemyDetected = true;
     if (mort) {
         sprite->setPosition(glm::vec2(float(-100), float(-100)));
         return;
@@ -367,6 +368,7 @@ void Enemy::tryShootAt(const glm::ivec2& targetPos)
     if (EnemyType == 0) return; // only armed enemies
     glm::ivec2 dir;
     if (!hasClearAxisShot(targetPos, dir)) return;
+    SoundManager::instance().playSound("shoot");
 
     Bullet b;
     // Spawn segons direcció: amunt surt del cap, altrament del centre lleugerament amunt
@@ -487,6 +489,7 @@ static glm::ivec2 EnemyFacingFromAnim(int anim)
 bool Enemy::enemic_detectat(const glm::ivec2& targetPos, int radius_detection) const
 {
     if (!map) return false;
+	
 
     // Tile size in pixels
     const int ts = map->getTileSize();
@@ -724,5 +727,8 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
 void Enemy::baixavida(int dg) {
     
 	vida = vida - dg;
-    if (vida <= 0) mort = true;
+    if (vida <= 0) {
+        mort = true;
+        hasEnemyDetected = false;
+    }
 }

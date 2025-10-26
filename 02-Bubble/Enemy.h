@@ -32,8 +32,10 @@ public:
 	glm::ivec2 posEnemy;
 	void baixavida(int dg);
 	int Escena_Original;
+    bool noUpdate = false;
     bool mort;
     int EnemyType; // 0: DOG, 1: SOLDIER, 2: SOLDIER2
+    bool hasEnemyDetected;
 
 private:
     struct Bullet {
@@ -51,7 +53,6 @@ private:
 	
 	int vida;
 	int moviment_escorpi;
-    bool hasEnemyDetected;
 	bool moviment_horitzontal, quiet, moviment_vertical;
 	glm::ivec2 tileMapDispl;
 	int jumpAngle, startY;

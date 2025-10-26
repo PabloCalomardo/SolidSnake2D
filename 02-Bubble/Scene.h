@@ -9,10 +9,12 @@
 #include "Player.h"
 #include "objeto.h"
 #include "Sprite.h"
+#include "SoundManager.h"
 
 // Forward declare to avoid heavy includes here
 class Enemy;
 class InferiorBar;
+//class SoundManager;
 
 
 // Scene contains all the entities of our game.
@@ -34,9 +36,12 @@ public:
 	void render();
 	void ChangeMap(int dir);
 	void tp_to_map(int m);
+	void Death(int op);
     void comprovar_vides(int deltaTime);
+	void GoToMainMenu();
 	int CurrentMap;
 	bool detectable;
+	bool detectat;
 	Texture spritesheet;
     // Accessor for enemies to interact with the player (e.g., projectile hits)
     Player* getPlayer() const { return player; }
@@ -51,6 +56,7 @@ private:
 	int damageCD;
 	TileMap *map;
 	Player *player;
+	SoundManager *sm;
     std::vector<Enemy*> enemies;
 	std::vector<objeto*> objetos;
 	ShaderProgram texProgram;

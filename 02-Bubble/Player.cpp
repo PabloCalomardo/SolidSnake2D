@@ -287,6 +287,10 @@ void Player::update(int deltaTime)
 		if (sprite->animation() != Animacions[f][0][12])
 			sprite->changeAnimation(Animacions[f][0][12]);
 		else if (Game::instance().getKey(GLFW_KEY_ENTER)) {
+			if (SoundManager::instance().isSoundPlaying("game_over")) {
+				SoundManager::instance().stopSound("game_over");
+			}
+			SoundManager::instance().playSound("select");
 			lastButton = ' ';
 			vida = 7;
 			mort = false;
@@ -298,6 +302,22 @@ void Player::update(int deltaTime)
 			inventari.clear();
 			sprite->changeAnimation(Animacions[0][0][0]);
 			scene->tp_to_map(1);
+			scene->Death(1);
+		}
+		else if (Game::instance().getKey(GLFW_KEY_M)) {
+			if (SoundManager::instance().isSoundPlaying("game_over")) {
+				SoundManager::instance().stopSound("game_over");
+			}
+			SoundManager::instance().playSound("select");
+			inventari.clear();
+			scene->GoToMainMenu();
+			lastButton = ' ';
+			vida = 7;
+			mort = false;
+			porta_arma = false;
+			ha_disparat = false;
+			ferit = 0;
+			sprite->changeAnimation(Animacions[0][0][0]);
 		}
 		return;
 	}
@@ -305,6 +325,7 @@ void Player::update(int deltaTime)
 		if (Game::instance().getKey(GLFW_KEY_ENTER)) {
 			lastButton = 'T';
 			scene->ChangeMap(0);
+			SoundManager::instance().playSound("select");
 		}
 	}
 	else if(Game::instance().getKey(GLFW_KEY_LEFT) || Game::instance().getKey(GLFW_KEY_A))
@@ -394,7 +415,6 @@ void Player::update(int deltaTime)
 	}
 	else if (!cajaActive && Game::instance().getKey(GLFW_KEY_Z) && !porta_arma && pegaTimer >= 50) 		// PUNCH NOMÉS SI NO PORTA ARMA
 	{
-		cout << "PEGA INICIADA SENSE ARMA" << endl;
 		lastButton = 'Z';
 		if(!HaPegat) handlePunchNoWeapon(f, a);
 	}
@@ -422,6 +442,9 @@ void Player::update(int deltaTime)
 	}
 	else if (lastButton != 'H' && Game::instance().getKey(GLFW_KEY_H)) {
 		lastButton = 'H';
+		if (!SoundManager::instance().isSoundPlaying("heal")) {
+			SoundManager::instance().playSound("heal");
+		}
 		vida = 7;
 		ferit = 0;
 		if (ferit != f) {
@@ -504,6 +527,9 @@ void Player::update(int deltaTime)
 
             // switching item cancels caja active and makes player detectable again
             if (cajaActive) {
+				if (!SoundManager::instance().isSoundPlaying("box")) {
+					SoundManager::instance().playSound("box");
+				}
                 // deactivate box and set player to standing down immediately
                 cajaActive = false;
                 if (scene) scene->detectable = true;
@@ -532,6 +558,7 @@ void Player::update(int deltaTime)
 					}
                  }
              }
+			SoundManager::instance().playSound("change");
 
             itemActionCooldownMs = 200; // 200ms debounce
 
@@ -553,6 +580,9 @@ void Player::update(int deltaTime)
             if (typeAnim == 1) {
                 // ARMA: toggle armed state
                 if (porta_arma) {
+					if (!SoundManager::instance().isSoundPlaying("unequip")) {
+						SoundManager::instance().playSound("unequip");
+					}
                     // if currently armed and selected item is a weapon, deselect -> deactivate
                     porta_arma = false;
                     // map armed animations to unarmed equivalents
@@ -563,6 +593,9 @@ void Player::update(int deltaTime)
                         }
                     }
                 } else {
+					if (!SoundManager::instance().isSoundPlaying("arma")) {
+						SoundManager::instance().playSound("arma");
+					}
                     porta_arma = true;
                     // map unarmed animations to armed equivalents
                     for (int i = 0; i <= 11; ++i) {
@@ -576,6 +609,9 @@ void Player::update(int deltaTime)
             else if (typeAnim == 0) {
                 // CAIXA: toggle box state
                 if (cajaActive) {
+					if (!SoundManager::instance().isSoundPlaying("unequip")) {
+						SoundManager::instance().playSound("unequip");
+					}
                     // deactivate box
                     cajaActive = false;
                     if (scene) scene->detectable = true;
@@ -584,6 +620,9 @@ void Player::update(int deltaTime)
                     // if currently CAIXA, change to stand
                     if (sprite->animation() == CAIXA) sprite->changeAnimation(Animacions[fcur][a2][0]);
                 } else {
+					if (!SoundManager::instance().isSoundPlaying("box")) {
+						SoundManager::instance().playSound("box");
+					}
                     // activate box
                     cajaActive = true;
                     sprite->changeAnimation(CAIXA);
@@ -591,8 +630,11 @@ void Player::update(int deltaTime)
                 }
             }
             else if (typeAnim == 2) {
+				if (!SoundManager::instance().isSoundPlaying("heal")) {
+					SoundManager::instance().playSound("heal");
+				}
                 // VIDA: heal 1 and remove item from inventory (no toggle)
-                vida = std::min(3, vida + 1);
+                vida = std::min(7, vida + 3);
                 inventari.erase(inventari.begin() + selectedItem);
                 if (inventari.empty()) selectedItem = -1;
                 else selectedItem = selectedItem % int(inventari.size());
@@ -667,7 +709,16 @@ void Player::baixavida(int dg)
 			else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
 			else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
 		}
-		if (vida <= 0) mort = true;
+		if (vida <= 0) {
+			SoundManager::instance().playSound("game_over");
+			SoundManager::instance().stopMusic();
+			mort = true;
+			for each (auto enemy in scene->getEnemies())
+			{
+				if (enemy->Escena_Original == scene->CurrentMap) enemy->noUpdate = true;
+			}
+			scene->Death(0);
+		}
 
 		// If player was in box state, cancel it and become detectable again
 		if (cajaActive) {
@@ -732,6 +783,8 @@ void Player::tryShoot()
 {
     if (!porta_arma) return;
     if (shootTimer < shootCooldownMs) return;
+
+	SoundManager::instance().playSound("shoot");
 
     Bullet b;
     // Decideix direcció primer
@@ -873,11 +926,12 @@ void Player::checkObjectPickup()
         bool overlap = !(pMax.x <= oMin.x || pMin.x >= oMax.x || pMax.y <= oMin.y || pMin.y >= oMax.y);
         if (overlap) {
             // afegir a inventari i marcar recollit
+			SoundManager::instance().playSound("item");
             inventari.push_back(o);
             o->recollit = true;
-            if (o->getSprite() && o->getSprite()->animation() == 1) {
+            /*if (o->getSprite() && o->getSprite()->animation() == 1) {
                 porta_arma = true; // recollir arma
-            }
+            }*/
             // If no selected item, select this one
             if (selectedItem < 0) selectedItem = int(inventari.size()) - 1;
         }
@@ -886,7 +940,10 @@ void Player::checkObjectPickup()
 
 void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 {
-    const int sAnim = sprite->animation();
+	const int sAnim = sprite->animation();
+	if (!SoundManager::instance().isSoundPlaying("punch")) {
+		SoundManager::instance().playSound("punch");
+	}
 	glm::ivec2 posPuny = posPlayer;
     if (sAnim == Animacions[feritIdx][armaIdx][0] || sAnim == Animacions[feritIdx][armaIdx][7]) {
         sprite->changeAnimation(Animacions[feritIdx][armaIdx][11]);
@@ -914,7 +971,6 @@ void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 			p.y >= ep.y && p.y <= ep.y + enemySize.y;
 	};
 	auto& enemies = scene->getEnemies();
-	cout << "Checking punch at pos (" << posPuny.x << ", " << posPuny.y << ")\n";
 	for (auto* e : enemies) {
 		if (!e->mort && hitEnemy(posPuny, e)) {
 			e->baixavida(1);

@@ -302,6 +302,24 @@ void Scene::ChargeEnemiesAndObjects() {
 		e->setTileMap(map);
 		enemies.push_back(e);
 	}
+	{
+		// BOSS1 mapa 11
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 3, *this, true, false, false, 11);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(10 * map->getTileSize(), 5 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// BOSS2 mapa 11
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 3, *this, true, false, false, 11);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(30 * map->getTileSize(), 5 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
 }
 
 void Scene::DeleteObjectsAndEnemies() {

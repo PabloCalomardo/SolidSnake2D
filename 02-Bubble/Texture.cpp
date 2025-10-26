@@ -45,6 +45,10 @@ bool Texture::loadFromFile(const string &filename, PixelFormat format)
 			{
 				image[idx + 3] = 0; // Transparent
 			}
+			if (image[idx] == 255 && image[idx + 1] == 85 && image[idx + 2] == 255)
+			{
+				image[idx + 3] = 0; // Transparent
+			}
 		}
 	}
 

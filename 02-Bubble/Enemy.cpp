@@ -46,9 +46,11 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
     else vida = 4;
 	moviment_escorpi = 0;
 	mort = false;
-	spritesheet.loadFromFile("images/Enemies.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211
+    if(EnemyType == 3) spritesheet.loadFromFile("images/Bosses.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211
+	else spritesheet.loadFromFile("images/Enemies.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211
 
 	if (EnemyType == 0)sprite = Sprite::createSprite(glm::ivec2(16 * 2, 16 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 16), &spritesheet, &shaderProgram);
+    else if (EnemyType == 3)sprite = Sprite::createSprite(glm::ivec2(30 * 2, 42 * 2), glm::vec2((1/381.f) * 34, (1 / 154.f) * 42), &spritesheet, &shaderProgram);
 	else sprite = Sprite::createSprite(glm::ivec2(16 * 2, 32 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 32), &spritesheet, &shaderProgram);
 
 	
@@ -112,7 +114,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (40), PIXEL_Y * 56));
 
 	}
-	else {
+	else if (EnemyType == 2) {
 		//==============================
 		//			STANDS 
 		//==============================
@@ -147,6 +149,11 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 1), PIXEL_Y * 26));
 		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 38 + 1), PIXEL_Y * 26));
 	}
+	else {//BOSS  34 amplada, 42 alçada
+        sprite->setAnimationSpeed(STAND_NORMAL, 4);
+        sprite->addKeyframe(STAND_NORMAL, glm::vec2((1 / 381.f) * (311), (1 / 154.f) * 9)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
+        sprite->addKeyframe(STAND_NORMAL, glm::vec2((1 / 381.f) * (311 + 35), (1 / 154.f) * 9)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
+    }
 
 	if (EnemyType == 0)sprite->changeAnimation(MOVE_DOWN);
 	else sprite->changeAnimation(STAND_NORMAL);
@@ -186,7 +193,7 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
         //contador per al moviment en cercle de l'escorpi
         delta_ant += deltaTime;
 
-        if (EnemyType == 0) // Scorpion
+        if (EnemyType == 0) //Escorpí
         {
             if (hasEnemyDetected) {
                 cout << "Enemy has detected the player!" << endl;
@@ -239,6 +246,12 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
 
                 if (moviment_escorpi == 4) moviment_escorpi = 0;
             }
+        }
+        else if (EnemyType == 3) //BOSS
+        {
+            hasEnemyDetected = true;
+            //DIsparem aleatoriament a posp (al voltant) i ens movem una mica també aleatoriament
+
         }
         else { //SOLDIER
             if (hasEnemyDetected) {

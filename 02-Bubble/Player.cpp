@@ -323,9 +323,20 @@ void Player::update(int deltaTime)
 	}
 	else if (scene->CurrentMap == 0) {
 		if (Game::instance().getKey(GLFW_KEY_ENTER)) {
-			lastButton = 'T';
+			lastButton = 'E';
 			scene->ChangeMap(0);
 			SoundManager::instance().playSound("select");
+		}
+		if (Game::instance().getKey(GLFW_KEY_E)) {
+			lastButton = 'E';
+			scene->Instructions();
+			SoundManager::instance().playSound("select");
+		}
+	}
+	else if (scene->CurrentMap == -1) {
+		if (Game::instance().getKey(GLFW_KEY_R)) {
+			lastButton = ' ';
+			scene->GoToMainMenu();
 		}
 	}
 	else if(Game::instance().getKey(GLFW_KEY_LEFT) || Game::instance().getKey(GLFW_KEY_A))
@@ -532,7 +543,6 @@ void Player::update(int deltaTime)
 				}
                 // deactivate box and set player to standing down immediately
                 cajaActive = false;
-                if (scene) scene->detectable = true;
                 int fcur = ferit ? 1 : 0;
                 int a2 = porta_arma ? 1 : 0;
                 // Force stand-down animation (index 0) for current ferit/armed state
@@ -614,7 +624,6 @@ void Player::update(int deltaTime)
 					}
                     // deactivate box
                     cajaActive = false;
-                    if (scene) scene->detectable = true;
                     // restore appropriate stand animation
                     int a2 = porta_arma ? 1 : 0;
                     // if currently CAIXA, change to stand
@@ -626,7 +635,6 @@ void Player::update(int deltaTime)
                     // activate box
                     cajaActive = true;
                     sprite->changeAnimation(CAIXA);
-                    if (scene) scene->detectable = false;
                 }
             }
             else if (typeAnim == 2) {
@@ -646,7 +654,6 @@ void Player::update(int deltaTime)
     // If player gets attacked (baixavida triggers ferit) we should cancel caja
     if (ferit && cajaActive) {
         cajaActive = false;
-        if (scene) scene->detectable = true;
         // restore appropriate stand animation
         int a2 = porta_arma;
         if (sprite->animation() == CAIXA) sprite->changeAnimation(Animacions[ferit][a2][0]);
@@ -660,8 +667,6 @@ void Player::update(int deltaTime)
 
     // If cajaActive is true keep CAIXA animation regardless of movement and remain undetectable
     if (cajaActive) {
-        // Ensure scene undetectable
-        if (scene) scene->detectable = false;
         if (sprite->animation() != CAIXA) sprite->changeAnimation(CAIXA);
     }
 
@@ -674,8 +679,7 @@ void Player::update(int deltaTime)
     checkObjectPickup();
 }
 
-void Player::render()
-{
+void Player::render() {
 	if (rend == false) return;
 	sprite->render();
     renderProjectiles();
@@ -723,7 +727,6 @@ void Player::baixavida(int dg)
 		// If player was in box state, cancel it and become detectable again
 		if (cajaActive) {
 			cajaActive = false;
-			if (scene) scene->detectable = true;
 		}
 	}
 }
@@ -941,8 +944,10 @@ void Player::checkObjectPickup()
 void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 {
 	const int sAnim = sprite->animation();
-	if (!SoundManager::instance().isSoundPlaying("punch")) {
-		SoundManager::instance().playSound("punch");
+	if (!(sAnim == Animacions[feritIdx][armaIdx][8] || sAnim == Animacions[feritIdx][armaIdx][9] || sAnim == Animacions[feritIdx][armaIdx][11] || sAnim == Animacions[feritIdx][armaIdx][10])) {
+		if (!SoundManager::instance().isSoundPlaying("punch")) {
+			SoundManager::instance().playSound("punch");
+		}
 	}
 	glm::ivec2 posPuny = posPlayer;
     if (sAnim == Animacions[feritIdx][armaIdx][0] || sAnim == Animacions[feritIdx][armaIdx][7]) {

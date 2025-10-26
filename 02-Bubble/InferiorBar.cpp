@@ -17,7 +17,8 @@ InferiorBar::InferiorBar() {}
 enum PlayerAnims
 {
 	A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-	one, two, three, four, five, six, seven, eight, nine, zero
+	one, two, three, four, five, six, seven, eight, nine, zero, 
+    punto, question, exclamation, exclamation2, coma, apostrof, comillas, guion
 };
 
 void InferiorBar::init(Scene* sc, ShaderProgram& shaderProgram, const glm::ivec2& tileMapPos) {
@@ -40,6 +41,11 @@ void InferiorBar::init(Scene* sc, ShaderProgram& shaderProgram, const glm::ivec2
     }
     j = 9;
     for (int i = 0; i < 10; ++i) {
+        sprite->setAnimationSpeed(i + 26, 8);
+        sprite->addKeyframe(i + 26, glm::vec2(PIXEL_X * (181 + (i * 11)), PIXEL_Y * (1 + j)));
+    }
+    j = 10;
+    for (int i = 0; i < 8; ++i) {
         sprite->setAnimationSpeed(i + 26, 8);
         sprite->addKeyframe(i + 26, glm::vec2(PIXEL_X * (181 + (i * 11)), PIXEL_Y * (1 + j)));
     }
@@ -183,6 +189,28 @@ void InferiorBar::drawText(int x, int y, const std::string& text, int pixelSize,
     }
 }
 
+void InferiorBar::Instructions() {
+    drawBarBackground();
+    const int titleSize = 2;
+    const int yTop = 24;
+    const int padding = 10;
+    const int innerY = yTop + padding;
+    const int innerH = padding * 2;
+    drawText(210, 70, "INSTRUCCIONES", titleSize, 1);
+    drawText(50, 86 + 36, "WASD O FLECHAS - MOVIMIENTO", 1, 1);
+    drawText(50, 86 + 64, "C - CAMBIAR OBJETO.", 1, 1);
+    drawText(50, 86 + 92, "X - USAR OBJETO.", 1, 1);
+    drawText(50, 86 + 120, "Z - GOLPEAR O DISPARAR.", 1, 1);
+    drawText(50, 86 + 148, "I - OBTENER TODOS LOS OBJETOS", 1, 1);
+    drawText(50, 86 + 176, "H - CURARSE", 1, 1);
+    drawText(50, 86 + 204, "P - TELETRANSPORTE A LA JUNGLA", 1, 1);
+    drawText(50, 86 + 232, "K - TELETRANSPORTE AL EDIFICIO", 1, 1);
+    drawText(50, 86 + 260, "K - TELETRANSPORTE AL JEFE FINAL", 1, 1);
+    drawText(50, 86 + 288, "N - INDETECTABLE", 1, 1);
+    drawText(50, 86 + 316, "G - MODO DIOS", 1, 1);
+    drawText(40, 550, "PULSA R PARA VOLVER AL MENU PRINCIPAL", 1, 1);
+}
+
 void InferiorBar::render() {
     if (!scene) return;
 
@@ -205,6 +233,10 @@ void InferiorBar::render() {
     if (mort) {
         renderDeathMessage();
         return;
+    }
+    if (instructions) {
+        Instructions();
+		return;
     }
 
     drawBarBackground();

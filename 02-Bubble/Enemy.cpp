@@ -39,6 +39,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 	moviment_vertical = mv;
 
     scene = &sc;
+    posPlayer = glm::ivec2(0);
     hasEnemyDetected = false;
 	EnemyType = TipusEnemic;
     if (EnemyType == 0) vida = 2;
@@ -156,7 +157,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 
 }
 
-void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat)
+void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool caixa)
 {
 	if (scene->CurrentMap != Escena_Original) return;
     if (noUpdate) return;
@@ -174,16 +175,18 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat)
     }
     else {
         if (!scene->detectable) hasEnemyDetected = false;
+		else if (!hasEnemyDetected && posPlayer == posp && caixa) hasEnemyDetected = false;
         else if (!hasEnemyDetected && EnemyType == 0) {
             hasEnemyDetected = enemic_detectat(posp, 8);
         }
         else if (!hasEnemyDetected){
             hasEnemyDetected = enemic_detectat(posp, 10);
         }
+        posPlayer = posp;
         //contador per al moviment en cercle de l'escorpi
         delta_ant += deltaTime;
 
-        if (EnemyType == 0) //GOS
+        if (EnemyType == 0) // Scorpion
         {
             if (hasEnemyDetected) {
                 cout << "Enemy has detected the player!" << endl;

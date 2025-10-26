@@ -39,6 +39,7 @@ public:
 	void Death(int op);
     void comprovar_vides(int deltaTime);
 	void GoToMainMenu();
+	void Instructions();
 	int CurrentMap;
 	bool detectable;
 	bool detectat;

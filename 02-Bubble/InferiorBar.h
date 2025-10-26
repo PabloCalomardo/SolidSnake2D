@@ -23,6 +23,7 @@ public:
     void update(int deltaTime);
     void render();
     bool mort = false;
+    bool instructions = false;
     Texture spritesheet;
     Sprite* sprite;
 
@@ -49,6 +50,7 @@ private:
     void renderWeaponSection(int x, int y, int width, bool hasWeapon, const std::vector<objeto*>& inventory, int selectedIndex);
     void renderMapSection(int x, int y, int width, int mapId);
     void renderDeathMessage();
+    void Instructions();
 
 private:
     Scene* scene = nullptr;

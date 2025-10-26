@@ -44,18 +44,26 @@ void Scene::init()
 	initShaders();
 	CurrentMap = 0;
 	player = new Player();
+	SoundManager::instance().setMusicVolume(60.f);
 	SoundManager::instance().playMusic("audio/Main_Theme.ogg", true);
 	SoundManager::instance().loadSound("alert", "audio/Alert_Sound.ogg");
+	SoundManager::instance().setSoundVolume("alert", 75.f);
 	SoundManager::instance().loadSound("shoot", "audio/Shoot.ogg");
 	SoundManager::instance().loadSound("game_over", "audio/Game_Over.ogg");
+	SoundManager::instance().setSoundVolume("game_over", 50.f);
 	SoundManager::instance().loadSound("select", "audio/Select.ogg");
+	SoundManager::instance().setSoundVolume("select", 70.f);
 	SoundManager::instance().loadSound("item", "audio/Item.ogg");
+	SoundManager::instance().setSoundVolume("item", 65.f);
 	SoundManager::instance().loadSound("change", "audio/ChangeItem.ogg");
 	SoundManager::instance().loadSound("punch", "audio/Punch.ogg");
+	SoundManager::instance().setSoundVolume("punch", 55.f);
 	SoundManager::instance().loadSound("box", "audio/Box.ogg");
+	SoundManager::instance().setSoundVolume("box", 65.f);
 	SoundManager::instance().loadSound("heal", "audio/Heal.ogg");
 	SoundManager::instance().loadSound("arma", "audio/Select_Gun.ogg");
 	SoundManager::instance().loadSound("unequip", "audio/Unequip.ogg");
+	SoundManager::instance().setSoundVolume("unequip", 30.f);
 	//SoundManager::instance().music.setVolume(40.f);
 	map = TileMap::createTileMap("levels/level00.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, *this, false);
@@ -83,12 +91,19 @@ void Scene::init()
 }
 
 void Scene::GoToMainMenu() {
+	if (CurrentMap == -1) {
+		glClear(GL_COLOR_BUFFER_BIT);
+		hud->instructions = false;
+	}
+	else {
+		SoundManager::instance().setMusicVolume(60.f);
+		SoundManager::instance().playMusic("audio/Main_Theme.ogg", true);
+		map = TileMap::createTileMap("levels/level00.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+		Death(1);
+		DeleteObjectsAndEnemies();
+		ChargeEnemiesAndObjects();
+	}
 	CurrentMap = 0;
-	SoundManager::instance().playMusic("audio/Main_Theme.ogg", true);
-	map = TileMap::createTileMap("levels/level00.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	Death(1);
-	DeleteObjectsAndEnemies();
-	ChargeEnemiesAndObjects();
 	player->rend = false;
 
 	spritesheet.loadFromFile("images/Pantallas_Inicio.png", TEXTURE_PIXEL_FORMAT_RGBA);
@@ -101,6 +116,11 @@ void Scene::GoToMainMenu() {
 	sprite->setPosition(glm::ivec2(SCREEN_X, SCREEN_Y));
 
 	sprite->render();
+}
+
+void Scene::Instructions() {
+	CurrentMap = -1;
+	hud->instructions = true;
 }
 
 void Scene::ChargeEnemiesAndObjects() {
@@ -311,16 +331,25 @@ void Scene::tp_to_map(int m)
 	else aux = "levels/level" + to_string(m) + ".txt";
 	map = TileMap::createTileMap(aux, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	if (m == 1) {
-		if (!d && CurrentMap < 1 || CurrentMap > 4) SoundManager::instance().playMusic("audio/Jungle.ogg", true);
+		if (!d && CurrentMap < 1 || CurrentMap > 4) {
+			SoundManager::instance().setMusicVolume(60.f);
+			SoundManager::instance().playMusic("audio/Jungle.ogg", true);
+		}
 		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	}
 	else if (m == 5) {
-		if (!d && CurrentMap < 5 || CurrentMap > 10) SoundManager::instance().playMusic("audio/Interior.ogg", true);
+		if (!d && CurrentMap < 5 || CurrentMap > 10) {
+			SoundManager::instance().setMusicVolume(25.f);
+			SoundManager::instance().playMusic("audio/Interior.ogg", true);
+		}
 		glm::vec2 posaux(23, 24);
 		player->setPosition(glm::vec2(posaux[0] * map->getTileSize(), posaux[1] * map->getTileSize()));
 	}
 	else if (m == 11) {
-		if (!d && CurrentMap != 11) SoundManager::instance().playMusic("audio/Final_Boss.ogg", true);
+		if (!d && CurrentMap != 11) {
+			SoundManager::instance().setMusicVolume(25.f);
+			SoundManager::instance().playMusic("audio/Final_Boss.ogg", true);
+		}
 		glm::vec2 posaux(19, 24);
 		player->setPosition(glm::vec2(posaux[0] * map->getTileSize(), posaux[1] * map->getTileSize()));
 	}
@@ -340,6 +369,7 @@ void Scene::ChangeMap(int dir)
 	glm::vec2 posaux(0, player->posPlayer[1]);
 	player->ha_disparat = false;
 	if (CurrentMap == 0) {
+		SoundManager::instance().setMusicVolume(60.f);
 		SoundManager::instance().playMusic("audio/Jungle.ogg", true);
 		detectable = true;
 		sprite->free();
@@ -393,6 +423,7 @@ void Scene::ChangeMap(int dir)
 		}
 		else if (dir == 3) {
 			CurrentMap = 5;
+			SoundManager::instance().setMusicVolume(25.f);
 			SoundManager::instance().playMusic("audio/Interior.ogg", true);
 			map = TileMap::createTileMap("levels/level05.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 			glm::vec2 posaux(player->posPlayer[0], 24);
@@ -402,6 +433,7 @@ void Scene::ChangeMap(int dir)
 	else if (CurrentMap == 5) {
 		if (dir == 4) {
 			CurrentMap = 4;
+			SoundManager::instance().setMusicVolume(60.f);
 			SoundManager::instance().playMusic("audio/Jungle.ogg", true);
 			map = TileMap::createTileMap("levels/level04.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 			glm::vec2 posaux(player->posPlayer[0], 4);
@@ -409,6 +441,7 @@ void Scene::ChangeMap(int dir)
 		}
 		else if (dir == 3) {
 			CurrentMap = 11;
+			SoundManager::instance().setMusicVolume(25.f);
 			SoundManager::instance().playMusic("audio/Final_Boss.ogg", true);
 			map = TileMap::createTileMap("levels/level11.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 			glm::vec2 posaux(19, 24);
@@ -502,11 +535,12 @@ void Scene::update(int deltaTime)
     // Update all enemies
 	bool player_ha_disparat = player->ha_disparat;
     for (Enemy* e : enemies) {
-		e->update(deltaTime, posp, player_ha_disparat);
+		e->update(deltaTime, posp, player_ha_disparat,player->cajaActive);
 		if (!detectat && e->Escena_Original == CurrentMap && e->hasEnemyDetected) {
 			detectat = true;
 			d = true;
 			SoundManager::instance().playSound("alert");
+			SoundManager::instance().setMusicVolume(25.f);
 			SoundManager::instance().playMusic("audio/Encounter.ogg", true);
 		}
 		else if (!d && e->Escena_Original == CurrentMap && e->hasEnemyDetected) {
@@ -516,9 +550,11 @@ void Scene::update(int deltaTime)
 	if (!d && detectat) {
 		detectat = false;
 		if (CurrentMap >= 1 && CurrentMap <=4) {
+			SoundManager::instance().setMusicVolume(60.f);
 			SoundManager::instance().playMusic("audio/Jungle.ogg", true);
 		}
 		else if (CurrentMap >=5 && CurrentMap <=10) {
+			SoundManager::instance().setMusicVolume(25.f);
 			SoundManager::instance().playMusic("audio/Interior.ogg", true);
 		}
 	}

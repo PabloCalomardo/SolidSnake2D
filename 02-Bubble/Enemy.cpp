@@ -50,7 +50,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 	else spritesheet.loadFromFile("images/Enemies.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211
 
 	if (EnemyType == 0)sprite = Sprite::createSprite(glm::ivec2(16 * 2, 16 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 16), &spritesheet, &shaderProgram);
-    else if (EnemyType == 3)sprite = Sprite::createSprite(glm::ivec2(30 * 2, 42 * 2), glm::vec2((1/381.f) * 34, (1 / 154.f) * 42), &spritesheet, &shaderProgram);
+    else if (EnemyType == 3)sprite = Sprite::createSprite(glm::ivec2(34 * 2, 42 * 2), glm::vec2((1/381.f) * 34, (1 / 154.f) * 42), &spritesheet, &shaderProgram);
 	else sprite = Sprite::createSprite(glm::ivec2(16 * 2, 32 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 32), &spritesheet, &shaderProgram);
 
 	

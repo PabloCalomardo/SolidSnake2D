@@ -290,14 +290,6 @@ void Player::update(int deltaTime)
 	spriteCapsa->update(deltaTime);
     shootTimer += deltaTime;
 	pegaTimer += deltaTime;
-
-	if (!hasKey) {
-		for (objeto* o : inventari) {
-			if (o->tipus == 3) {
-				hasKey = true;
-			}
-		}
-	}
 	
 	
 
@@ -832,7 +824,7 @@ void Player::updateProjectiles(int deltaTime)
         if (e->Escena_Original != scene->CurrentMap) return false;
         glm::ivec2 ep = e->posEnemy;
         // Enemy size: scorpion 32x32, soldiers 32x64
-        glm::ivec2 enemySize = (e->EnemyType == 0) ? glm::ivec2(32, 32) : glm::ivec2(32, 64);
+		glm::ivec2 enemySize = (e->EnemyType == 0) ? glm::ivec2(32, 32) : (e->EnemyType == 3) ? glm::ivec2(68, 84) : glm::ivec2(32, 64);
         return p.x >= ep.x && p.x <= ep.x + enemySize.x &&
                p.y >= ep.y && p.y <= ep.y + enemySize.y;
     };
@@ -908,14 +900,14 @@ void Player::GetAllObjects() {
 	for (auto* o : objs) {
 		if (!o) continue;
 		if (o->recollit) continue;
-		inventari.push_back(o);
+		if (o->tipus == 3)hasKey = true;
+		else {
+			inventari.push_back(o);
+		}
 		o->recollit = true;
-		//if (o->getSprite() && o->getSprite()->animation() == 1) {
-		//	porta_arma = false; // recollir arma
-		//}
-		// If no selected item, select this one
 		if (selectedItem < 0) selectedItem = int(inventari.size()) - 1;
 	}
+	
 }
 
 void Player::checkObjectPickup()
@@ -937,14 +929,13 @@ void Player::checkObjectPickup()
 
         bool overlap = !(pMax.x <= oMin.x || pMin.x >= oMax.x || pMax.y <= oMin.y || pMin.y >= oMax.y);
         if (overlap) {
+			if (o->tipus == 3) hasKey = true;
+			else {
+				inventari.push_back(o);
+			}
             // afegir a inventari i marcar recollit
 			SoundManager::instance().playSound("item");
-            inventari.push_back(o);
             o->recollit = true;
-            /*if (o->getSprite() && o->getSprite()->animation() == 1) {
-                porta_arma = true; // recollir arma
-            }*/
-            // If no selected item, select this one
             if (selectedItem < 0) selectedItem = int(inventari.size()) - 1;
         }
     }

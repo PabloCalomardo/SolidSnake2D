@@ -246,7 +246,7 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
         }
         else if (EnemyType == 3) //BOSS
         {
-            hasEnemyDetected = true;
+            hasEnemyDetected = false;
             //DIsparem aleatoriament a posp (al voltant) i ens movem una mica també aleatoriament
             if(shootTimer >= 500)
             {
@@ -255,6 +255,8 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
                 glm::ivec2 pos_to_shoot = glm::ivec2(posp.x + aleatorietat, posp.y);
                 BOSStryShootAt(pos_to_shoot);
                 shootTimer = 0;
+                if (aleatorietat < -25 && !(map->collisionMoveLeft(posEnemy, glm::ivec2(64, 84), scene->CurrentMap))) posEnemy.x -= 10;
+                else if(aleatorietat > 25 && !(map->collisionMoveRight(posEnemy, glm::ivec2(64, 84), scene->CurrentMap))) posEnemy.x += 10;
             }
         }
         else { //SOLDIER
@@ -414,9 +416,10 @@ void Enemy::BOSStryShootAt(const glm::ivec2& targetPos)
 {
     SoundManager::instance().playSound("shoot");
 
-
-    glm::ivec2 playerCenter = targetPos + glm::ivec2(+20, +20);
-    glm::ivec2 enemyCenter = glm::ivec2 (posEnemy.x + 28.f, posEnemy.y + 52.f);
+	float targetX = static_cast<float>(targetPos.x);
+	float targetY = static_cast<float>(targetPos.y);
+    glm::vec2 playerCenter = glm::vec2(targetX, targetY) + glm::vec2(+20, +20);
+    glm::vec2 enemyCenter = glm::vec2 (posEnemy.x + 28.f, posEnemy.y + 52.f);
 
 
     std::cout << "Player center: (" << playerCenter.x << ", " << playerCenter.y << ")\n";
@@ -431,15 +434,16 @@ void Enemy::BOSStryShootAt(const glm::ivec2& targetPos)
 
     std::cout << "Bullet dir1: (" << dir.x << ", " << dir.y << ")\n";
 
-    //dir = glm::normalize(dir);
+    dir = glm::normalize(dir);
 
+    std::cout << "Bullet dir: (" << dir.x << ", " << dir.y << ")\n";
     Bullet b;
     b.pos = glm::vec2(enemyCenter.x, enemyCenter.y); // centrat
     b.dir = dir;
-    b.speed = 0.0005f;
+    b.speed = 0.25f;
     b.active = true;
 
-    std::cout << "Bullet dir: (" << b.dir.x << ", " << b.dir.y << ")\n";
+    
 
     bullets.push_back(b);
 }

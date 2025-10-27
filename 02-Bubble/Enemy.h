@@ -41,7 +41,7 @@ public:
 private:
     struct Bullet {
         glm::vec2 pos;      // top-left in pixels
-        glm::ivec2 dir;     // unit direction (1,0),(0,1),(-1,0),(0,-1)
+        glm::vec2 dir;     // unit direction (1,0),(0,1),(-1,0),(0,-1)
         float speed;        // pixels per millisecond
         bool active;
     };

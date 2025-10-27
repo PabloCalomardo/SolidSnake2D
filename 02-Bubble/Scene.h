@@ -40,6 +40,7 @@ public:
     void comprovar_vides(int deltaTime);
 	void GoToMainMenu();
 	void Instructions();
+	void Credits();
 	int CurrentMap;
 	bool detectable;
 	bool detectat;

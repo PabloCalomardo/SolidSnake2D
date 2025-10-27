@@ -211,6 +211,61 @@ void InferiorBar::Instructions() {
     drawText(40, 550, "PULSA R PARA VOLVER AL MENU PRINCIPAL", 1, 1);
 }
 
+void InferiorBar::Credits() {
+
+    creditsY -= 0.5;
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glColor3f(0.f, 0.f, 0.f);
+    glBegin(GL_QUADS);
+    glVertex2f(32.f, float(SCREEN_HEIGHT - 24));
+    glVertex2f(float(672), float(SCREEN_HEIGHT - 24));
+    glVertex2f(float(672), float(16));
+    glVertex2f(32.f, float(16));
+    glEnd();
+    drawBarBackground();
+    if (creditsY >= 40 && creditsY <= (SCREEN_HEIGHT - 24)) drawText(210.f, creditsY, "PROGRAMADORES");
+    if (creditsY >= -20 && creditsY <= (SCREEN_HEIGHT - 84)) drawText(65.f, creditsY + 60.f, "ENRIC SEGARRA");
+    if (creditsY >= -20 && creditsY <= (SCREEN_HEIGHT - 84)) drawText(340.f, creditsY + 60.f, "PABLO CALOMARDO");
+    if (creditsY >= -140 && creditsY <= (SCREEN_HEIGHT - 204)) drawText(100.f, creditsY + 180.f, "CREADOR Y DIRECTOR ORIGINAL");
+    if (creditsY >= -200 && creditsY <= (SCREEN_HEIGHT - 264)) drawText(215.f, creditsY + 240.f, "HIDEO KOJIMA");
+    if (creditsY >= -300 && creditsY <= (SCREEN_HEIGHT - 364)) drawText(160.f, creditsY + 340.f, "ARTISTAS ORIGINALES");
+    if (creditsY >= -360 && creditsY <= (SCREEN_HEIGHT - 424)) drawText(65.f, creditsY + 400.f, "MASAMI TABATA");
+    if (creditsY >= -360 && creditsY <= (SCREEN_HEIGHT - 424)) drawText(340.f, creditsY + 400.f, "AZUSA FUJIMOTO");
+    if (creditsY >= -460 && creditsY <= (SCREEN_HEIGHT - 524)) drawText(125.f, creditsY + 500.f, "DESARROLLADORA ORIGINAL");
+    if (creditsY >= -520 && creditsY <= (SCREEN_HEIGHT - 584)) drawText(260.f, creditsY + 560.f, "KONAMI");
+    if (creditsY >= -640 && creditsY <= (SCREEN_HEIGHT - 704)) drawText(260.f, creditsY + 680.f, "MUSICA");
+    if (creditsY >= -720 && creditsY <= (SCREEN_HEIGHT - 784)) drawText(90.f, creditsY + 760.f, "ENCOUNTER - METAL GEAR SOLID");
+    if (creditsY >= -760 && creditsY <= (SCREEN_HEIGHT - 824)) drawText(150.f, creditsY + 800.f, "KCE SOUND TEAM JAPAN");
+    if (creditsY >= -820 && creditsY <= (SCREEN_HEIGHT - 884)) drawText(20.f, creditsY + 860.f, "FATHER AND SON - METAL GEAR SOLID 2");
+    if (creditsY >= -860 && creditsY <= (SCREEN_HEIGHT - 924)) drawText(185.f, creditsY + 900.f, "NORIHIKO HIBINO");
+    if (creditsY >= -920 && creditsY <= (SCREEN_HEIGHT - 984)) drawText(65.f, creditsY + 960.f, "BATTLE IN THE JUNGLE - CAUTION");
+    if (creditsY >= -950 && creditsY <= (SCREEN_HEIGHT - 1014)) drawText(170.f, creditsY + 990.f, "METAL GEAR SOLID 3");
+    if (creditsY >= -990 && creditsY <= (SCREEN_HEIGHT - 1054)) drawText(185.f, creditsY + 1030.f, "NORIHIKO HIBINO");
+    if (creditsY >= -1050 && creditsY <= (SCREEN_HEIGHT - 1114)) drawText(70.f, creditsY + 1090.f, "REX'S LAIR - METAL GEAR SOLID");
+    if (creditsY >= -1090 && creditsY <= (SCREEN_HEIGHT - 1154)) drawText(150.f, creditsY + 1130.f, "KCE SOUND TEAM JAPAN");
+    if (creditsY >= -1150 && creditsY <= (SCREEN_HEIGHT - 1214)) drawText(55.f, creditsY + 1190.f, "MAIN THEME - METAL GEAR SOLID 3");
+    if (creditsY >= -1190 && creditsY <= (SCREEN_HEIGHT - 1254)) drawText(135.f, creditsY + 1230.f, "HARRY GREGSON-WILLIAMS");
+    if (creditsY >= -1250 && creditsY <= (SCREEN_HEIGHT - 1314)) drawText(50.f, creditsY + 1290.f, "SNAKE EATER - METAL GEAR SOLID 3");
+    if (creditsY >= -1290 && creditsY <= (SCREEN_HEIGHT - 1354)) drawText(60.f, creditsY + 1330.f, "CYNTHIA HARREL    RIKA MURANAKA");
+    if (creditsY >= -1370 && creditsY <= (SCREEN_HEIGHT - 1434)) drawText(165.f, creditsY + 1410.f, "EFECTOS DE SONIDO");
+    if (creditsY >= -1430 && creditsY <= (SCREEN_HEIGHT - 1494)) drawText(65.f, creditsY + 1470.f, "GAME OVER - METAL GEAR SOLID 2");
+    if (creditsY >= -1470 && creditsY <= (SCREEN_HEIGHT - 1534)) drawText(120.f, creditsY + 1510.f, "ALERT - METAL GEAR SOLID");
+    if (creditsY >= -1510 && creditsY <= (SCREEN_HEIGHT - 1574)) drawText(85.f, creditsY + 1550.f, "PICK UP - METAL GEAR SOLID 5");
+    if (creditsY >= -1550 && creditsY <= (SCREEN_HEIGHT - 1614)) drawText(65.f, creditsY + 1590.f, "CHANGE ITEM - METAL GEAR SOLID");
+    if (creditsY >= -1590 && creditsY <= (SCREEN_HEIGHT - 1654)) drawText(135.f, creditsY + 1630.f, "HEAL - METAL GEAR SOLID");
+    if (creditsY >= -1630 && creditsY <= (SCREEN_HEIGHT - 1694)) drawText(40.f, creditsY + 1670.f, "EQUIP GUN - COUNTER STRIKE SOURCE");
+    if (creditsY >= -1670 && creditsY <= (SCREEN_HEIGHT - 1734)) drawText(70.f, creditsY + 1710.f, "SHOOT - VKY SOUNDS YT CHANNEL");
+    if (creditsY >= -1710 && creditsY <= (SCREEN_HEIGHT - 1774)) drawText(65.f, creditsY + 1750.f, "SELECT - GFX SOUNDS YT CHANNEL");
+    if (creditsY >= -1750 && creditsY <= (SCREEN_HEIGHT - 1814)) drawText(70.f, creditsY + 1790.f, "PUNCH - GFX SOUNDS YT CHANNEL");
+    if (creditsY >= -1790 && creditsY <= (SCREEN_HEIGHT - 1854)) drawText(85.f, creditsY + 1830.f, "BOX - ALL SOUNDS YT CHANNEL");
+    if (creditsY >= -1830 && creditsY <= (SCREEN_HEIGHT - 1894)) drawText(15.f, creditsY + 1870.f, "UNEQUIP - GAMING SOUND FX YT CHANNEL");
+    if (creditsY >= -1700 && creditsY <= (SCREEN_HEIGHT - 2024)) drawText(165.f, creditsY + 2000.f, "GRACIAS POR JUGAR");
+    else if (creditsY <= (SCREEN_HEIGHT - 2024)) drawText(165.f, SCREEN_HEIGHT / 2, "GRACIAS POR JUGAR");
+    if (creditsY <= -2030) drawText(140.f, 530.f, "PULSA R PARA VOLVER AL MENU");
+}
+
+
 void InferiorBar::render() {
     if (!scene) return;
 
@@ -237,6 +292,10 @@ void InferiorBar::render() {
     if (instructions) {
         Instructions();
 		return;
+    }
+    else if (credits) {
+        Credits();
+        return;
     }
 
     drawBarBackground();

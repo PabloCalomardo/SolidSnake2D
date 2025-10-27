@@ -910,9 +910,9 @@ void Player::GetAllObjects() {
 		if (o->recollit) continue;
 		inventari.push_back(o);
 		o->recollit = true;
-		if (o->getSprite() && o->getSprite()->animation() == 1) {
-			porta_arma = true; // recollir arma
-		}
+		//if (o->getSprite() && o->getSprite()->animation() == 1) {
+		//	porta_arma = false; // recollir arma
+		//}
 		// If no selected item, select this one
 		if (selectedItem < 0) selectedItem = int(inventari.size()) - 1;
 	}

@@ -49,6 +49,7 @@ public:
     // Access enemies for collision checks (player bullets)
     std::vector<Enemy*>& getEnemies() { return enemies; }
 	std::vector<objeto*>& getObjetos() { return objetos; }
+	Sprite* sprite;
 
 private:
 	void initShaders();
@@ -63,7 +64,7 @@ private:
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
-	Sprite* sprite;
+	
 
     InferiorBar* hud = nullptr;
 };

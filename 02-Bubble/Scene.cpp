@@ -78,15 +78,13 @@ void Scene::init()
 	hud->init(this, texProgram, glm::ivec2(SCREEN_X, SCREEN_Y));
 
 	spritesheet.loadFromFile("images/Pantallas_Inicio.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(PIXEL_X*8, PIXEL_Y*8), glm::vec2(PIXEL_X * 256, PIXEL_Y * 240), &spritesheet, &texProgram);
+	sprite = Sprite::createSprite(glm::ivec2(400*1.6f, 300*1.6f), glm::vec2(PIXEL_X * 256, PIXEL_Y * 240), &spritesheet, &texProgram);
 	sprite->setNumberAnimations(1);
 
 	sprite->setAnimationSpeed(0, 8);
 	sprite->addKeyframe(0, glm::vec2(PIXEL_X * (550), PIXEL_Y * (18)));
 	sprite->changeAnimation(0);
-	sprite->setPosition(glm::ivec2(SCREEN_X, SCREEN_Y));
-
-	sprite->render();
+	sprite->setPosition(glm::ivec2(32, 16));
 
 }
 
@@ -561,6 +559,9 @@ void Scene::ChangeMap(int dir)
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
+	if(CurrentMap == 0) {
+		sprite->update(deltaTime);
+	}
 	bool d = false;
 	glm::ivec2 posp = player->posPlayer;
     // Update all enemies
@@ -607,18 +608,26 @@ void Scene::render()
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
-	map->render();
-    // Render all enemies
-    for (Enemy* e : enemies) {
-        e->render();
-    }
-	for (objeto* o : objetos) {
-		o->render();
-	}
-	player->render();
 
-    // Render HUD last so it overlays
-    if (hud) hud->render();
+	if (CurrentMap == 0) {
+		map->render();
+		sprite->render();
+		if (hud) hud->render();
+	}
+	else {
+		map->render();
+		// Render all enemies
+		for (Enemy* e : enemies) {
+			e->render();
+		}
+		for (objeto* o : objetos) {
+			o->render();
+		}
+		player->render();
+
+		// Render HUD last so it overlays
+		if (hud) hud->render();
+	}
 }
 
 void Scene::initShaders()

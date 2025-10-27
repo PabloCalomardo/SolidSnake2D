@@ -44,11 +44,17 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 	lastButton = ' ';
 	spritesheet.loadFromFile("images/Solid_snake.png", TEXTURE_PIXEL_FORMAT_RGBA); 	//SOLID SNAKE ES: 368x189 (1 pixel es 0.0027 en x i 0.0053 en y)
 	sprite = Sprite::createSprite(glm::ivec2(16*2,32*2), glm::vec2(PIXEL_X *16, PIXEL_Y *32), &spritesheet, &shaderProgram);
+	spriteCapsa = Sprite::createSprite(glm::ivec2(16 * 2, 24 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 24), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(43);
 
 	sprite->setAnimationSpeed(CAIXA, 8);
 	sprite->addKeyframe(CAIXA, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19 + 1 + 136 + 34 + 19 + 36), PIXEL_Y * 26)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
 
+
+	spriteCapsa->setNumberAnimations(1);
+	spriteCapsa->setAnimationSpeed(0, 8);
+	spriteCapsa->addKeyframe(0, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19 + 1 + 136 + 34 + 19 + 36), PIXEL_Y * 26)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
+	spriteCapsa->changeAnimation(0);
 		//==============================
 		//			STANDS 
 		//==============================
@@ -267,18 +273,25 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+	spriteCapsa->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 	
 }
 
 void Player::update(int deltaTime)
 {
 	// if (vida < 3) ferit = true;
+	if (vida < 7 && !ferit) {
+		ferit = true;
+	}
 
 	int a = porta_arma;
 	int f = ferit;
 	sprite->update(deltaTime);
+	spriteCapsa->update(deltaTime);
     shootTimer += deltaTime;
 	pegaTimer += deltaTime;
+
+	
 
     // handle item action cooldown (prevents multiple triggers on single keypress)
     if (itemActionCooldownMs > 0) itemActionCooldownMs -= deltaTime;
@@ -626,15 +639,12 @@ void Player::update(int deltaTime)
                     cajaActive = false;
                     // restore appropriate stand animation
                     int a2 = porta_arma ? 1 : 0;
-                    // if currently CAIXA, change to stand
-                    if (sprite->animation() == CAIXA) sprite->changeAnimation(Animacions[fcur][a2][0]);
                 } else {
 					if (!SoundManager::instance().isSoundPlaying("box")) {
 						SoundManager::instance().playSound("box");
 					}
                     // activate box
                     cajaActive = true;
-                    sprite->changeAnimation(CAIXA);
                 }
             }
             else if (typeAnim == 2) {
@@ -651,26 +661,14 @@ void Player::update(int deltaTime)
         itemActionCooldownMs = 200;
     }
 
-    // If player gets attacked (baixavida triggers ferit) we should cancel caja
-    if (ferit && cajaActive) {
-        cajaActive = false;
-        // restore appropriate stand animation
-        int a2 = porta_arma;
-        if (sprite->animation() == CAIXA) sprite->changeAnimation(Animacions[ferit][a2][0]);
-    }
-
     // Disparar amb arma fins i tot mentre es mou
     if (!cajaActive && Game::instance().getKey(GLFW_KEY_Z) && porta_arma) {
 		lastButton = 'Z';
         tryShoot();
     }
 
-    // If cajaActive is true keep CAIXA animation regardless of movement and remain undetectable
-    if (cajaActive) {
-        if (sprite->animation() != CAIXA) sprite->changeAnimation(CAIXA);
-    }
-
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+	spriteCapsa->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 
     // Update projectiles after movement
     updateProjectiles(deltaTime);
@@ -681,7 +679,10 @@ void Player::update(int deltaTime)
 
 void Player::render() {
 	if (rend == false) return;
-	sprite->render();
+	if (cajaActive) {
+		spriteCapsa->render();
+	}
+	else sprite->render();
     renderProjectiles();
 }
 
@@ -976,8 +977,10 @@ void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 			p.y >= ep.y && p.y <= ep.y + enemySize.y;
 	};
 	auto& enemies = scene->getEnemies();
+	cout << "Tiropunyo!" << endl;
 	for (auto* e : enemies) {
 		if (!e->mort && hitEnemy(posPuny, e)) {
+			cout << "Punyetazo a enemy!" << endl;
 			e->baixavida(1);
 			HaPegat = true;
 		}

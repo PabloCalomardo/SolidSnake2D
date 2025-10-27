@@ -73,7 +73,7 @@ private:
 	int jumpAngle, startY;
     char lastButton;
 	Texture spritesheet;
-	Sprite *sprite;
+	Sprite *sprite, *spriteCapsa;
 	TileMap *map;
 	Scene *scene;
 

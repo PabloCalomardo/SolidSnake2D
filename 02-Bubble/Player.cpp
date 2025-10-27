@@ -291,6 +291,14 @@ void Player::update(int deltaTime)
     shootTimer += deltaTime;
 	pegaTimer += deltaTime;
 
+	if (!hasKey) {
+		for (objeto* o : inventari) {
+			if (o->tipus == 3) {
+				hasKey = true;
+			}
+		}
+	}
+	
 	
 
     // handle item action cooldown (prevents multiple triggers on single keypress)

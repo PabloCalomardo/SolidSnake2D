@@ -155,6 +155,13 @@ void Scene::ChargeEnemiesAndObjects() {
 		o->setTileMap(map);
 		objetos.push_back(o);
 	}
+	{
+		// CLAU mapa 1
+		objeto* o = new objeto();
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 3, *this, 1, glm::ivec2(10 * map->getTileSize(), 10 * map->getTileSize()));
+		o->setTileMap(map);
+		objetos.push_back(o);
+	}
 
 	//==============================
 	//			ENEMICS

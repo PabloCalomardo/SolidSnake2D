@@ -19,6 +19,7 @@ public:
     void setTileMap(TileMap* tileMap);
     void setPosition(const glm::vec2& pos);
 
+	int tipus; // 0: Caja, 1: Arma, 2: Vida, 3: Clau
     // Estat públic mínim per integració ràpida
     glm::ivec2 posObjeto{0, 0};
     int Escena_Original = 1;

@@ -16,7 +16,7 @@ void objeto::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, in
     scene = &sc;
     Escena_Original = originalScene;
 	position = posicio;
-
+    tipus = type;
     // Carrega full d'objectes
     spritesheet.loadFromFile("images/objects.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
@@ -32,7 +32,7 @@ void objeto::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, in
     }
 
 
-    sprite->setNumberAnimations(3);
+    sprite->setNumberAnimations(4);
 
     // Animacions fixades a un sol frame cadascuna (tipus)
     // La UV x es desplaça: 0 -> Caja, 1 -> Arma, 2 -> Vida
@@ -46,6 +46,9 @@ void objeto::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, in
 
     sprite->setAnimationSpeed(2, 1);
     sprite->addKeyframe(2, glm::vec2(PIXEL_X * (2), PIXEL_Y * 40)); // Vida 2, 40
+
+    sprite->setAnimationSpeed(3, 1);
+    sprite->addKeyframe(3, glm::vec2(PIXEL_X * (59), PIXEL_Y * 40)); // CLAU 59, 40
 
     sprite->changeAnimation(type);
 

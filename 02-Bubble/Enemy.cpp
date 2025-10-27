@@ -1,4 +1,4 @@
-#include "Enemy.h"
+ï»¿#include "Enemy.h"
 
 #include <cmath>
 #include <iostream>
@@ -23,9 +23,9 @@ enum EnemyAnims
 };
 
 /* DADES:
-* Scorpion COMENÇA AL PIXEL 93,102
-* SOLDIER COMENÇA AL PIXEL 2,56
-* SOLDIER2 COMENÇA AL PIXEL 2,142
+* Scorpion COMENÃ‡A AL PIXEL 93,102
+* SOLDIER COMENÃ‡A AL PIXEL 2,56
+* SOLDIER2 COMENÃ‡A AL PIXEL 2,142
 
 */
 
@@ -73,11 +73,11 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		sprite->setAnimationSpeed(MOVE_DOWN2, 1);
 		sprite->addKeyframe(MOVE_DOWN2, glm::vec2(PIXEL_X * 66, PIXEL_Y * 26)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
 
-		sprite->setAnimationSpeed(MOVE_UP, 1);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+		sprite->setAnimationSpeed(MOVE_UP, 1);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alÃ§ada d'imatge +1 de contorn) cap a baix
 		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * 131, PIXEL_Y * 102));
 		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * 131, PIXEL_Y * 102));
 
-		sprite->setAnimationSpeed(MOVE_UP2, 1);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->setAnimationSpeed(MOVE_UP2, 1);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alÃ§ada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
 		sprite->addKeyframe(MOVE_UP2, glm::vec2(PIXEL_X * 104, PIXEL_Y * 61));
 	}
 
@@ -90,9 +90,9 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X * (2), PIXEL_Y * 56)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
 		sprite->setAnimationSpeed(STAND_UP, 4);
 		sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X * (21), PIXEL_Y * 56)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
-		sprite->setAnimationSpeed(STAND_LEFT, 4);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+		sprite->setAnimationSpeed(STAND_LEFT, 4);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alÃ§ada d'imatge +1 de contorn) cap a baix
 		sprite->addKeyframe(STAND_LEFT, glm::vec2(PIXEL_X * (2 ), PIXEL_Y * 56));
-		sprite->setAnimationSpeed(STAND_RIGHT, 4);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->setAnimationSpeed(STAND_RIGHT, 4);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alÃ§ada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
 		sprite->addKeyframe(STAND_RIGHT, glm::vec2(PIXEL_X * (21), PIXEL_Y * 56));
 		//==============================
 		//			MOVES
@@ -122,9 +122,9 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X * (2 + 136), PIXEL_Y * 26)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
 		sprite->setAnimationSpeed(STAND_UP, 8);
 		sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X * (21 + 136), PIXEL_Y * 26)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
-		sprite->setAnimationSpeed(STAND_LEFT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+		sprite->setAnimationSpeed(STAND_LEFT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alÃ§ada d'imatge +1 de contorn) cap a baix
 		sprite->addKeyframe(STAND_LEFT, glm::vec2(PIXEL_X * (2 + 136), PIXEL_Y * 61));
-		sprite->setAnimationSpeed(STAND_RIGHT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+		sprite->setAnimationSpeed(STAND_RIGHT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alÃ§ada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
 		sprite->addKeyframe(STAND_RIGHT, glm::vec2(PIXEL_X * (21 + 136), PIXEL_Y * 61));
 		//==============================
 		//			MOVES
@@ -149,7 +149,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 1), PIXEL_Y * 26));
 		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 38 + 1), PIXEL_Y * 26));
 	}
-	else {//BOSS  34 amplada, 42 alçada
+	else {//BOSS  34 amplada, 42 alÃ§ada
         sprite->setAnimationSpeed(STAND_NORMAL, 4);
         sprite->addKeyframe(STAND_NORMAL, glm::vec2((1 / 381.f) * (311), (1 / 154.f) * 9)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
         sprite->addKeyframe(STAND_NORMAL, glm::vec2((1 / 381.f) * (311 + 35), (1 / 154.f) * 9)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
@@ -175,7 +175,7 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
     }
     sprite->update(deltaTime);
     shootTimer += deltaTime;
-    // Recalcular detecció cada frame per iniciar la persecució quan entri al FOV
+    // Recalcular detecciÃ³ cada frame per iniciar la persecuciÃ³ quan entri al FOV
     if (mort) {
         posEnemy.x = 0;
         posEnemy.y = 0;
@@ -183,17 +183,14 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
     else {
         if (!scene->detectable) hasEnemyDetected = false;
 		else if (!hasEnemyDetected && posPlayer == posp && caixa) hasEnemyDetected = false;
-        else if (!hasEnemyDetected && EnemyType == 0) {
-            hasEnemyDetected = enemic_detectat(posp, 8);
-        }
         else if (!hasEnemyDetected){
-            hasEnemyDetected = enemic_detectat(posp, 10);
+            hasEnemyDetected = enemic_detectat(posp, 20);
         }
         posPlayer = posp;
         //contador per al moviment en cercle de l'escorpi
         delta_ant += deltaTime;
 
-        if (EnemyType == 0) //Escorpí
+        if (EnemyType == 0) //EscorpÃ­
         {
             if (hasEnemyDetected) {
                 cout << "Enemy has detected the player!" << endl;
@@ -250,7 +247,7 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
         else if (EnemyType == 3) //BOSS
         {
             hasEnemyDetected = true;
-            //DIsparem aleatoriament a posp (al voltant) i ens movem una mica també aleatoriament
+            //DIsparem aleatoriament a posp (al voltant) i ens movem una mica tambÃ© aleatoriament
 
         }
         else { //SOLDIER
@@ -265,7 +262,7 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
                         delta_ant = 0;
                     }
                 } else {
-                    // Orientar animació segons direcció
+                    // Orientar animaciÃ³ segons direcciÃ³
                     if (shootDir.x < 0) {
                         if (sprite->animation() != MOVE_LEFT) sprite->changeAnimation(MOVE_LEFT);
                     } else if (shootDir.x > 0) {
@@ -276,7 +273,7 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
                         if (sprite->animation() != MOVE_DOWN) sprite->changeAnimation(MOVE_DOWN);
                     }
 
-                    // 2) Disparar si cooldown permès
+                    // 2) Disparar si cooldown permÃ¨s
                     if (shootTimer >= shootCooldownMs) {
                         tryShootAt(posp);
                         shootTimer = 0;
@@ -387,7 +384,7 @@ void Enemy::tryShootAt(const glm::ivec2& targetPos)
     SoundManager::instance().playSound("shoot");
 
     Bullet b;
-    // Spawn segons direcció: amunt surt del cap, altrament del centre lleugerament amunt
+    // Spawn segons direcciÃ³: amunt surt del cap, altrament del centre lleugerament amunt
     const float muzzleYOffset = -10.0f; // per la resta direccions
     float spawnX = posEnemy.x + 16.0f;
     float spawnY;
@@ -502,43 +499,53 @@ static glm::ivec2 EnemyFacingFromAnim(int anim)
     }
 }
 
-bool Enemy::enemic_detectat(const glm::ivec2& targetPos, int radius_detection) const
+bool Enemy::enemic_detectat(const glm::ivec2& targetPos, int /*radius_detection*/) const
 {
     if (!map) return false;
-	
 
-    // Tile size in pixels
     const int ts = map->getTileSize();
+    const int tolerance = ts; // tolerÃ ncia d'1 tile
 
-    // Enemy center position in pixels
-    glm::ivec2 enemyPosPx = posEnemy;
-    glm::ivec2 enemyCenter = enemyPosPx + glm::ivec2(ts / 2, ts / 2);
+    // Posicions centrades en pÃ­xels
+    glm::ivec2 enemyCenter = posEnemy + glm::ivec2(ts / 2, ts / 2);
     glm::ivec2 targetCenter = targetPos + glm::ivec2(ts / 2, ts / 2);
 
-    // Distance check: radius 4 tiles
-    int dx = targetCenter.x - enemyCenter.x;
-    int dy = targetCenter.y - enemyCenter.y;
-    int rPx = std::max(0, radius_detection) * ts;
-    if (dx * dx + dy * dy > rPx * rPx)
-        return false;
-
-    // Facing semicircle check using dot product with facing vector
+    // Vector direcciÃ³ de l'enemic (facing)
     glm::ivec2 f = EnemyFacingFromAnim(sprite->animation());
-    glm::vec2 fv(f.x, f.y);
-    glm::vec2 toTarget(dx, dy);
-    float len = glm::length(toTarget);
-    if (len == 0.f) {
-        return true; // same position
-    }
-    glm::vec2 dir = toTarget / len;
-    float facingDot = fv.x * dir.x + fv.y * dir.y; // cos(theta)
-    if (facingDot < 0.0f) // more than 90 degrees away => behind
+    glm::ivec2 delta = targetCenter - enemyCenter;
+
+    if (delta.x == 0 && delta.y == 0)
         return false;
 
-    // Line-of-sight ray cast through tiles. Only tiles in Col (non-collidable) are transparent.
-    // Cast from enemyCenter to targetCenter sampling along the line.
+    bool alineat = false;
+
+    if (f.x == 0 && f.y != 0) {
+        // Mira amunt o avall â†’ mateixa X (amb tolerÃ ncia)
+        alineat = (std::abs(delta.x) <= tolerance &&
+            ((f.y > 0 && delta.y > 0) || (f.y < 0 && delta.y < 0)));
+    }
+    else if (f.y == 0 && f.x != 0) {
+        // Mira dreta o esquerra â†’ mateixa Y (amb tolerÃ ncia)
+        alineat = (std::abs(delta.y) <= tolerance &&
+            ((f.x > 0 && delta.x > 0) || (f.x < 0 && delta.x < 0)));
+    }
+    else if (f.x != 0 && f.y != 0) {
+        // Mira en diagonal â†’ permet error d'un tile a la lÃ­nia ideal
+        // La lÃ­nia diagonal ideal tÃ© pendent Â±1, aixÃ­ que comparem |dx| i |dy|
+        alineat = (std::abs(std::abs(delta.x) - std::abs(delta.y)) <= tolerance &&
+            ((f.x > 0 && delta.x > 0) || (f.x < 0 && delta.x < 0)) &&
+            ((f.y > 0 && delta.y > 0) || (f.y < 0 && delta.y < 0)));
+    }
+
+    if (!alineat)
+        return false;
+
+    // Raycast per comprovar que no hi ha parets pel mig
+    int dx = delta.x;
+    int dy = delta.y;
     int steps = std::max(std::abs(dx), std::abs(dy));
-    steps = std::max(1, steps / (ts / 2)); // sample roughly every half tile
+    steps = std::max(1, steps / (ts / 2)); // mostreig cada mig tile
+
     for (int i = 1; i <= steps; ++i) {
         float t = float(i) / float(steps);
         int sx = int(std::round(enemyCenter.x + t * dx));
@@ -546,8 +553,9 @@ bool Enemy::enemic_detectat(const glm::ivec2& targetPos, int radius_detection) c
 
         int tx = sx / ts;
         int ty = sy / ts;
+
         if (!map->isTransparentAtTile(tx, ty)) {
-            // If this opaque tile is the one containing the target center, allow detection
+            // Si el tile opac Ã©s el del jugador, OK; sinÃ³, bloquejat
             int targetTx = targetCenter.x / ts;
             int targetTy = targetCenter.y / ts;
             if (tx == targetTx && ty == targetTy)
@@ -555,10 +563,12 @@ bool Enemy::enemic_detectat(const glm::ivec2& targetPos, int radius_detection) c
             return false;
         }
     }
+
     return true;
 }
 
-// Mou una sola passa cap a targetPos. Respecta col·lisions i anima segons tipus.
+
+// Mou una sola passa cap a targetPos. Respecta colÂ·lisions i anima segons tipus.
 void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int speed)
 {
     if (!map) return;
@@ -581,7 +591,7 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
         bool movedX = false, movedY = false;
 
         if (dirX != 0 && dirY != 0) {
-            // Intenta diagonal com a dues passes atòmiques X+Y
+            // Intenta diagonal com a dues passes atÃ²miques X+Y
             // Primer X
             posEnemy.x += dirX * step;
             if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox, scene->CurrentMap)) ||
@@ -592,18 +602,18 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
                 movedX = true;
             }
 
-            // Després Y
+            // DesprÃ©s Y
             posEnemy.y += dirY * step;
             if ((dirY < 0 && map->collisionMoveUP(posEnemy, bbox, scene->CurrentMap)) ||
                 (dirY > 0 && map->collisionMoveDown(posEnemy, bbox, scene->CurrentMap)))
             {
                 posEnemy.y -= dirY * step; // revertir
-                // si X havia mogut però Y no, segueix vàlid (no diagonal estricta però avança)
+                // si X havia mogut perÃ² Y no, segueix vÃ lid (no diagonal estricta perÃ² avanÃ§a)
             } else {
                 movedY = true;
             }
 
-            // Animació segons diagonal prevista
+            // AnimaciÃ³ segons diagonal prevista
             if (dirX > 0 && dirY < 0) {
                 // dalt-dreta -> MOVE_DOWN
                 if (sprite->animation() != MOVE_DOWN) sprite->changeAnimation(MOVE_DOWN);
@@ -615,7 +625,7 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
                 if (sprite->animation() != MOVE_UP) sprite->changeAnimation(MOVE_UP);
             }
 
-            // Si cap component ha mogut (x ni y), intenta un pla B: primer l'eix més llunyà
+            // Si cap component ha mogut (x ni y), intenta un pla B: primer l'eix mÃ©s llunyÃ 
             if (!movedX && !movedY) {
                 if (std::abs(dx) >= std::abs(dy)) {
                     // prova X
@@ -650,7 +660,7 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
                 }
             }
         } else {
-            // Si ja estem alineats amb alguna coordenada, mou només per l'altra
+            // Si ja estem alineats amb alguna coordenada, mou nomÃ©s per l'altra
             if (dirX != 0) {
                 posEnemy.x += dirX * step;
                 if ((dirX < 0 && map->collisionMoveLeft(posEnemy, bbox, scene->CurrentMap)) ||
@@ -668,7 +678,7 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
                 }
             }
 
-            // Escull animació segons la intenció vertical/horizontal
+            // Escull animaciÃ³ segons la intenciÃ³ vertical/horizontal
             if (dirX > 0 && dirY <= 0) {
                 if (sprite->animation() != MOVE_DOWN) sprite->changeAnimation(MOVE_DOWN);
             } else if (dirX < 0 && dirY >= 0) {

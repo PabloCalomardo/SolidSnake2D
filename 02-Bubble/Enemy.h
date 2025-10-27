@@ -49,6 +49,7 @@ private:
     void updateProjectiles(int deltaTime);
     void renderProjectiles();
     void tryShootAt(const glm::ivec2& targetPos);
+    void BOSStryShootAt(const glm::ivec2& targetPos);
     bool hasClearAxisShot(const glm::ivec2& targetPos, glm::ivec2& outDir) const;
 
 	

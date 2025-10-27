@@ -9,7 +9,7 @@
 #include <GL/gl.h>
 #include "Enemy.h"
 #include "Game.h"
-
+#include <random>
 
 #define JUMP_ANGLE_STEP 4
 #define PIXEL_X 1/255.0f
@@ -248,7 +248,14 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
         {
             hasEnemyDetected = true;
             //DIsparem aleatoriament a posp (al voltant) i ens movem una mica també aleatoriament
-
+            if(shootTimer >= 500)
+            {
+                int aleatorietat = rand() % 200 + 1; // valor entre 0 i 5
+				aleatorietat = 100 - aleatorietat; // valor entre -100 i 100
+                glm::ivec2 pos_to_shoot = glm::ivec2(posp.x + aleatorietat, posp.y);
+                BOSStryShootAt(pos_to_shoot);
+                shootTimer = 0;
+            }
         }
         else { //SOLDIER
             if (hasEnemyDetected) {
@@ -403,6 +410,40 @@ void Enemy::tryShootAt(const glm::ivec2& targetPos)
     bullets.push_back(b);
 }
 
+void Enemy::BOSStryShootAt(const glm::ivec2& targetPos)
+{
+    SoundManager::instance().playSound("shoot");
+
+
+    glm::ivec2 playerCenter = targetPos + glm::ivec2(+20, +20);
+    glm::ivec2 enemyCenter = glm::ivec2 (posEnemy.x + 28.f, posEnemy.y + 52.f);
+
+
+    std::cout << "Player center: (" << playerCenter.x << ", " << playerCenter.y << ")\n";
+    std::cout << "Enemy center: (" << enemyCenter.x << ", " << enemyCenter.y << ")\n";
+
+    // vector del enemic al player
+    glm::vec2 dir = glm::vec2(playerCenter - enemyCenter);
+
+    // si el vector és nul (player just a sobre)
+    if (glm::length(dir) < 0.01f)
+        return;
+
+    std::cout << "Bullet dir1: (" << dir.x << ", " << dir.y << ")\n";
+
+    //dir = glm::normalize(dir);
+
+    Bullet b;
+    b.pos = glm::vec2(enemyCenter.x, enemyCenter.y); // centrat
+    b.dir = dir;
+    b.speed = 0.0005f;
+    b.active = true;
+
+    std::cout << "Bullet dir: (" << b.dir.x << ", " << b.dir.y << ")\n";
+
+    bullets.push_back(b);
+}
+
 void Enemy::updateProjectiles(int deltaTime)
 {
     if (bullets.empty()) return;
@@ -427,6 +468,7 @@ void Enemy::updateProjectiles(int deltaTime)
         int tx = int(b.pos.x) / ts;
         int ty = int(b.pos.y) / ts;
         if (!map->isTransparentAtTile(tx, ty)) {
+
             b.active = false;
             continue;
         }

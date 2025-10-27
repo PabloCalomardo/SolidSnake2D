@@ -8,9 +8,10 @@
 using namespace std;
 
 
-TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program)
+TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, set<int> Col)
 {
-	TileMap *map = new TileMap(levelFile, minCoords, program);
+	TileMap *map = new TileMap(levelFile, minCoords, program, Col);
+	
 	
 	return map;
 }
@@ -30,8 +31,9 @@ bool TileMap::isTransparentAtTile(int tx, int ty) const
 }
 
 
-TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program)
+TileMap::TileMap(const string &levelFile, const glm::vec2 &minCoords, ShaderProgram &program, set<int> Col)
 {
+	Col1 = Col;
 	loadLevel(levelFile);
 	prepareArrays(minCoords, program);
 }

@@ -25,8 +25,12 @@ public:
     bool mort = false;
     bool instructions = false;
     bool credits = false;
+    bool menu = true;
+    int menuCount = 60;
     Texture spritesheet;
+    Texture spritesheet2;
     Sprite* sprite;
+    Sprite* spriteArma;
 
 	objeto* Caja;
 	objeto* Vida1;
@@ -54,6 +58,7 @@ private:
     void renderDeathMessage();
     void Instructions();
     void Credits();
+    void Menu();
 
     Scene* scene = nullptr;
     bool fontInitialized = false;

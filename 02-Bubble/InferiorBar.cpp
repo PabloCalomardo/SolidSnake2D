@@ -12,6 +12,9 @@
 #define PIXEL_X 1/301.0f
 #define PIXEL_Y 1/127.0f
 
+#define PIXEL_X2 1/342.0f
+#define PIXEL_Y2 1/204.0f
+
 InferiorBar::InferiorBar() {}
 
 enum PlayerAnims
@@ -28,6 +31,12 @@ void InferiorBar::init(Scene* sc, ShaderProgram& shaderProgram, const glm::ivec2
     spritesheet.loadFromFile("images/lletres.png", TEXTURE_PIXEL_FORMAT_RGBA); 
     sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(PIXEL_X * 8, PIXEL_Y * 8), &spritesheet, shaderProg);
     sprite->setNumberAnimations(44);
+
+    spritesheet2.loadFromFile("images/objects.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spriteArma = Sprite::createSprite(glm::ivec2(24*2, 16*2), glm::vec2(PIXEL_X2 * 24, PIXEL_Y2 * 16), &spritesheet2, shaderProg);
+    spriteArma->setAnimationSpeed(0, 1);
+    spriteArma->addKeyframe(0, glm::vec2(PIXEL_X2 * (2), PIXEL_Y2 * 86));
+    spriteArma->changeAnimation(0);
 
     int j = 9;
     for (int i = 0; i < 13; ++i) {
@@ -222,6 +231,33 @@ void InferiorBar::drawText(int x, int y, const std::string& text, int pixelSize,
     }
 }
 
+void InferiorBar::Menu() {
+    drawBarBackground();
+    const int titleSize = 4;
+    if (menuCount == 0) {
+        menuCount = 60;
+        glColor3f(0.f, 0.f, 0.f);
+        glBegin(GL_QUADS);
+        glVertex2f(230.f, 390.f);
+        glVertex2f(280.f, 390.f);
+        glVertex2f(280.f, 550.f);
+        glVertex2f(230.f, 550.f);
+        glEnd();
+    }
+    drawText(280, 390, "START", titleSize, 1);
+    drawText(280, 425, "INSTRUCCIONES", titleSize, 1);
+    drawText(280, 460, "CREDITS", titleSize, 1);
+    drawText(280, 495, "SALIR", titleSize, 1);
+    if (menuCount < 30) {
+        if (scene->currentOption == 1) spriteArma->setPosition(glm::vec2(250.f, 360.f));
+        else if (scene->currentOption == 2) spriteArma->setPosition(glm::vec2(250.f, 395.f));
+        else if (scene->currentOption == 3) spriteArma->setPosition(glm::vec2(250.f, 430.f));
+        else spriteArma->setPosition(glm::vec2(250.f, 462.f));
+        spriteArma->render();
+    }
+    menuCount -= 1;
+}
+
 void InferiorBar::Instructions() {
     drawBarBackground();
     const int titleSize = 2;
@@ -241,6 +277,8 @@ void InferiorBar::Instructions() {
     drawText(50, 86 + 260, "K - TELETRANSPORTE AL JEFE FINAL", 1, 1);
     drawText(50, 86 + 288, "N - INDETECTABLE", 1, 1);
     drawText(50, 86 + 316, "G - MODO DIOS", 1, 1);
+    drawText(50, 86 + 344, "R - VOLVER AL MENU", 1, 1);
+    drawText(50, 86 + 372, "ENTER - SELECCIONAR", 1, 1);
     drawText(40, 550, "PULSA R PARA VOLVER AL MENU PRINCIPAL", 1, 1);
 }
 
@@ -293,9 +331,11 @@ void InferiorBar::Credits() {
     if (creditsY >= -1750 && creditsY <= (SCREEN_HEIGHT - 1814)) drawText(70.f, creditsY + 1790.f, "PUNCH - GFX SOUNDS YT CHANNEL");
     if (creditsY >= -1790 && creditsY <= (SCREEN_HEIGHT - 1854)) drawText(85.f, creditsY + 1830.f, "BOX - ALL SOUNDS YT CHANNEL");
     if (creditsY >= -1830 && creditsY <= (SCREEN_HEIGHT - 1894)) drawText(15.f, creditsY + 1870.f, "UNEQUIP - GAMING SOUND FX YT CHANNEL");
-    if (creditsY >= -1700 && creditsY <= (SCREEN_HEIGHT - 2024)) drawText(165.f, creditsY + 2000.f, "GRACIAS POR JUGAR");
-    else if (creditsY <= (SCREEN_HEIGHT - 2024)) drawText(165.f, SCREEN_HEIGHT / 2, "GRACIAS POR JUGAR");
-    if (creditsY <= -2030) drawText(140.f, 530.f, "PULSA R PARA VOLVER AL MENU");
+    if (creditsY >= -1870 && creditsY <= (SCREEN_HEIGHT - 1934)) drawText(50.f, creditsY + 1910.f, "CHANGE OPTION - KINGDOM HEARTS 2");
+    if (creditsY >= -1910 && creditsY <= (SCREEN_HEIGHT - 1974)) drawText(70.f, creditsY + 1950.f, "ENEMY DEATH - FINAL FANTASY VII");
+    if (creditsY >= -1840 && creditsY <= (SCREEN_HEIGHT - 2164)) drawText(165.f, creditsY + 2140.f, "GRACIAS POR JUGAR");
+    else if (creditsY <= (SCREEN_HEIGHT - 2164)) drawText(165.f, SCREEN_HEIGHT / 2, "GRACIAS POR JUGAR");
+    if (creditsY <= -2040) drawText(140.f, 530.f, "PULSA R PARA VOLVER AL MENU");
 }
 
 
@@ -322,7 +362,11 @@ void InferiorBar::render() {
         renderDeathMessage();
         return;
     }
-    if (instructions) {
+    else if (menu) {
+        Menu();
+        return;
+	}
+    else if (instructions) {
         Instructions();
 		return;
     }
@@ -429,8 +473,8 @@ void InferiorBar::renderDeathMessage() {
     const int innerY = yTop + padding;
     const int innerH = barHeight - padding * 2;
     drawText(innerH, innerY, "GAME OVER", titleSize, 1);
-    drawText(innerH + 32, innerY + 24, "PRESS ENTER TO RESTART", 1, 1);
-    drawText(innerH + 32, innerY + 48, "PRESS M TO GO TO TITLE SCREEN", 1, 1);
+    drawText(innerH + 32, innerY + 24, "PULSA ENTER PARA REINICIAR", 1, 1);
+    drawText(innerH + 32, innerY + 48, "PULSA R PARA VOLVER AL MENU", 1, 1);
 }
 
 void InferiorBar::renderLivesSection(int x, int y, int width, int lives, bool g, bool det) {

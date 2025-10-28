@@ -323,6 +323,7 @@ void Player::update(int deltaTime)
 			mort = false;
 			porta_arma = false;
 			ha_disparat = false;
+			hasKey = false;
 			ferit = 0;
 			scene->DeleteObjectsAndEnemies();
 			scene->ChargeEnemiesAndObjects();
@@ -331,7 +332,7 @@ void Player::update(int deltaTime)
 			scene->tp_to_map(1);
 			scene->Death(1);
 		}
-		else if (Game::instance().getKey(GLFW_KEY_M)) {
+		else if (Game::instance().getKey(GLFW_KEY_R)) {
 			if (SoundManager::instance().isSoundPlaying("game_over")) {
 				SoundManager::instance().stopSound("game_over");
 			}
@@ -343,39 +344,56 @@ void Player::update(int deltaTime)
 			mort = false;
 			porta_arma = false;
 			ha_disparat = false;
+			hasKey = false;
 			ferit = 0;
 			sprite->changeAnimation(Animacions[0][0][0]);
 		}
 		return;
 	}
 	else if (scene->CurrentMap == 0) {
+		if (countSelect > 0) countSelect -= 1;
+		if ((Game::instance().getKey(GLFW_KEY_UP) || Game::instance().getKey(GLFW_KEY_W)) && countSelect == 0) {
+			if (scene->currentOption == 1) {
+				scene->currentOption = 4;
+			}
+			else scene->currentOption -= 1;
+			countSelect = 10;
+			scene->hud->menuCount = 30;
+			SoundManager::instance().playSound("option");
+		}
+		else if ((Game::instance().getKey(GLFW_KEY_DOWN) || Game::instance().getKey(GLFW_KEY_S)) && countSelect == 0) {
+			if (scene->currentOption == 4) {
+				scene->currentOption = 1;
+			}
+			else scene->currentOption += 1;
+			scene->hud->menuCount = 30;
+			countSelect = 10;
+			SoundManager::instance().playSound("option");
+		}
 		if (Game::instance().getKey(GLFW_KEY_ENTER)) {
 			lastButton = ' ';
-			scene->ChangeMap(0);
 			SoundManager::instance().playSound("select");
+			if (scene->currentOption == 1) {
+				scene->ChangeMap(0);
+			}
+			else if (scene->currentOption == 2) {
+				scene->Instructions();
+			}
+			else if (scene->currentOption == 3) {
+				scene->Credits();
+			}
+			else if (scene->currentOption == 4) {
+				exit(0);
+			}
 		}
-		if (Game::instance().getKey(GLFW_KEY_E)) {
-			lastButton = ' ';
-			scene->Instructions();
-			SoundManager::instance().playSound("select");
-		}
-		if (Game::instance().getKey(GLFW_KEY_C)) {
-			lastButton = ' ';
-			scene->Credits();
-			SoundManager::instance().playSound("select");
-		}
+		return;
 	}
-	else if (scene->CurrentMap == -1) {
+	else if (scene->CurrentMap == -1 || scene->CurrentMap == -2) {
 		if (Game::instance().getKey(GLFW_KEY_R)) {
 			lastButton = ' ';
 			scene->GoToMainMenu();
 		}
-	}
-	else if (scene->CurrentMap == -2) {
-		if (Game::instance().getKey(GLFW_KEY_R)) {
-			lastButton = ' ';
-			scene->GoToMainMenu();
-		}
+		return;
 	}
 	else if(Game::instance().getKey(GLFW_KEY_LEFT) || Game::instance().getKey(GLFW_KEY_A))
 	{
@@ -432,7 +450,7 @@ void Player::update(int deltaTime)
 		else if (scene->CurrentMap == 4 && posPlayer.y <= 32 && posPlayer.x >= 352 && posPlayer.x <= 384) {
 			scene->ChangeMap(3);
 		}
-		else if (scene->CurrentMap == 5 && posPlayer.y <= 32 && posPlayer.x >= 96 && posPlayer.x <= 128) {
+		else if (scene->CurrentMap == 5 && posPlayer.y <= 32 && posPlayer.x >= 96 && posPlayer.x <= 128 && hasKey) {
 			scene->ChangeMap(3);
 		}
 		else if (map->collisionMoveUP(posPlayer, glm::ivec2(32, 32), scene->CurrentMap))
@@ -470,7 +488,6 @@ void Player::update(int deltaTime)
 	else if (lastButton != 'K' && Game::instance().getKey(GLFW_KEY_K)) {
 		lastButton = 'K';
 		scene->tp_to_map(5);
-		hasKey = false;
 	}
 	else if (lastButton != 'P' && Game::instance().getKey(GLFW_KEY_P)) {
 		lastButton = 'P';
@@ -484,29 +501,6 @@ void Player::update(int deltaTime)
 		lastButton = 'N';
 		if (scene->detectable)  scene->detectable = false;
 		else scene->detectable = true;
-	}
-	else if (lastButton != 'I' && Game::instance().getKey(GLFW_KEY_I)) {
-		lastButton = 'I';
-		GetAllObjects();
-	}
-	else if (lastButton != 'H' && Game::instance().getKey(GLFW_KEY_H)) {
-		lastButton = 'H';
-		if (!SoundManager::instance().isSoundPlaying("heal")) {
-			SoundManager::instance().playSound("heal");
-		}
-		vida = 7;
-		ferit = 0;
-		if (ferit != f) {
-			if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
-			else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
-			else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
-			else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
-			else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
-			else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
-			else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
-			else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
-			f = ferit;
-		}
 	}
 	else if (lastButton != 'G' && Game::instance().getKey(GLFW_KEY_G)) {
 		lastButton = 'G';
@@ -565,6 +559,29 @@ void Player::update(int deltaTime)
 		}
 	}
 	
+	if (Game::instance().getKey(GLFW_KEY_I)) {
+		lastButton = 'I';
+		GetAllObjects();
+	}
+	if (Game::instance().getKey(GLFW_KEY_H)) {
+		lastButton = 'H';
+		if (!SoundManager::instance().isSoundPlaying("heal")) {
+			SoundManager::instance().playSound("heal");
+		}
+		vida = 7;
+		ferit = 0;
+		if (ferit != f) {
+			if (sprite->animation() == Animacions[f][a][0]) sprite->changeAnimation(Animacions[ferit][a][0]);
+			else if (sprite->animation() == Animacions[f][a][7]) sprite->changeAnimation(Animacions[ferit][a][7]);
+			else if (sprite->animation() == Animacions[f][a][1]) sprite->changeAnimation(Animacions[ferit][a][1]);
+			else if (sprite->animation() == Animacions[f][a][6]) sprite->changeAnimation(Animacions[ferit][a][6]);
+			else if (sprite->animation() == Animacions[f][a][2]) sprite->changeAnimation(Animacions[ferit][a][2]);
+			else if (sprite->animation() == Animacions[f][a][4]) sprite->changeAnimation(Animacions[ferit][a][4]);
+			else if (sprite->animation() == Animacions[f][a][3]) sprite->changeAnimation(Animacions[ferit][a][3]);
+			else if (sprite->animation() == Animacions[f][a][5]) sprite->changeAnimation(Animacions[ferit][a][5]);
+			f = ferit;
+		}
+	}
     // Inventory cycling with C key
     if (Game::instance().getKey(GLFW_KEY_C) && itemActionCooldownMs <= 0 && !inventari.empty()) {
 		lastButton = 'C';

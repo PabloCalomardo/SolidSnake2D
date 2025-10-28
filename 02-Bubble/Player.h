@@ -87,6 +87,7 @@ private:
     // Inventory selection state
     int selectedItem = -1; // index into inventari or -1 when none
     int itemActionCooldownMs = 0; // cooldown to avoid multiple triggers from a single key press
+    int countSelect = 0;
 
 };
 

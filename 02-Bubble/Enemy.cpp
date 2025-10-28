@@ -852,6 +852,7 @@ void Enemy::baixavida(int dg) {
     
 	vida = vida - dg;
     if (vida <= 0) {
+        SoundManager::instance().playSound("death");
         mort = true;
         hasEnemyDetected = false;
     }

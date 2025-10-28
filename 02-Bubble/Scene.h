@@ -10,6 +10,7 @@
 #include "objeto.h"
 #include "Sprite.h"
 #include "SoundManager.h"
+#include "InferiorBar.h"
 
 // Forward declare to avoid heavy includes here
 class Enemy;
@@ -44,6 +45,7 @@ public:
 	int CurrentMap;
 	bool detectable;
 	bool detectat;
+	int currentOption = 1; // 1 = Start, 2 = Instructions, 3 = Credits, 4 = Exit
 	Texture spritesheet;
     // Accessor for enemies to interact with the player (e.g., projectile hits)
     Player* getPlayer() const { return player; }
@@ -51,6 +53,7 @@ public:
     std::vector<Enemy*>& getEnemies() { return enemies; }
 	std::vector<objeto*>& getObjetos() { return objetos; }
 	Sprite* sprite;
+	InferiorBar* hud;
 
 private:
 	void initShaders();
@@ -67,7 +70,6 @@ private:
 	glm::mat4 projection;
 	
 
-    InferiorBar* hud = nullptr;
 };
 
 

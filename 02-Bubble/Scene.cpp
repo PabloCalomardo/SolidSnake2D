@@ -64,6 +64,8 @@ void Scene::init()
 	SoundManager::instance().loadSound("arma", "audio/Select_Gun.ogg");
 	SoundManager::instance().loadSound("unequip", "audio/Unequip.ogg");
 	SoundManager::instance().setSoundVolume("unequip", 30.f);
+	SoundManager::instance().loadSound("option", "audio/Option.ogg");
+	SoundManager::instance().loadSound("death", "audio/Enemy_Death.ogg");
 	//SoundManager::instance().music.setVolume(40.f);
 	map = TileMap::createTileMap("levels/level00.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, {});
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, *this, false);
@@ -76,6 +78,8 @@ void Scene::init()
 	// HUD
 	hud = new InferiorBar();
 	hud->init(this, texProgram, glm::ivec2(SCREEN_X, SCREEN_Y));
+	hud->menu = true;
+	hud->menuCount = 30;
 
 	spritesheet.loadFromFile("images/Pantallas_Inicio.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(400*1.6f, 200*1.6f), glm::vec2(PIXEL_X * 256, PIXEL_Y * 160), &spritesheet, &texProgram);
@@ -113,9 +117,11 @@ void Scene::GoToMainMenu() {
 	}
 	CurrentMap = 0;
 	player->rend = false;
+	hud->menu = true;
+	hud->menuCount = 30;
 
 	spritesheet.loadFromFile("images/Pantallas_Inicio.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(400 * 1.6f, 300 * 1.6f), glm::vec2(PIXEL_X * 256, PIXEL_Y * 240), &spritesheet, &texProgram);
+	sprite = Sprite::createSprite(glm::ivec2(400 * 1.6f, 200 * 1.6f), glm::vec2(PIXEL_X * 256, PIXEL_Y * 160), &spritesheet, &texProgram);
 	sprite->setNumberAnimations(1);
 
 	sprite->setAnimationSpeed(0, 8);
@@ -126,11 +132,13 @@ void Scene::GoToMainMenu() {
 
 void Scene::Instructions() {
 	CurrentMap = -1;
+	hud->menu = false;
 	hud->instructions = true;
 }
 
 void Scene::Credits() {
 	CurrentMap = -2;
+	hud->menu = false;
 	SoundManager::instance().setMusicVolume(60.f);
 	SoundManager::instance().playMusic("audio/Snake_Eater.ogg", false);
 	hud->creditsY = 685.f;
@@ -518,6 +526,8 @@ void Scene::ChangeMap(int dir)
 		detectable = true;
 		sprite->free();
 		CurrentMap = 1;
+		glClear(GL_COLOR_BUFFER_BIT);
+		hud->menu = false;
 		map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, { 1,2,3,5,6,7,10 });
 		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 		player->rend = true;

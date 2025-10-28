@@ -12,8 +12,8 @@
 #define PIXEL_X 1/301.0f
 #define PIXEL_Y 1/127.0f
 
-#define PIXEL_X2 1/342.0f
-#define PIXEL_Y2 1/204.0f
+#define PIXEL_X2 1/808.0f
+#define PIXEL_Y2 1/546.0f
 
 InferiorBar::InferiorBar() {}
 
@@ -32,10 +32,11 @@ void InferiorBar::init(Scene* sc, ShaderProgram& shaderProgram, const glm::ivec2
     sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(PIXEL_X * 8, PIXEL_Y * 8), &spritesheet, shaderProg);
     sprite->setNumberAnimations(44);
 
-    spritesheet2.loadFromFile("images/objects.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet2.loadFromFile("images/Pantallas_Inicio.png", TEXTURE_PIXEL_FORMAT_RGBA);
     spriteArma = Sprite::createSprite(glm::ivec2(24*2, 16*2), glm::vec2(PIXEL_X2 * 24, PIXEL_Y2 * 16), &spritesheet2, shaderProg);
+    spriteArma->setNumberAnimations(1);
     spriteArma->setAnimationSpeed(0, 1);
-    spriteArma->addKeyframe(0, glm::vec2(PIXEL_X2 * (2), PIXEL_Y2 * 86));
+    spriteArma->addKeyframe(0, glm::vec2(PIXEL_X2 * (2), PIXEL_Y2 * 269));
     spriteArma->changeAnimation(0);
 
     int j = 9;

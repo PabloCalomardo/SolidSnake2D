@@ -31,7 +31,7 @@ public:
     void goToPosition(int deltaTime, const glm::ivec2& targetPos, int speed = 1);
 	glm::ivec2 posEnemy;
     glm::ivec2 posPlayer;
-	void baixavida(int dg);
+	void baixavida(int dg, bool punchweapon);
 	int Escena_Original;
     bool antic_hasEnemyDetected;
     bool noUpdate = false;

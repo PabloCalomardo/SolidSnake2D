@@ -668,12 +668,13 @@ void Scene::update(int deltaTime)
     comprovar_vides(deltaTime);
     if (hud) hud->update(deltaTime);
 
-	if(player->hasKey) {
+	if(player->hasKey && !revived) {
 		for (auto enemie : enemies) {
 			if (enemie->Escena_Original > 4 && (enemie->Escena_Original < 10)) {
 				enemie->revive();
 			}
 		}
+		revived = true;
 	}
 }
 

@@ -863,7 +863,7 @@ void Enemy::goToPosition(int /*deltaTime*/, const glm::ivec2& targetPos, int spe
     }
 }
 
-void Enemy::baixavida(int dg) {
+void Enemy::baixavida(int dg, bool punchweapon) {
     
 	vida = vida - dg;
     if (vida <= 0) {
@@ -872,8 +872,11 @@ void Enemy::baixavida(int dg) {
         hasEnemyDetected = false;
         return;
     }
-    if(!hasEnemyDetected) sobresaltado = true;
-    contador_sobresalto += 30;
+    if(!hasEnemyDetected && punchweapon)
+    {
+        sobresaltado = true;
+        contador_sobresalto += 30;
+    }
 }
 
 void Enemy::revive() {

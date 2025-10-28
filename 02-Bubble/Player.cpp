@@ -918,7 +918,7 @@ void Player::updateProjectiles(int deltaTime)
         auto& enemies = scene->getEnemies();
         for (auto* e : enemies) {
             if (!e->mort && hitEnemy(b.pos, e)) {
-                e->baixavida(3);
+				e->baixavida(3, false); //El false és perque no és un punyetazo
                 b.active = false;
                 break;
             }
@@ -1052,7 +1052,7 @@ void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 	for (auto* e : enemies) {
 		if (!e->mort && hitEnemy(posPuny, e)) {
 			cout << "Punyetazo a enemy!" << endl;
-			e->baixavida(1);
+			e->baixavida(1, true);
 			HaPegat = true;
 		}
 	}

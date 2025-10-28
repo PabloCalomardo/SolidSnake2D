@@ -54,6 +54,7 @@ public:
 	std::vector<objeto*>& getObjetos() { return objetos; }
 	Sprite* sprite;
 	InferiorBar* hud;
+	bool revived = false;
 
 private:
 	void initShaders();

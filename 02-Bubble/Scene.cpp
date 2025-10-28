@@ -183,7 +183,7 @@ void Scene::ChargeEnemiesAndObjects() {
 	{
 		// Soldat mapa 1
 		Enemy* e = new Enemy();
-		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, false, true, 1);
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, false, false, true, 1);
 		// Set initial position directly to avoid setPosition guard against non-current maps
 		e->posEnemy = glm::ivec2(30 * map->getTileSize(), 20 * map->getTileSize());
 		e->setTileMap(map);
@@ -703,11 +703,12 @@ void Scene::comprovar_vides(int deltaTime)
     for (Enemy* e : enemies) {
         if (!e) continue;
 		if (e->mort || e->noUpdate) continue;
-		if (e->Escena_Original != CurrentMap || (e->EnemyType != 0)) continue;
+		if (e->Escena_Original != CurrentMap || (e->EnemyType == 1) || (e->EnemyType==3)) continue;
         glm::ivec2 pose = e->posEnemy;
         if ((abs(posp.x - pose.x) < 20 && abs(posp.y - pose.y) < 20)) {
             if (animation_not_in(spr_player->animation())) { //Treiem una vida al jugador
-                player->baixavida(2);
+				if(e->EnemyType == 0) player->baixavida(2);
+				else player->baixavida(4);
 				damageCD = 500;
             }
         }

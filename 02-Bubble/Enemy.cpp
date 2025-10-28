@@ -87,7 +87,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 		//			STANDS 
 		//==============================
 		sprite->setAnimationSpeed(STAND_NORMAL, 4);
-		sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X * (2), PIXEL_Y * 56)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
+        sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X * (2), PIXEL_Y * 56)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
 		sprite->setAnimationSpeed(STAND_UP, 4);
 		sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X * (21), PIXEL_Y * 56)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
 		sprite->setAnimationSpeed(STAND_LEFT, 4);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
@@ -115,39 +115,35 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 
 	}
 	else if (EnemyType == 2) {
-		//==============================
-		//			STANDS 
-		//==============================
-		sprite->setAnimationSpeed(STAND_NORMAL, 8);
-		sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X * (2 + 136), PIXEL_Y * 26)); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
-		sprite->setAnimationSpeed(STAND_UP, 8);
-		sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X * (21 + 136), PIXEL_Y * 26)); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
-		sprite->setAnimationSpeed(STAND_LEFT, 8);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
-		sprite->addKeyframe(STAND_LEFT, glm::vec2(PIXEL_X * (2 + 136), PIXEL_Y * 61));
-		sprite->setAnimationSpeed(STAND_RIGHT, 8);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
-		sprite->addKeyframe(STAND_RIGHT, glm::vec2(PIXEL_X * (21 + 136), PIXEL_Y * 61));
-		//==============================
-		//			MOVES
-		//==============================
-		sprite->setAnimationSpeed(MOVE_LEFT, 8); // Inicialment STAND LEFT, despres les animacions de caminar
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * 2, PIXEL_Y * 61)); //Stand left
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (36 + 11), PIXEL_Y * 61));
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (36 + 11 + 38), PIXEL_Y * 61));
+        //==============================
+        //			STANDS 
+        //==============================
+        sprite->setAnimationSpeed(STAND_NORMAL, 4);
+        sprite->addKeyframe(STAND_NORMAL, glm::vec2(PIXEL_X * (2), PIXEL_Y * (56+ 86))); //DEFINITIU, 2 pixel a la dreta i 26 cap a baix
+        sprite->setAnimationSpeed(STAND_UP, 4);
+        sprite->addKeyframe(STAND_UP, glm::vec2(PIXEL_X * (21), PIXEL_Y * (56+ 86))); //DEFINITIU, (1+18+2) pixel a la dreta i 25 cap a baix
+        sprite->setAnimationSpeed(STAND_LEFT, 4);	//La segona fila esta a (25 pixels de marge + 35 pixels d'alçada d'imatge +1 de contorn) cap a baix
+        sprite->addKeyframe(STAND_LEFT, glm::vec2(PIXEL_X * (2), PIXEL_Y * (56+ 86)));
+        sprite->setAnimationSpeed(STAND_RIGHT, 4);	//La segona fila esta a (25 pixels de marge + 34 pixels d'alçada d'imatge+1de contorn) cap a baix i (1 + 18 +1 de contorn) pixels a la dreta
+        sprite->addKeyframe(STAND_RIGHT, glm::vec2(PIXEL_X * (21), PIXEL_Y * (56+ 86)));
+        //==============================
+        //			MOVES
+        //==============================
+        sprite->setAnimationSpeed(MOVE_LEFT, 4); // Inicialment STAND LEFT, despres les animacions de caminar
+        sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * 2, PIXEL_Y * (91 + 86))); //Stand left
+        sprite->addKeyframe(MOVE_LEFT, glm::vec2(PIXEL_X * (40), PIXEL_Y * (91 + 86)));
 
-		sprite->setAnimationSpeed(MOVE_RIGHT, 8);
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * 21, PIXEL_Y * 61)); //Stand right
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8 + 1), PIXEL_Y * 61));
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19 + 1), PIXEL_Y * 61));
+        sprite->setAnimationSpeed(MOVE_RIGHT, 4);
+        sprite->addKeyframe(MOVE_RIGHT, glm::vec2(PIXEL_X * 21, PIXEL_Y * (91 + 86))); //Stand right
+        sprite->addKeyframe(MOVE_RIGHT, glm::vec2((PIXEL_X * 59), PIXEL_Y * (91 + 86)));
 
-		sprite->setAnimationSpeed(MOVE_UP, 8);
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * 21, PIXEL_Y * 26)); //Stand up
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (3 + 54 + 8 + 1), PIXEL_Y * 26));
-		sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (3 + 54 + 8 + 19 + 19 + 1), PIXEL_Y * 26));
+        sprite->setAnimationSpeed(MOVE_UP, 4);
+        sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * 21, PIXEL_Y * (56+ 86))); //Stand up
+        sprite->addKeyframe(MOVE_UP, glm::vec2(PIXEL_X * (59), PIXEL_Y * (56+ 86)));
 
-		sprite->setAnimationSpeed(MOVE_DOWN, 8);
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * 2, PIXEL_Y * 26)); //Stand normal
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 1), PIXEL_Y * 26));
-		sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (36 + 10 + 38 + 1), PIXEL_Y * 26));
+        sprite->setAnimationSpeed(MOVE_DOWN, 4);
+        sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * 2, PIXEL_Y * (56+ 86))); //Stand normal
+        sprite->addKeyframe(MOVE_DOWN, glm::vec2(PIXEL_X * (40), PIXEL_Y * (56+ 86)));
 	}
 	else {//BOSS  34 amplada, 42 alçada
         sprite->setAnimationSpeed(STAND_NORMAL, 4);
@@ -258,6 +254,41 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
                 if (aleatorietat < -25 && !(map->collisionMoveLeft(posEnemy, glm::ivec2(64, 84), scene->CurrentMap))) posEnemy.x -= 10;
                 else if(aleatorietat > 25 && !(map->collisionMoveRight(posEnemy, glm::ivec2(64, 84), scene->CurrentMap))) posEnemy.x += 10;
             }
+        }
+        else if (EnemyType == 2) { //JetpackSoldier
+            if (hasEnemyDetected) {
+                if (delta_ant > 45) {
+                    goToPosition(deltaTime, posp, 2);
+                    delta_ant = 0;
+                }
+            }
+            else { // Tranquilitat, patrullem (pot ser en vertical o horitzontal segons el moviment que vulguem)
+                if (moviment_horitzontal) {
+                    if ((sprite->animation() == STAND_NORMAL) || (sprite->animation() == MOVE_RIGHT) && delta_ant > 1000) {
+                        posEnemy.x -= 10;
+                        delta_ant = 0;
+                        sprite->changeAnimation(MOVE_LEFT);
+                    }
+                    else if (sprite->animation() == MOVE_LEFT && delta_ant > 1000) {
+                        posEnemy.x += 10;
+                        delta_ant = 0;
+                        sprite->changeAnimation(MOVE_RIGHT);
+                    }
+                }
+                else if (moviment_vertical) {
+                    if ((sprite->animation() == STAND_NORMAL) || (sprite->animation() == MOVE_DOWN) && delta_ant > 1000) {
+                        posEnemy.y -= 10;
+                        delta_ant = 0;
+                        sprite->changeAnimation(MOVE_UP);
+                    }
+                    else if (sprite->animation() == MOVE_UP && delta_ant > 1000) {
+                        posEnemy.y += 10;
+                        delta_ant = 0;
+                        sprite->changeAnimation(MOVE_DOWN);
+                    }
+                }
+            }
+
         }
         else { //SOLDIER
             if (hasEnemyDetected) {

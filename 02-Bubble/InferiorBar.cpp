@@ -27,7 +27,7 @@ void InferiorBar::init(Scene* sc, ShaderProgram& shaderProgram, const glm::ivec2
 
     spritesheet.loadFromFile("images/lletres.png", TEXTURE_PIXEL_FORMAT_RGBA); 
     sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(PIXEL_X * 8, PIXEL_Y * 8), &spritesheet, shaderProg);
-    sprite->setNumberAnimations(36);
+    sprite->setNumberAnimations(44);
 
     int j = 9;
     for (int i = 0; i < 13; ++i) {
@@ -44,10 +44,10 @@ void InferiorBar::init(Scene* sc, ShaderProgram& shaderProgram, const glm::ivec2
         sprite->setAnimationSpeed(i + 26, 8);
         sprite->addKeyframe(i + 26, glm::vec2(PIXEL_X * (181 + (i * 11)), PIXEL_Y * (1 + j)));
     }
-    j = 10;
+    j = 39;
     for (int i = 0; i < 8; ++i) {
-        sprite->setAnimationSpeed(i + 26, 8);
-        sprite->addKeyframe(i + 26, glm::vec2(PIXEL_X * (181 + (i * 11)), PIXEL_Y * (1 + j)));
+        sprite->setAnimationSpeed(i + 36, 8);
+        sprite->addKeyframe(i + 36, glm::vec2(PIXEL_X * (181 + (i * 11)), PIXEL_Y * (1 + j)));
     }
 }
 
@@ -80,7 +80,8 @@ void InferiorBar::update(int /*deltaTime*/) {
 
 // Helper: draw a single character using sprite font if available; otherwise fallback to bitmap font
 void InferiorBar::drawChar(int x, int y, char c, int pixelSize, int spacing) {
-    char uc = char(std::toupper(static_cast<unsigned char>(c)));
+    char uc = c;
+    if (uc != '-' && uc != '\'') uc = char(std::toupper(static_cast<unsigned char>(c)));
     // Digits: use sprite animations starting at index 26 but map 0->35
     if (uc >= '0' && uc <= '9' && sprite && shaderProg) {
         int animId;
@@ -116,6 +117,38 @@ void InferiorBar::drawChar(int x, int y, char c, int pixelSize, int spacing) {
     // Use sprite for A-Z
     if (uc >= 'A' && uc <= 'Z' && sprite && shaderProg) {
         int animId = (uc - 'A');
+        // Setup ortho and modelview for drawing sprite at screen coords
+        GLint prevProgram = 0;
+        glGetIntegerv(GL_CURRENT_PROGRAM, &prevProgram);
+        shaderProg->use();
+
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 1);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        glDisable(GL_TEXTURE_2D);
+        // Use sprite's texture rendering (Sprite::render will enable texture as needed)
+        sprite->changeAnimation(animId);
+        sprite->setPosition(glm::vec2(float(x), float(y)));
+        sprite->render();
+
+        // Restore matrices and program
+        glPopMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+
+        if (prevProgram) glUseProgram(prevProgram);
+        return;
+    }
+    if ((uc == '-' || uc == '\'') && sprite && shaderProg) {
+        int animId = 0;
+        if(uc == '-') animId = guion;
+		else animId = apostrof;
         // Setup ortho and modelview for drawing sprite at screen coords
         GLint prevProgram = 0;
         glGetIntegerv(GL_CURRENT_PROGRAM, &prevProgram);

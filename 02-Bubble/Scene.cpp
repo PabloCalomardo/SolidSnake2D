@@ -78,7 +78,7 @@ void Scene::init()
 	hud->init(this, texProgram, glm::ivec2(SCREEN_X, SCREEN_Y));
 
 	spritesheet.loadFromFile("images/Pantallas_Inicio.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(400*1.6f, 300*1.6f), glm::vec2(PIXEL_X * 256, PIXEL_Y * 240), &spritesheet, &texProgram);
+	sprite = Sprite::createSprite(glm::ivec2(400*1.6f, 200*1.6f), glm::vec2(PIXEL_X * 256, PIXEL_Y * 160), &spritesheet, &texProgram);
 	sprite->setNumberAnimations(1);
 
 	sprite->setAnimationSpeed(0, 8);

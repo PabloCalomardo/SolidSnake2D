@@ -24,6 +24,7 @@ public:
     void render();
     bool mort = false;
     bool instructions = false;
+    bool credits = false;
     Texture spritesheet;
     Sprite* sprite;
 
@@ -32,6 +33,7 @@ public:
 	objeto* Vida2;
 	objeto* Vida3;
 	objeto* Arma;
+    float creditsY = -100.f;
 
 private:
     void drawBarBackground();
@@ -51,8 +53,8 @@ private:
     void renderMapSection(int x, int y, int width, int mapId);
     void renderDeathMessage();
     void Instructions();
+    void Credits();
 
-private:
     Scene* scene = nullptr;
     bool fontInitialized = false;
     // 5x7 font: 7 rows, each row a 5-bit mask (LSB is rightmost bit 0..4)

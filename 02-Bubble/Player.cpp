@@ -336,17 +336,28 @@ void Player::update(int deltaTime)
 	}
 	else if (scene->CurrentMap == 0) {
 		if (Game::instance().getKey(GLFW_KEY_ENTER)) {
-			lastButton = 'E';
+			lastButton = ' ';
 			scene->ChangeMap(0);
 			SoundManager::instance().playSound("select");
 		}
 		if (Game::instance().getKey(GLFW_KEY_E)) {
-			lastButton = 'E';
+			lastButton = ' ';
 			scene->Instructions();
+			SoundManager::instance().playSound("select");
+		}
+		if (Game::instance().getKey(GLFW_KEY_C)) {
+			lastButton = ' ';
+			scene->Credits();
 			SoundManager::instance().playSound("select");
 		}
 	}
 	else if (scene->CurrentMap == -1) {
+		if (Game::instance().getKey(GLFW_KEY_R)) {
+			lastButton = ' ';
+			scene->GoToMainMenu();
+		}
+	}
+	else if (scene->CurrentMap == -2) {
 		if (Game::instance().getKey(GLFW_KEY_R)) {
 			lastButton = ' ';
 			scene->GoToMainMenu();

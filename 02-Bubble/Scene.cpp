@@ -93,6 +93,16 @@ void Scene::GoToMainMenu() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		hud->instructions = false;
 	}
+	else if (CurrentMap == -2) {
+		glClear(GL_COLOR_BUFFER_BIT);
+		hud->credits = false;
+		SoundManager::instance().setMusicVolume(60.f);
+		SoundManager::instance().playMusic("audio/Main_Theme.ogg", true);
+		map = TileMap::createTileMap("levels/level00.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, { 1,2,3,5,6,7,10 });
+		Death(1);
+		DeleteObjectsAndEnemies();
+		ChargeEnemiesAndObjects();
+	}
 	else {
 		SoundManager::instance().setMusicVolume(60.f);
 		SoundManager::instance().playMusic("audio/Main_Theme.ogg", true);
@@ -105,20 +115,26 @@ void Scene::GoToMainMenu() {
 	player->rend = false;
 
 	spritesheet.loadFromFile("images/Pantallas_Inicio.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(PIXEL_X * 8, PIXEL_Y * 8), glm::vec2(PIXEL_X * 256, PIXEL_Y * 240), &spritesheet, &texProgram);
+	sprite = Sprite::createSprite(glm::ivec2(400 * 1.6f, 300 * 1.6f), glm::vec2(PIXEL_X * 256, PIXEL_Y * 240), &spritesheet, &texProgram);
 	sprite->setNumberAnimations(1);
 
 	sprite->setAnimationSpeed(0, 8);
 	sprite->addKeyframe(0, glm::vec2(PIXEL_X * (550), PIXEL_Y * (18)));
 	sprite->changeAnimation(0);
-	sprite->setPosition(glm::ivec2(SCREEN_X, SCREEN_Y));
-
-	sprite->render();
+	sprite->setPosition(glm::ivec2(32, 16));
 }
 
 void Scene::Instructions() {
 	CurrentMap = -1;
 	hud->instructions = true;
+}
+
+void Scene::Credits() {
+	CurrentMap = -2;
+	SoundManager::instance().setMusicVolume(60.f);
+	SoundManager::instance().playMusic("audio/Snake_Eater.ogg", false);
+	hud->creditsY = 685.f;
+	hud->credits = true;
 }
 
 void Scene::ChargeEnemiesAndObjects() {

@@ -66,8 +66,14 @@ void Scene::init()
 	SoundManager::instance().setSoundVolume("unequip", 30.f);
 	SoundManager::instance().loadSound("option", "audio/Option.ogg");
 	SoundManager::instance().loadSound("death", "audio/Enemy_Death.ogg");
-	SoundManager::instance().setSoundVolume("close", 60.f);
 	SoundManager::instance().loadSound("close", "audio/CloseDoor.ogg");
+	SoundManager::instance().setSoundVolume("close", 30.f);
+	SoundManager::instance().loadSound("close", "audio/CloseDoor.ogg");
+	SoundManager::instance().loadSound("door", "audio/Door.ogg");
+	SoundManager::instance().loadSound("doorSuccess", "audio/DoorSuccess.ogg");
+	SoundManager::instance().setSoundVolume("doorSuccess", 80.f);
+	SoundManager::instance().loadSound("doorError", "audio/DoorError.ogg");
+	SoundManager::instance().setSoundVolume("doorError", 60.f);
 	//SoundManager::instance().music.setVolume(40.f);
 	map = TileMap::createTileMap("levels/level00.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, {});
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, *this, false);
@@ -493,7 +499,7 @@ void Scene::tp_to_map(int m)
 	}
 	else if (m == 5) {
 		if (!d && CurrentMap < 5 || CurrentMap > 10) {
-			SoundManager::instance().setMusicVolume(25.f);
+			SoundManager::instance().setMusicVolume(15.f);
 			SoundManager::instance().playMusic("audio/Interior.ogg", true);
 		}
 		glm::vec2 posaux(23, 24);
@@ -580,7 +586,7 @@ void Scene::ChangeMap(int dir)
 		}
 		else if (dir == 3) {
 			CurrentMap = 5;
-			SoundManager::instance().setMusicVolume(25.f);
+			SoundManager::instance().setMusicVolume(15.f);
 			SoundManager::instance().playMusic("audio/Interior.ogg", true);
 			map = TileMap::createTileMap("levels/level05.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, { 1,2,3,10,11,12,19,20 });
 			glm::vec2 posaux(player->posPlayer[0], 24);
@@ -714,7 +720,7 @@ void Scene::update(int deltaTime)
 			SoundManager::instance().playMusic("audio/Jungle.ogg", true);
 		}
 		else if (CurrentMap >=5 && CurrentMap <=10) {
-			SoundManager::instance().setMusicVolume(25.f);
+			SoundManager::instance().setMusicVolume(15.f);
 			SoundManager::instance().playMusic("audio/Interior.ogg", true);
 		}
 	}

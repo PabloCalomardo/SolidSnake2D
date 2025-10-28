@@ -405,9 +405,15 @@ void Player::update(int deltaTime)
 			scene->ChangeMap(1);
 		}
 		else if ((scene->CurrentMap == 6 || scene-> CurrentMap == 7) && posPlayer.x <= 30 && posPlayer.y >= 176 && posPlayer.y <= 224) {
+			if (!SoundManager::instance().isSoundPlaying("door")) {
+				SoundManager::instance().playSound("door");
+			}
 			scene->ChangeMap(1);
 		}
 		else if (scene->CurrentMap == 9 && posPlayer.x <= 30 && posPlayer.y >= 86 && posPlayer.y <= 132) {
+			if (!SoundManager::instance().isSoundPlaying("door")) {
+				SoundManager::instance().playSound("door");
+			}
 			scene->ChangeMap(1);
 		}
 		else if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32), scene->CurrentMap))
@@ -426,9 +432,15 @@ void Player::update(int deltaTime)
 			scene->ChangeMap(2);
 		}
 		else if ((scene->CurrentMap == 5 || scene->CurrentMap == 6) && posPlayer.x >= 578 && posPlayer.y >= 176 && posPlayer.y <= 224) {
+			if (!SoundManager::instance().isSoundPlaying("door")) {
+				SoundManager::instance().playSound("door");
+			}
 			scene->ChangeMap(2);
 		}
 		else if (scene->CurrentMap == 10 && posPlayer.x >= 578 && posPlayer.y >= 86 && posPlayer.y <= 132) {
+			if (!SoundManager::instance().isSoundPlaying("door")) {
+				SoundManager::instance().playSound("door");
+			}
 			scene->ChangeMap(2);
 		}
 		else if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32), scene->CurrentMap))
@@ -448,10 +460,23 @@ void Player::update(int deltaTime)
 			scene->ChangeMap(3);
 		}
 		else if (scene->CurrentMap == 4 && posPlayer.y <= 32 && posPlayer.x >= 352 && posPlayer.x <= 384) {
+			if (!SoundManager::instance().isSoundPlaying("door")) {
+				SoundManager::instance().playSound("door");
+			}
 			scene->ChangeMap(3);
 		}
 		else if (scene->CurrentMap == 5 && posPlayer.y <= 32 && posPlayer.x >= 96 && posPlayer.x <= 128 && hasKey) {
+			if (!SoundManager::instance().isSoundPlaying("doorSuccess")) {
+				SoundManager::instance().playSound("doorSuccess");
+			}
 			scene->ChangeMap(3);
+		}
+		else if (scene->CurrentMap == 5 && posPlayer.y <= 32 && posPlayer.x >= 96 && posPlayer.x <= 128) {
+			if (!SoundManager::instance().isSoundPlaying("doorError")) {
+				SoundManager::instance().playSound("doorError");
+			}
+			posPlayer.y += 2;
+			sprite->changeAnimation(Animacions[f][a][1]);
 		}
 		else if (map->collisionMoveUP(posPlayer, glm::ivec2(32, 32), scene->CurrentMap))
 		{
@@ -472,6 +497,9 @@ void Player::update(int deltaTime)
 			scene->ChangeMap(4);
 		}
 		else if (scene->CurrentMap == 5 && posPlayer.y >= 386 && posPlayer.x >= 352 && posPlayer.x <= 384) {
+			if (!SoundManager::instance().isSoundPlaying("door")) {
+				SoundManager::instance().playSound("door");
+			}
 			scene->ChangeMap(4);
 		}
 		else if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32),scene->CurrentMap))

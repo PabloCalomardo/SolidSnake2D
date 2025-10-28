@@ -250,10 +250,10 @@ void InferiorBar::Menu() {
     drawText(280, 460, "CREDITS", titleSize, 1);
     drawText(280, 495, "SALIR", titleSize, 1);
     if (menuCount < 30) {
-        if (scene->currentOption == 1) spriteArma->setPosition(glm::vec2(250.f, 360.f));
-        else if (scene->currentOption == 2) spriteArma->setPosition(glm::vec2(250.f, 395.f));
-        else if (scene->currentOption == 3) spriteArma->setPosition(glm::vec2(250.f, 430.f));
-        else spriteArma->setPosition(glm::vec2(250.f, 462.f));
+        if (scene->currentOption == 1) spriteArma->setPosition(glm::vec2(250.f, 370.f));
+        else if (scene->currentOption == 2) spriteArma->setPosition(glm::vec2(250.f, 405.f));
+        else if (scene->currentOption == 3) spriteArma->setPosition(glm::vec2(250.f, 440.f));
+        else spriteArma->setPosition(glm::vec2(250.f, 474.f));
         spriteArma->render();
     }
     menuCount -= 1;

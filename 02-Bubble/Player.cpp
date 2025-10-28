@@ -470,7 +470,7 @@ void Player::update(int deltaTime)
 	else if (lastButton != 'K' && Game::instance().getKey(GLFW_KEY_K)) {
 		lastButton = 'K';
 		scene->tp_to_map(5);
-		hasKey = true;
+		hasKey = false;
 	}
 	else if (lastButton != 'P' && Game::instance().getKey(GLFW_KEY_P)) {
 		lastButton = 'P';

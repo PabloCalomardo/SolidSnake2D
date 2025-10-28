@@ -149,16 +149,16 @@ void Scene::ChargeEnemiesAndObjects() {
 		objetos.push_back(o);
 	}
 	{
-		// Arma mapa 1
+		// Arma mapa 6
 		objeto* o = new objeto();
-		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, 1, glm::ivec2(15 * map->getTileSize(), 20 * map->getTileSize()));
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, 6, glm::ivec2(36 * map->getTileSize(), 26 * map->getTileSize()));
 		o->setTileMap(map);
 		objetos.push_back(o);
 	}
 	{
-		// Vida mapa 1
+		// Vida mapa 4
 		objeto* o = new objeto();
-		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, 1, glm::ivec2(15 * map->getTileSize(), 25 * map->getTileSize()));
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, 4, glm::ivec2(5 * map->getTileSize(), 24 * map->getTileSize()));
 		o->setTileMap(map);
 		objetos.push_back(o);
 	}
@@ -170,9 +170,9 @@ void Scene::ChargeEnemiesAndObjects() {
 		objetos.push_back(o);
 	}
 	{
-		// CLAU mapa 1
+		// CLAU mapa 10
 		objeto* o = new objeto();
-		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 3, *this, 1, glm::ivec2(10 * map->getTileSize(), 10 * map->getTileSize()));
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 3, *this, 10, glm::ivec2(3 * map->getTileSize(), 24 * map->getTileSize()));
 		o->setTileMap(map);
 		objetos.push_back(o);
 	}

@@ -247,7 +247,7 @@ void InferiorBar::Menu() {
     }
     drawText(280, 390, "START", titleSize, 1);
     drawText(280, 425, "INSTRUCCIONES", titleSize, 1);
-    drawText(280, 460, "CREDITS", titleSize, 1);
+    drawText(280, 460, "CREDITOS", titleSize, 1);
     drawText(280, 495, "SALIR", titleSize, 1);
     if (menuCount < 30) {
         if (scene->currentOption == 1) spriteArma->setPosition(glm::vec2(250.f, 370.f));
@@ -334,9 +334,13 @@ void InferiorBar::Credits() {
     if (creditsY >= -1830 && creditsY <= (SCREEN_HEIGHT - 1894)) drawText(15.f, creditsY + 1870.f, "UNEQUIP - GAMING SOUND FX YT CHANNEL");
     if (creditsY >= -1870 && creditsY <= (SCREEN_HEIGHT - 1934)) drawText(50.f, creditsY + 1910.f, "CHANGE OPTION - KINGDOM HEARTS 2");
     if (creditsY >= -1910 && creditsY <= (SCREEN_HEIGHT - 1974)) drawText(70.f, creditsY + 1950.f, "ENEMY DEATH - FINAL FANTASY VII");
-    if (creditsY >= -1840 && creditsY <= (SCREEN_HEIGHT - 2164)) drawText(165.f, creditsY + 2140.f, "GRACIAS POR JUGAR");
-    else if (creditsY <= (SCREEN_HEIGHT - 2164)) drawText(165.f, SCREEN_HEIGHT / 2, "GRACIAS POR JUGAR");
-    if (creditsY <= -2040) drawText(140.f, 530.f, "PULSA R PARA VOLVER AL MENU");
+    if (creditsY >= -1950 && creditsY <= (SCREEN_HEIGHT - 2014)) drawText(70.f, creditsY + 1990.f, "DOOR CLOSED - PIXABAY ANONIMOUS");
+    if (creditsY >= -1990 && creditsY <= (SCREEN_HEIGHT - 2054)) drawText(135.f, creditsY + 2030.f, "DOOR - METAL GEAR SOLID");
+    if (creditsY >= -2030 && creditsY <= (SCREEN_HEIGHT - 2094)) drawText(150.f, creditsY + 2070.f, "DOOR ERROR - AMONG US");
+    if (creditsY >= -2070 && creditsY <= (SCREEN_HEIGHT - 2154)) drawText(135.f, creditsY + 2110.f, "DOOR SUCCESS - AMONG US");
+    if (creditsY >= -2000 && creditsY <= (SCREEN_HEIGHT - 2324)) drawText(165.f, creditsY + 2300.f, "GRACIAS POR JUGAR");
+    else if (creditsY <= (SCREEN_HEIGHT - 2324)) drawText(165.f, SCREEN_HEIGHT / 2, "GRACIAS POR JUGAR");
+    if (creditsY <= -2340) drawText(140.f, 530.f, "PULSA R PARA VOLVER AL MENU");
 }
 
 
@@ -492,7 +496,7 @@ void drawRect2(float x, float y, float w, float h, float r, float g, float b) {
 void InferiorBar::renderLivesSection(int x, int y, int width, int lives, bool g, bool det) {
     // Title
     const int titleSize = 2;
-    drawText(x, y, "LIFE", titleSize, 1);
+    drawText(x+5, y, "HEALTH", titleSize, 1);
 
     // Asegurar estado fijo antes de dibujar la barra
     glUseProgram(0);
@@ -502,13 +506,13 @@ void InferiorBar::renderLivesSection(int x, int y, int width, int lives, bool g,
     int displayLives = std::max(0, std::min(7, lives));
 
     // Configuració visual de la barra
-    float startY = y + 20;      // una mica per sota del títol
-    float barWidth = 10.0f;     // amplada d'una unitat
-    float barHeight = 6.0f;     // alçada d'una unitat
+    float startY = y+6;      // una mica per sota del títol
+    float barWidth = 24.0f;     // amplada d'una unitat
+    float barHeight = 12.0f;     // alçada d'una unitat
     float totalWidth = 7 * barWidth;
 
     // Centrat dins de la zona
-    float startX = x + (width - totalWidth) / 2.0f;
+    float startX = x + (width - totalWidth+35) / 2.0f;
 
     // Dibuixem 7 rectangles
     for (int i = 0; i < 7; ++i) {

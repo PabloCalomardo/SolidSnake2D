@@ -848,7 +848,7 @@ void Player::updateProjectiles(int deltaTime)
         // si choca con un tile sòlid se desactiva
         int tx = int(b.pos.x) / ts;
         int ty = int(b.pos.y) / ts;
-        if (!map->isTransparentAtTile(tx, ty)) {
+		if (!map->isTransparentAtTile(tx, ty, scene->CurrentMap)) {
             b.active = false;
             continue;
         }

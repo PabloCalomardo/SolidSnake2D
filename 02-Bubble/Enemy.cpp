@@ -48,6 +48,13 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 	mort = false;
     if(EnemyType == 3) spritesheet.loadFromFile("images/Bosses.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211
 	else spritesheet.loadFromFile("images/Enemies.png", TEXTURE_PIXEL_FORMAT_RGBA);	//Enemies ES: 255x211
+    spritesheet2.loadFromFile("images/objects.png", TEXTURE_PIXEL_FORMAT_RGBA);//EXCLAMACIÓ
+
+    exclamacio = Sprite::createSprite(glm::ivec2(16 * 2, 16 * 2), glm::vec2((1/342.f) * 16, (1/204.f) * 16), &spritesheet2, &shaderProgram);
+	exclamacio->setNumberAnimations(1);
+    exclamacio->setAnimationSpeed(0, 1);
+    exclamacio->addKeyframe(0, glm::vec2((121.f / 342.f) , (144.f / 204.f))); //DEFINITIU, 2 pixel a la dreta i 26 cap a 
+    exclamacio->changeAnimation(0);
 
 	if (EnemyType == 0)sprite = Sprite::createSprite(glm::ivec2(16 * 2, 16 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 16), &spritesheet, &shaderProgram);
     else if (EnemyType == 3)sprite = Sprite::createSprite(glm::ivec2(34 * 2, 42 * 2), glm::vec2((1/381.f) * 34, (1 / 154.f) * 42), &spritesheet, &shaderProgram);
@@ -162,6 +169,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
 
 void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool caixa)
 {
+    antic_hasEnemyDetected = hasEnemyDetected;
 	if (scene->CurrentMap != Escena_Original) return;
     if (noUpdate) return;
 	if (!mort && player_ha_disparat) hasEnemyDetected = true;
@@ -356,6 +364,18 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
 
 void Enemy::render()
 {
+    if (antic_hasEnemyDetected != hasEnemyDetected && hasEnemyDetected) {
+		frames_render = 75; // 2 segons i mitg a 30 fps
+        cout << "render exclamacio" << endl;
+    }
+    if (frames_render > 0) {
+        exclamacio->setPosition(posEnemy + glm::ivec2(50, -20));
+        frames_render -= 1;
+        if(scene->CurrentMap == Escena_Original) exclamacio->render();
+    }
+
+    
+
     if (scene->CurrentMap != Escena_Original) return;
     if (mort) return;
 	sprite->render();
@@ -388,7 +408,7 @@ bool Enemy::hasClearAxisShot(const glm::ivec2& targetPos, glm::ivec2& outDir) co
         int x1 = targetPos.x / ts;
         if (x0 > x1) std::swap(x0, x1);
         for (int x = x0; x <= x1; ++x) {
-            if (!map->isTransparentAtTile(x, y)) {
+            if (!map->isTransparentAtTile(x, y, scene->CurrentMap)) {
                 // Allow if final tile is target tile
                 if (x == targetPos.x / ts) break;
                 return false;
@@ -405,7 +425,7 @@ bool Enemy::hasClearAxisShot(const glm::ivec2& targetPos, glm::ivec2& outDir) co
         int y1 = targetPos.y / ts;
         if (y0 > y1) std::swap(y0, y1);
         for (int y = y0; y <= y1; ++y) {
-            if (!map->isTransparentAtTile(x, y)) {
+            if (!map->isTransparentAtTile(x, y, scene->CurrentMap)) {
                 if (y == targetPos.y / ts) break;
                 return false;
             }
@@ -502,7 +522,7 @@ void Enemy::updateProjectiles(int deltaTime)
 
         int tx = int(b.pos.x) / ts;
         int ty = int(b.pos.y) / ts;
-        if (!map->isTransparentAtTile(tx, ty)) {
+        if (!map->isTransparentAtTile(tx, ty, scene->CurrentMap)) {
 
             b.active = false;
             continue;
@@ -631,7 +651,7 @@ bool Enemy::enemic_detectat(const glm::ivec2& targetPos, int /*radius_detection*
         int tx = sx / ts;
         int ty = sy / ts;
 
-        if (!map->isTransparentAtTile(tx, ty)) {
+        if (!map->isTransparentAtTile(tx, ty, scene->CurrentMap)) {
             // Si el tile opac és el del jugador, OK; sinó, bloquejat
             int targetTx = targetCenter.x / ts;
             int targetTy = targetCenter.y / ts;

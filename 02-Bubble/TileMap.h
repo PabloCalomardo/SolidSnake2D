@@ -36,7 +36,7 @@ public:
 	bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int currentMap) const;
 
     // Retorna cert si a les coordenades (tx, ty) is transparent (no hi ha colisio) for vision purposes.
-    bool isTransparentAtTile(int tx, int ty) const;
+    bool isTransparentAtTile(int tx, int ty, int currentmap) const;
 
 	glm::ivec2 mapSize;
 	

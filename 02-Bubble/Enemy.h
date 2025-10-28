@@ -33,11 +33,12 @@ public:
     glm::ivec2 posPlayer;
 	void baixavida(int dg);
 	int Escena_Original;
+    bool antic_hasEnemyDetected;
     bool noUpdate = false;
     bool mort;
     int EnemyType; // 0: DOG, 1: SOLDIER, 2: SOLDIER2
     bool hasEnemyDetected;
-
+    int frames_render;
 private:
     struct Bullet {
         glm::vec2 pos;      // top-left in pixels
@@ -60,8 +61,8 @@ private:
 	int jumpAngle, startY;
 	int delta_ant;
 	
-	Texture spritesheet;
-	Sprite* sprite;
+	Texture spritesheet, spritesheet2;
+	Sprite* sprite, * exclamacio;
 	TileMap* map;
 	Scene* scene;
 

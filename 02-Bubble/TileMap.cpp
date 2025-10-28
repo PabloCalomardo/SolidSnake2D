@@ -16,7 +16,7 @@ TileMap *TileMap::createTileMap(const string &levelFile, const glm::vec2 &minCoo
 	return map;
 }
 
-bool TileMap::isTransparentAtTile(int tx, int ty) const
+bool TileMap::isTransparentAtTile(int tx, int ty, int currentmap) const
 {
     // Treat out-of-bounds as opaque
     if (tx < 0 || ty < 0 || tx >= mapSize.x || ty >= mapSize.y)
@@ -25,7 +25,7 @@ bool TileMap::isTransparentAtTile(int tx, int ty) const
     // Use direct indexing for vision checks
     int idx = ty * mapSize.x + tx;
     int tile = map[idx];
-
+	if (tile == 4 && (currentmap == 7 || currentmap == 8)) return true;
     // Only tiles whose id is listed in Col are transparent for vision
     return Col1.find(tile) != Col1.end();
 }

@@ -280,9 +280,12 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 void Player::update(int deltaTime)
 {
 	// if (vida < 3) ferit = true;
-	if (vida < 7 && !ferit) {
-		ferit = true;
+	if(ferit_animacio % 10 == 9) { // està a 9 en comptes de a 0 perque aixi no entra de normal
+		ferit = !ferit;
 	}
+
+	if (ferit_animacio > 0) ferit_animacio -= 1;
+	else ferit = false;
 
 	int a = porta_arma;
 	int f = ferit;
@@ -710,6 +713,7 @@ void Player::setPosition(const glm::vec2 &pos)
 
 void Player::baixavida(int dg)
 {
+	ferit_animacio = 60; // dura 60 frames l'animacio de ferit
 	if (!god) {
 		vida = vida - dg;
 		if (vida < 3) {

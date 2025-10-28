@@ -46,6 +46,7 @@ public:
     int pegaTimer = 0;
 	bool HaPegat = false;
     bool cajaActive = false; // true when player activated the CAIXA object
+	int ferit_animacio = 0;
 
 private:
     struct Bullet {

@@ -279,16 +279,27 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 
 void Player::update(int deltaTime)
 {
+
+	int a = porta_arma;
+	
 	// if (vida < 3) ferit = true;
 	if(ferit_animacio % 10 == 9) { // està a 9 en comptes de a 0 perque aixi no entra de normal
 		ferit = !ferit;
+		int f2 = !ferit;
+		int f1 = ferit;
+		for (int i = 0; i < 12; ++i) {
+			if (sprite->animation() == Animacions[f2][a][i]) {
+				sprite->changeAnimation(Animacions[f1][a][i]);
+				break;
+			}
+		}
 	}
 
 	if (ferit_animacio > 0) ferit_animacio -= 1;
 	else ferit = false;
 
-	int a = porta_arma;
 	int f = ferit;
+	
 	sprite->update(deltaTime);
 	spriteCapsa->update(deltaTime);
     shootTimer += deltaTime;

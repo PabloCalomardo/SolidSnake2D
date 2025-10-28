@@ -43,6 +43,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
     hasEnemyDetected = false;
 	EnemyType = TipusEnemic;
     if (EnemyType == 0) vida = 2;
+    if (EnemyType == 3) vida = 20;
     else vida = 4;
 	moviment_escorpi = 0;
 	mort = false;

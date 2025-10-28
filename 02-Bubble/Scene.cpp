@@ -66,6 +66,8 @@ void Scene::init()
 	SoundManager::instance().setSoundVolume("unequip", 30.f);
 	SoundManager::instance().loadSound("option", "audio/Option.ogg");
 	SoundManager::instance().loadSound("death", "audio/Enemy_Death.ogg");
+	SoundManager::instance().setSoundVolume("close", 60.f);
+	SoundManager::instance().loadSound("close", "audio/CloseDoor.ogg");
 	//SoundManager::instance().music.setVolume(40.f);
 	map = TileMap::createTileMap("levels/level00.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, {});
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, *this, false);
@@ -532,6 +534,7 @@ void Scene::ChangeMap(int dir)
 		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 		player->rend = true;
 		currentTime = 0.0f;
+		SoundManager::instance().playSound("close");
 	}
 	else if (CurrentMap == 1) {
 		printf("entra1\n");

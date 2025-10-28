@@ -504,8 +504,8 @@ void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, c
         int sy = startY;
 
         switch (i) {
-            case 0: slotObj = Caja; break;
-            case 1: slotObj = Arma; break;
+            case 0: slotObj = Arma; break;
+            case 1: slotObj = Caja; break;
             case 2: slotObj = Vida1; break;
             case 3: slotObj = Vida2; break;
             case 4: slotObj = Vida3; break;

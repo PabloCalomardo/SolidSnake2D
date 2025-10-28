@@ -138,16 +138,9 @@ void Scene::Credits() {
 }
 
 void Scene::ChargeEnemiesAndObjects() {
-	{
 		//==============================
 		//			OBJECTES
 		//==============================
-		// Caixa mapa 1
-		objeto* o = new objeto();
-		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, 1, glm::ivec2(15 * map->getTileSize(), 15 * map->getTileSize()));
-		o->setTileMap(map);
-		objetos.push_back(o);
-	}
 	{
 		// Arma mapa 6
 		objeto* o = new objeto();
@@ -156,16 +149,23 @@ void Scene::ChargeEnemiesAndObjects() {
 		objetos.push_back(o);
 	}
 	{
-		// Vida mapa 4
+		// Caixa mapa 1
 		objeto* o = new objeto();
-		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, 4, glm::ivec2(5 * map->getTileSize(), 24 * map->getTileSize()));
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 0, *this, 2, glm::ivec2(10 * map->getTileSize(), 25 * map->getTileSize()));
 		o->setTileMap(map);
 		objetos.push_back(o);
 	}
 	{
-		// Vida mapa 1
+		// Vida mapa 4
 		objeto* o = new objeto();
-		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, 1, glm::ivec2(15 * map->getTileSize(), 10 * map->getTileSize()));
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, 4, glm::ivec2(4 * map->getTileSize(), 24 * map->getTileSize()));
+		o->setTileMap(map);
+		objetos.push_back(o);
+	}
+	{
+		// Vida mapa 5
+		objeto* o = new objeto();
+		o->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, 5, glm::ivec2(3 * map->getTileSize(), 5 * map->getTileSize()));
 		o->setTileMap(map);
 		objetos.push_back(o);
 	}
@@ -306,7 +306,7 @@ void Scene::ChargeEnemiesAndObjects() {
 		enemies.push_back(e);
 	}
 	{
-		// Soldat2 mapa 5
+		// Soldat1 mapa 6
 		Enemy* e = new Enemy();
 		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, true, false, false, 6);
 		// Set initial position directly to avoid setPosition guard against non-current maps
@@ -315,11 +315,110 @@ void Scene::ChargeEnemiesAndObjects() {
 		enemies.push_back(e);
 	}
 	{
-		// Soldat2 mapa 5
+		// Soldat1 mapa 6
 		Enemy* e = new Enemy();
 		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, true, false, false, 6);
 		// Set initial position directly to avoid setPosition guard against non-current maps
 		e->posEnemy = glm::ivec2(34 * map->getTileSize(), 13 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 7
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, false, false, true, 7);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(13 * map->getTileSize(), 22 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 7
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, false, false, true, 7);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(23 * map->getTileSize(), 11 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat1 mapa 7
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, true, false, 7);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(6 * map->getTileSize(), 2 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat1 mapa 7
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, true, false, false, 7);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(30 * map->getTileSize(), 5 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 8
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, false, true, false, 8);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(4 * map->getTileSize(), 10 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 8
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, false, true, false, 8);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(6 * map->getTileSize(), 10 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat1 mapa 8
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, false, true, 8);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(30 * map->getTileSize(), 12 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat1 mapa 8
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, false, true, 8);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(30 * map->getTileSize(), 12 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat1 mapa 8
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, true, false, false, 8);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(15 * map->getTileSize(), 17 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 10
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, false, false, true, 10);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(4 * map->getTileSize(), 15 * map->getTileSize());
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 10
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, true, false, false, 10);
+		// Set initial position directly to avoid setPosition guard against non-current maps
+		e->posEnemy = glm::ivec2(10 * map->getTileSize(), 4 * map->getTileSize());
 		e->setTileMap(map);
 		enemies.push_back(e);
 	}

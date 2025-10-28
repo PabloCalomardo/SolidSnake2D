@@ -31,13 +31,15 @@ enum EnemyAnims
 
 
 
-void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene &sc, bool mh, bool q, bool mv, int OriginalScene)
+void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene &sc, bool mh, bool q, bool mv, int OriginalScene, glm::ivec2 pos)
 {
-	Escena_Original = OriginalScene;
+	posEnemy = pos;
+    Escena_Original = OriginalScene;
 	moviment_horitzontal = mh;
 	quiet = q;
 	moviment_vertical = mv;
 
+    contador_sobresalto = 0;
     scene = &sc;
     posPlayer = glm::ivec2(0);
     hasEnemyDetected = false;
@@ -61,6 +63,7 @@ void Enemy::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int
     else if (EnemyType == 3)sprite = Sprite::createSprite(glm::ivec2(34 * 2, 42 * 2), glm::vec2((1/381.f) * 34, (1 / 154.f) * 42), &spritesheet, &shaderProgram);
 	else sprite = Sprite::createSprite(glm::ivec2(16 * 2, 32 * 2), glm::vec2(PIXEL_X * 16, PIXEL_Y * 32), &spritesheet, &shaderProgram);
 
+    posicio_inicial = posEnemy;
 	
 	sprite->setNumberAnimations(10); //all
 	
@@ -180,6 +183,19 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
     }
     sprite->update(deltaTime);
     shootTimer += deltaTime;
+	if (contador_sobresalto > 0) 
+    {
+        if(sobresaltado) 
+        {
+			//Fem que l'enemic faci un petit salt cap amunt per l'sobresalt
+            sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y - 10)));
+            sobresaltado = false;
+        }
+		
+        contador_sobresalto -= 1;
+        return;
+    }
+
     // Recalcular detecció cada frame per iniciar la persecució quan entri al FOV
     if (mort) {
         posEnemy.x = 0;
@@ -602,7 +618,7 @@ bool Enemy::enemic_detectat(const glm::ivec2& targetPos, int /*radius_detection*
     if (!map) return false;
 
     const int ts = map->getTileSize();
-    const int tolerance = ts; // tolerància d'1 tile
+    const int tolerance = 3*ts; // tolerància de 3 tiles
 
     // Posicions centrades en píxels
     glm::ivec2 enemyCenter = posEnemy + glm::ivec2(ts / 2, ts / 2);
@@ -617,22 +633,21 @@ bool Enemy::enemic_detectat(const glm::ivec2& targetPos, int /*radius_detection*
 
     bool alineat = false;
 
-    if (f.x == 0 && f.y != 0) {
-        // Mira amunt o avall → mateixa X (amb tolerància)
-        alineat = (std::abs(delta.x) <= tolerance &&
-            ((f.y > 0 && delta.y > 0) || (f.y < 0 && delta.y < 0)));
+    if(EnemyType != 0)
+    {
+        if (f.x == 0 && f.y != 0) {
+            // Mira amunt o avall → mateixa X (amb tolerància)
+            alineat = (std::abs(delta.x) <= tolerance &&
+                ((f.y > 0 && delta.y > 0) || (f.y < 0 && delta.y < 0)));
+        }
+        else if (f.y == 0 && f.x != 0) {
+            // Mira dreta o esquerra → mateixa Y (amb tolerància)
+            alineat = (std::abs(delta.y) <= tolerance &&
+                ((f.x > 0 && delta.x > 0) || (f.x < 0 && delta.x < 0)));
+        }
     }
-    else if (f.y == 0 && f.x != 0) {
-        // Mira dreta o esquerra → mateixa Y (amb tolerància)
-        alineat = (std::abs(delta.y) <= tolerance &&
-            ((f.x > 0 && delta.x > 0) || (f.x < 0 && delta.x < 0)));
-    }
-    else if (f.x != 0 && f.y != 0) {
-        // Mira en diagonal → permet error d'un tile a la línia ideal
-        // La línia diagonal ideal té pendent ±1, així que comparem |dx| i |dy|
-        alineat = (std::abs(std::abs(delta.x) - std::abs(delta.y)) <= tolerance &&
-            ((f.x > 0 && delta.x > 0) || (f.x < 0 && delta.x < 0)) &&
-            ((f.y > 0 && delta.y > 0) || (f.y < 0 && delta.y < 0)));
+    else { //Escorpí Detecta qualsevol direcció però a 5 tiles de distància com a màxim
+		alineat = (std::abs(delta.x) <= 5 * ts && std::abs(delta.y) <= 5 * ts);
     }
 
     if (!alineat)
@@ -855,5 +870,18 @@ void Enemy::baixavida(int dg) {
         SoundManager::instance().playSound("death");
         mort = true;
         hasEnemyDetected = false;
+        return;
     }
+    if(!hasEnemyDetected) sobresaltado = true;
+    contador_sobresalto += 30;
+}
+
+void Enemy::revive() {
+    mort = false;
+    hasEnemyDetected = false;
+    posEnemy = posicio_inicial;
+    if (EnemyType == 0) vida = 2;
+    if (EnemyType == 3) vida = 20;
+    else vida = 4;
+    sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
 }

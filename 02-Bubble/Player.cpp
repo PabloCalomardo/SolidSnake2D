@@ -281,30 +281,31 @@ void Player::update(int deltaTime)
 {
 
 	int a = porta_arma;
-	
-	// if (vida < 3) ferit = true;
-	if(ferit_animacio % 10 == 9) { // està a 9 en comptes de a 0 perque aixi no entra de normal
-		ferit = !ferit;
-		int f2 = !ferit;
-		int f1 = ferit;
-		for (int i = 0; i < 12; ++i) {
-			if (sprite->animation() == Animacions[f2][a][i]) {
-				sprite->changeAnimation(Animacions[f1][a][i]);
-				break;
+	if (vida <= 0) mort = true;
+	else {
+		// if (vida < 3) ferit = true;
+		if (ferit_animacio % 10 == 9) { // està a 9 en comptes de a 0 perque aixi no entra de normal
+			ferit = !ferit;
+			int f2 = !ferit;
+			int f1 = ferit;
+			for (int i = 0; i < 12; ++i) {
+				if (sprite->animation() == Animacions[f2][a][i]) {
+					sprite->changeAnimation(Animacions[f1][a][i]);
+					break;
+				}
 			}
 		}
+
+		if (ferit_animacio > 0) ferit_animacio -= 1;
+		else ferit = false;
+
 	}
 
-	if (ferit_animacio > 0) ferit_animacio -= 1;
-	else ferit = false;
-
 	int f = ferit;
-	
 	sprite->update(deltaTime);
 	spriteCapsa->update(deltaTime);
-    shootTimer += deltaTime;
+	shootTimer += deltaTime;
 	pegaTimer += deltaTime;
-	
 	
 
     // handle item action cooldown (prevents multiple triggers on single keypress)

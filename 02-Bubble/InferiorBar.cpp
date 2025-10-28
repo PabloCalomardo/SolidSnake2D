@@ -1,4 +1,4 @@
-#include "InferiorBar.h"
+﻿#include "InferiorBar.h"
 #include "Scene.h"
 #include "Player.h"
 #include <algorithm>
@@ -478,14 +478,63 @@ void InferiorBar::renderDeathMessage() {
     drawText(innerH + 32, innerY + 48, "PULSA R PARA VOLVER AL MENU", 1, 1);
 }
 
+void drawRect2(float x, float y, float w, float h, float r, float g, float b) {
+    glColor3f(r, g, b); // defineix el color RGB
+    glBegin(GL_QUADS);
+    glVertex2f(x, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x, y + h);
+    glEnd();
+}
+
+
 void InferiorBar::renderLivesSection(int x, int y, int width, int lives, bool g, bool det) {
     // Title
     const int titleSize = 2;
     drawText(x, y, "LIFE", titleSize, 1);
 
+    // Asegurar estado fijo antes de dibujar la barra
+    glUseProgram(0);
+    glDisable(GL_TEXTURE_2D);
+
     // Clamp lives 0..3
     int displayLives = std::max(0, std::min(7, lives));
 
+    // Configuració visual de la barra
+    float startY = y + 20;      // una mica per sota del títol
+    float barWidth = 10.0f;     // amplada d'una unitat
+    float barHeight = 6.0f;     // alçada d'una unitat
+    float totalWidth = 7 * barWidth;
+
+    // Centrat dins de la zona
+    float startX = x + (width - totalWidth) / 2.0f;
+
+    // Dibuixem 7 rectangles
+    for (int i = 0; i < 7; ++i) {
+        float bx = startX + i * (barWidth);
+        float by = startY;
+
+        if (i < displayLives) {
+            // Vida activa: blanc
+            drawRect2(bx, by, barWidth, barHeight, 1.0f, 1.0f, 1.0f);
+        }
+        else {
+            // Vida perduda: gris fosc
+            drawRect2(bx, by, barWidth, barHeight, 0.3f, 0.3f, 0.3f);
+        }
+    }
+
+
+    if (g) {
+        drawText(x + 86, y + 48, "GOD", 2, 1);
+    }
+    if (!det) {
+        drawText(x + 156, y + 48, "INV", 2, 1);
+    }
+
+
+    /*
     // Compute center position inside section to draw the digit sprite
     int startY = y ; // a bit below the title
     int cx = x + width / 2; // center x relative to section
@@ -499,7 +548,7 @@ void InferiorBar::renderLivesSection(int x, int y, int width, int lives, bool g,
     }
     if (!det) {
         drawText(x + 156, y + 48, "INV", 2, 1);
-    }
+    }*/
 }
 
 void InferiorBar::renderWeaponSection(int x, int y, int width, bool hasWeapon, const std::vector<objeto*>& inventory, int selectedIndex) {

@@ -12,7 +12,7 @@ class Enemy
 {
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene &sc, bool mh, bool q, bool mv, int OriginalScene);
+    void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int TipusEnemic, Scene& sc, bool mh, bool q, bool mv, int OriginalScene, glm::ivec2 pos);
 	void update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool caixa);
 	void render();
 
@@ -39,6 +39,11 @@ public:
     int EnemyType; // 0: DOG, 1: SOLDIER, 2: SOLDIER2
     bool hasEnemyDetected;
     int frames_render;
+	int contador_sobresalto;
+    bool sobresaltado;
+    void revive();
+    glm::ivec2 posicio_inicial;
+
 private:
     struct Bullet {
         glm::vec2 pos;      // top-left in pixels

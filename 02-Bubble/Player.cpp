@@ -279,17 +279,28 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 
 void Player::update(int deltaTime)
 {
-
+	if (scene->victory) {
+		if (porta_arma) sprite->changeAnimation(Animacions[0][1][0]);
+		else sprite->changeAnimation(Animacions[0][0][0]);
+		return;
+	}
 	int a = porta_arma;
 	if (vida <= 0) mort = true;
 	else {
 		// if (vida < 3) ferit = true;
 		if (ferit_animacio % 10 == 9) { // està a 9 en comptes de a 0 perque aixi no entra de normal
 			ferit = !ferit;
-			int f2 = !ferit;
-			int f1 = ferit;
-			for (int i = 0; i < 12; ++i) {
-				if (sprite->animation() == Animacions[f2][a][i]) {
+			int f2, f1;
+			if (ferit) {
+				f2 = 0;
+				f1 = 1;
+			}
+			else {
+				f2 = 1;
+				f1 = 0;
+			}
+			for (int i = 0; i < Animacions[f2][a].size(); ++i) {
+				if (sprite->animation() == Animacions[f2][a][i]) { // Ha crasheao aqui
 					sprite->changeAnimation(Animacions[f1][a][i]);
 					break;
 				}
@@ -492,7 +503,6 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(Animacions[f][a][7]);
 
 		posPlayer.y += 2;
-		//printf("posplayer.x: %d, posplayer.y: %d\n", posPlayer.x, posPlayer.y);
 
 		if (posPlayer.y >= ((map->mapSize[1]) * 16) - 64) {
 			scene->ChangeMap(4);
@@ -1048,10 +1058,8 @@ void Player::handlePunchNoWeapon(int feritIdx, int armaIdx)
 			p.y >= ep.y && p.y <= ep.y + enemySize.y;
 	};
 	auto& enemies = scene->getEnemies();
-	cout << "Tiropunyo!" << endl;
 	for (auto* e : enemies) {
 		if (!e->mort && hitEnemy(posPuny, e)) {
-			cout << "Punyetazo a enemy!" << endl;
 			e->baixavida(1, true);
 			HaPegat = true;
 		}

@@ -259,6 +259,23 @@ void InferiorBar::Menu() {
     menuCount -= 1;
 }
 
+void InferiorBar::Victory() {
+    drawBarBackground();
+    drawFrame();
+    const int titleSize = 2;
+    const int yTop = SCREEN_HEIGHT - barHeight;
+    const int padding = 10;
+    const int innerY = yTop + padding;
+    const int innerH = barHeight - padding * 2;
+    drawText(innerH + 32, innerY, "FELICIDADES!", 2, 1);
+    drawText(innerH + 80, innerY + 24, "HAS COMPLETADO EL JUEGO", 2, 1);
+    creditsY += 0.5;
+    if (creditsY >= 120) {
+		scene->victory = false;
+        scene->Credits();
+    }
+}
+
 void InferiorBar::Instructions() {
     drawBarBackground();
     const int titleSize = 2;
@@ -338,9 +355,10 @@ void InferiorBar::Credits() {
     if (creditsY >= -1990 && creditsY <= (SCREEN_HEIGHT - 2054)) drawText(135.f, creditsY + 2030.f, "DOOR - METAL GEAR SOLID");
     if (creditsY >= -2030 && creditsY <= (SCREEN_HEIGHT - 2094)) drawText(150.f, creditsY + 2070.f, "DOOR ERROR - AMONG US");
     if (creditsY >= -2070 && creditsY <= (SCREEN_HEIGHT - 2154)) drawText(135.f, creditsY + 2110.f, "DOOR SUCCESS - AMONG US");
-    if (creditsY >= -2000 && creditsY <= (SCREEN_HEIGHT - 2324)) drawText(165.f, creditsY + 2300.f, "GRACIAS POR JUGAR");
-    else if (creditsY <= (SCREEN_HEIGHT - 2324)) drawText(165.f, SCREEN_HEIGHT / 2, "GRACIAS POR JUGAR");
-    if (creditsY <= -2340) drawText(140.f, 530.f, "PULSA R PARA VOLVER AL MENU");
+    if (creditsY >= -2110 && creditsY <= (SCREEN_HEIGHT - 2194)) drawText(110.f, creditsY + 2150.f, "VICTORY - METAL GEAR SOLID");
+    if (creditsY >= -2040 && creditsY <= (SCREEN_HEIGHT - 2364)) drawText(165.f, creditsY + 2350.f, "GRACIAS POR JUGAR");
+    else if (creditsY <= (SCREEN_HEIGHT - 2364)) drawText(165.f, SCREEN_HEIGHT / 2, "GRACIAS POR JUGAR");
+    if (creditsY <= -2380) drawText(140.f, 530.f, "PULSA R PARA VOLVER AL MENU");
 }
 
 
@@ -359,8 +377,10 @@ void InferiorBar::render() {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Draw background and frame with textures disabled
+    // Textures disabled
     glDisable(GL_TEXTURE_2D);
 
     if (mort) {
@@ -377,6 +397,10 @@ void InferiorBar::render() {
     }
     else if (credits) {
         Credits();
+        return;
+    }
+    else if (scene->victory) {
+        Victory();
         return;
     }
 

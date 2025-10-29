@@ -55,6 +55,7 @@ public:
 	Sprite* sprite;
 	InferiorBar* hud;
 	bool revived = false;
+	bool victory = false;
 
 private:
 	void initShaders();

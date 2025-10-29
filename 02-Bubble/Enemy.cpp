@@ -214,7 +214,6 @@ void Enemy::update(int deltaTime, glm::ivec2 posp, bool player_ha_disparat, bool
         if (EnemyType == 0) //Escorpí
         {
             if (hasEnemyDetected) {
-                cout << "Enemy has detected the player!" << endl;
                 if ((EnemyType == 0 || EnemyType == 1) && delta_ant > 500) { //MELEE (ens apropem i l'ataquem)
                     goToPosition(deltaTime, posp, 6);
                     delta_ant = 0;
@@ -383,7 +382,6 @@ void Enemy::render()
 {
     if (antic_hasEnemyDetected != hasEnemyDetected && hasEnemyDetected) {
 		frames_render = 75; // 2 segons i mitg a 30 fps
-        cout << "render exclamacio" << endl;
     }
     if (frames_render > 0) {
         exclamacio->setPosition(posEnemy + glm::ivec2(50, -20));
@@ -489,10 +487,6 @@ void Enemy::BOSStryShootAt(const glm::ivec2& targetPos)
     glm::vec2 playerCenter = glm::vec2(targetX, targetY) + glm::vec2(+20, +20);
     glm::vec2 enemyCenter = glm::vec2 (posEnemy.x + 28.f, posEnemy.y + 52.f);
 
-
-    std::cout << "Player center: (" << playerCenter.x << ", " << playerCenter.y << ")\n";
-    std::cout << "Enemy center: (" << enemyCenter.x << ", " << enemyCenter.y << ")\n";
-
     // vector del enemic al player
     glm::vec2 dir = glm::vec2(playerCenter - enemyCenter);
 
@@ -500,11 +494,8 @@ void Enemy::BOSStryShootAt(const glm::ivec2& targetPos)
     if (glm::length(dir) < 0.01f)
         return;
 
-    std::cout << "Bullet dir1: (" << dir.x << ", " << dir.y << ")\n";
-
     dir = glm::normalize(dir);
 
-    std::cout << "Bullet dir: (" << dir.x << ", " << dir.y << ")\n";
     Bullet b;
     b.pos = glm::vec2(enemyCenter.x, enemyCenter.y); // centrat
     b.dir = dir;

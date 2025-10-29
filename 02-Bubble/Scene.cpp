@@ -74,6 +74,8 @@ void Scene::init()
 	SoundManager::instance().setSoundVolume("doorSuccess", 80.f);
 	SoundManager::instance().loadSound("doorError", "audio/DoorError.ogg");
 	SoundManager::instance().setSoundVolume("doorError", 60.f);
+	SoundManager::instance().loadSound("victory", "audio/Win.ogg");
+	SoundManager::instance().setSoundVolume("victory", 80.f);
 	//SoundManager::instance().music.setVolume(40.f);
 	map = TileMap::createTileMap("levels/level00.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, {});
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, *this, false);
@@ -366,16 +368,37 @@ void Scene::ChargeEnemiesAndObjects() {
 		enemies.push_back(e);
 	}
 	{
-		// Soldat2 mapa 10
+		// Soldat2 mapa 9
 		Enemy* e = new Enemy();
-		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, false, false, true, 10, glm::ivec2(4 * map->getTileSize(), 15 * map->getTileSize()));
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, true, false, false, 9, glm::ivec2(33 * map->getTileSize(), 16 * map->getTileSize()));
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat1 mapa 9
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, false, true, 9, glm::ivec2(3 * map->getTileSize(), 4 * map->getTileSize()));
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat1 mapa 9
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 1, *this, false, true, false, 9, glm::ivec2(15 * map->getTileSize(), 8 * map->getTileSize()));
 		e->setTileMap(map);
 		enemies.push_back(e);
 	}
 	{
 		// Soldat2 mapa 10
 		Enemy* e = new Enemy();
-		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, true, false, false, 10, glm::ivec2(10 * map->getTileSize(), 4 * map->getTileSize()));
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, false, false, true, 10, glm::ivec2(3 * map->getTileSize(), 15 * map->getTileSize()));
+		e->setTileMap(map);
+		enemies.push_back(e);
+	}
+	{
+		// Soldat2 mapa 10
+		Enemy* e = new Enemy();
+		e->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, 2, *this, true, false, false, 10, glm::ivec2(14 * map->getTileSize(), 23 * map->getTileSize()));
 		e->setTileMap(map);
 		enemies.push_back(e);
 	}
@@ -480,7 +503,6 @@ void Scene::ChangeMap(int dir)
 		SoundManager::instance().playSound("close");
 	}
 	else if (CurrentMap == 1) {
-		printf("entra1\n");
 		CurrentMap = 2;
 		map = TileMap::createTileMap("levels/level02.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram, { 1,2,3,5,6,7,10 });
 		glm::vec2 posaux(0, player->posPlayer[1]);
@@ -630,7 +652,7 @@ void Scene::ChangeMap(int dir)
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
-	if(CurrentMap == 0) {
+	if (CurrentMap == 0) {
 		sprite->update(deltaTime);
 	}
 	bool d = false;
@@ -693,10 +715,28 @@ void Scene::render()
 		map->render();
 		sprite->render();
 		if (hud) hud->render();
+		return;
 	}
-	else {
+	else if (CurrentMap == 11 && !victory) {
+		bool aux = false;
+		for each(Enemy * e in enemies) {
+			if (e->Escena_Original == 11 && !e->mort) {
+				aux = true;
+				break;
+			}
+		}
+		if (!aux) {
+			victory = true;
+			SoundManager::instance().stopMusic();
+			if (SoundManager::instance().isSoundPlaying("death"))
+				SoundManager::instance().stopSound("death");
+			SoundManager::instance().playSound("victory");
+			hud->creditsY = -35.f;
+		}
+	}
+	if (!victory) {
 		map->render();
-		// Render all enemies
+	// Render all enemies
 		for (Enemy* e : enemies) {
 			e->render();
 		}
@@ -707,6 +747,11 @@ void Scene::render()
 
 		// Render HUD last so it overlays
 		if (hud) hud->render();
+	}
+	else {
+		map->render();
+		player->render();
+		hud->render();
 	}
 }
 

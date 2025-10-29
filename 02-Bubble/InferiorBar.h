@@ -59,6 +59,7 @@ private:
     void Instructions();
     void Credits();
     void Menu();
+    void Victory();
 
     Scene* scene = nullptr;
     bool fontInitialized = false;

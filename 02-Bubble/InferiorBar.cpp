@@ -354,9 +354,9 @@ void InferiorBar::Credits() {
     if (creditsY >= -1950 && creditsY <= (SCREEN_HEIGHT - 2014)) drawText(70.f, creditsY + 1990.f, "DOOR CLOSED - PIXABAY ANONIMOUS");
     if (creditsY >= -1990 && creditsY <= (SCREEN_HEIGHT - 2054)) drawText(135.f, creditsY + 2030.f, "DOOR - METAL GEAR SOLID");
     if (creditsY >= -2030 && creditsY <= (SCREEN_HEIGHT - 2094)) drawText(150.f, creditsY + 2070.f, "DOOR ERROR - AMONG US");
-    if (creditsY >= -2070 && creditsY <= (SCREEN_HEIGHT - 2154)) drawText(135.f, creditsY + 2110.f, "DOOR SUCCESS - AMONG US");
-    if (creditsY >= -2110 && creditsY <= (SCREEN_HEIGHT - 2194)) drawText(110.f, creditsY + 2150.f, "VICTORY - METAL GEAR SOLID");
-    if (creditsY >= -2040 && creditsY <= (SCREEN_HEIGHT - 2364)) drawText(165.f, creditsY + 2350.f, "GRACIAS POR JUGAR");
+    if (creditsY >= -2070 && creditsY <= (SCREEN_HEIGHT - 2134)) drawText(135.f, creditsY + 2110.f, "DOOR SUCCESS - AMONG US");
+    if (creditsY >= -2110 && creditsY <= (SCREEN_HEIGHT - 2174)) drawText(110.f, creditsY + 2150.f, "VICTORY - METAL GEAR SOLID");
+    if (creditsY >= -2040 && creditsY <= (SCREEN_HEIGHT - 2364)) drawText(165.f, creditsY + 2340.f, "GRACIAS POR JUGAR");
     else if (creditsY <= (SCREEN_HEIGHT - 2364)) drawText(165.f, SCREEN_HEIGHT / 2, "GRACIAS POR JUGAR");
     if (creditsY <= -2380) drawText(140.f, 530.f, "PULSA R PARA VOLVER AL MENU");
 }

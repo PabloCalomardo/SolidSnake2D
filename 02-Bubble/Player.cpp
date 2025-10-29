@@ -277,6 +277,23 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, Sc
 	
 }
 
+void Player::Reset() {
+	inventari.clear();
+	vida = 7;
+	mort = false;
+	porta_arma = false;
+	ha_disparat = false;
+	hasKey = false;
+	ferit = 0;
+	god = false;
+	pegaTimer = 0;
+	HaPegat = false;
+	cajaActive = false;
+	ferit_animacio = 0;
+	selectedItem = -1;
+	bullets.clear();
+}
+
 void Player::update(int deltaTime)
 {
 	if (scene->victory) {

@@ -32,6 +32,7 @@ public:
 	void baixavida(int dg);
     // Optional: set bullet speed in pixels per second
     void setBulletSpeedPerSecond(float pxPerSec) { bulletSpeedPxPerMs = pxPerSec / 1000.0f; }
+    void Reset();
 
 	std::vector<objeto*> inventari;
 

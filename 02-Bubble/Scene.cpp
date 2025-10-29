@@ -151,8 +151,13 @@ void Scene::Credits() {
 	hud->menu = false;
 	SoundManager::instance().setMusicVolume(60.f);
 	SoundManager::instance().playMusic("audio/Snake_Eater.ogg", false);
+	DeleteObjectsAndEnemies();
+	ChargeEnemiesAndObjects();
+	player->Reset();
 	hud->creditsY = 685.f;
 	hud->credits = true;
+	detectable = false;
+	detectat = false;
 }
 
 void Scene::ChargeEnemiesAndObjects() {

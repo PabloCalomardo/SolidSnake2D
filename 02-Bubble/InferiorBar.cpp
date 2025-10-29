@@ -292,7 +292,7 @@ void InferiorBar::Instructions() {
     drawText(50, 86 + 176, "H - CURARSE", 1, 1);
     drawText(50, 86 + 204, "P - TELETRANSPORTE A LA JUNGLA", 1, 1);
     drawText(50, 86 + 232, "K - TELETRANSPORTE AL EDIFICIO", 1, 1);
-    drawText(50, 86 + 260, "K - TELETRANSPORTE AL JEFE FINAL", 1, 1);
+    drawText(50, 86 + 260, "B - TELETRANSPORTE AL JEFE FINAL", 1, 1);
     drawText(50, 86 + 288, "N - INDETECTABLE", 1, 1);
     drawText(50, 86 + 316, "G - MODO DIOS", 1, 1);
     drawText(50, 86 + 344, "R - VOLVER AL MENU", 1, 1);
